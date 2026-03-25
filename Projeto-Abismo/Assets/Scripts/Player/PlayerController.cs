@@ -30,7 +30,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.18f;
     [SerializeField] private float dashCooldown = 0.6f;
     [SerializeField] private KeyCode dashKey = KeyCode.LeftShift;
-    [SerializeField] private float postDashFallDelay = 0.25f; // tempo após o dash antes de permitir cair
+    [SerializeField] private float postDashFallDelay = 0.25f;
+
+    [Header("Camera Target")]
+    [SerializeField] private Transform cameraTarget;
+    [SerializeField] private float lookAheadDistance = 2f;
+    [SerializeField] private float lookAheadSmooth = 5f;
+    [SerializeField] private float followSpeed = 10f;
 
     [Header("Life")]
     [SerializeField] private int maxLife = 5;
@@ -42,30 +48,30 @@ public class PlayerController : MonoBehaviour
     private bool isJumping;
     private float jumpTimeCounter;
 
-    // Super jump state
     private bool isSuperJumping;
     private float superJumpTimeCounter;
     private float lastSuperJumpTime;
 
-    // Estados de contato para controlar quando é permitido pular
     private bool isGrounded;
     private bool isTouchingWall;
 
     private bool facingRight = true;
     private float lastAttackTime;
 
-    // Dash state
     private bool isDashing;
     private float dashTimeLeft;
     private float lastDashTime;
     private Vector2 dashDirection;
     private float originalGravityScale;
-    private float storedVerticalVelocity; // valor restaurado ao fim do período de suspensão (aqui mantido 0)
+    private float storedVerticalVelocity;
     private RigidbodyConstraints2D originalConstraints;
 
-    // Estado de espera para permitir cair depois do dash
     private bool isAwaitingFall;
     private float fallDelayTimer;
+
+    // CAMERA
+    private float currentLookAhead;
+    private bool lastFacingRight;
 
     private void Awake()
     {
@@ -73,6 +79,8 @@ public class PlayerController : MonoBehaviour
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
         originalConstraints = rb.constraints;
+
+        lastFacingRight = facingRight; // 👈 AQUI
     }
 
     void Update()
@@ -85,9 +93,13 @@ public class PlayerController : MonoBehaviour
         HandleDash();
     }
 
+    void LateUpdate()
+    {
+        UpdateCameraTarget();
+    }
+
     void FixedUpdate()
     {
-        // Enquanto estiver dashando ou aguardando a queda, trava Y e aplica velocidade horizontal de dash
         if (isDashing || isAwaitingFall)
         {
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
@@ -185,9 +197,39 @@ public class PlayerController : MonoBehaviour
     void Flip()
     {
         facingRight = !facingRight;
+
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    // 🎥 CAMERA TARGET SYSTEM
+    void UpdateCameraTarget()
+    {
+        if (cameraTarget == null) return;
+
+        // Detecta mudança de direção
+        if (facingRight != lastFacingRight)
+        {
+            currentLookAhead = 0f;
+            lastFacingRight = facingRight;
+        }
+
+        float targetLookAhead = facingRight ? lookAheadDistance : -lookAheadDistance;
+
+        currentLookAhead = Mathf.Lerp(
+            currentLookAhead,
+            targetLookAhead,
+            lookAheadSmooth * Time.deltaTime
+        );
+
+        Vector3 targetPosition = transform.position + new Vector3(currentLookAhead, 0f, 0f);
+
+        cameraTarget.position = Vector3.Lerp(
+            cameraTarget.position,
+            targetPosition,
+            followSpeed * Time.deltaTime
+        );
     }
 
     void HandleAttack()
@@ -201,12 +243,6 @@ public class PlayerController : MonoBehaviour
 
     void PerformAttack()
     {
-        if (attackBlockPrefab == null)
-        {
-            Debug.LogError("attackBlockPrefab está NULL ou quebrado!");
-            return;
-        }
-
         float directionMultiplier = facingRight ? 1f : -1f;
 
         Vector3 spawnPosition = transform.position
@@ -220,7 +256,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing && !isAwaitingFall)
         {
-            // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
             float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : (facingRight ? 1f : -1f);
             dashDirection = new Vector2(Mathf.Sign(dir), 0f);
 
@@ -228,23 +263,17 @@ public class PlayerController : MonoBehaviour
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            // ZERA a velocidade vertical para não recuperar Y depois
             storedVerticalVelocity = 0f;
-
-            // TRAVA posição Y usando constraints para eliminar qualquer movimento vertical/oscilações
             rb.constraints = originalConstraints | RigidbodyConstraints2D.FreezePositionY;
-
-            // Desliga gravidade e aplica velocidade horizontal de dash
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
 
         if (isDashing)
-        {   
+        {
             dashTimeLeft -= Time.deltaTime;
             if (dashTimeLeft <= 0f)
             {
-                // finalizou o dash: inicia período de suspensão antes de permitir cair
                 isDashing = false;
                 isAwaitingFall = true;
                 fallDelayTimer = postDashFallDelay;
@@ -256,7 +285,7 @@ public class PlayerController : MonoBehaviour
             fallDelayTimer -= Time.deltaTime;
             if (fallDelayTimer <= 0f)
             {
-                EndDash(); // aqui restauramos gravidade e constraints para que o personagem comece a cair
+                EndDash();
             }
         }
     }
@@ -266,72 +295,47 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         isAwaitingFall = false;
 
-        // restaura constraints e gravidade
         rb.constraints = originalConstraints;
         rb.gravityScale = originalGravityScale;
-
-        // mantém componente vertical em 0 para iniciar a queda naturalmente pela gravidade
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, storedVerticalVelocity);
     }
 
-    // VIDA DO PLAYER
     public void TakeDamage(int damage)
     {
         currentLife -= damage;
 
-        Debug.Log("Vida: " + currentLife);
-
         if (currentLife <= 0)
-        {
-            Die();
-        }
+            Destroy(gameObject);
     }
 
-    void Die()
-    {
-        Debug.Log("Player morreu");
-        Destroy(gameObject);
-    }
-
-    // Colisões para controlar isGrounded e isTouchingWall
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
-        {
             isGrounded = true;
-            isJumping = false;
-        }
 
         if (collision.gameObject.CompareTag(wallTag))
-        {
             isTouchingWall = true;
-        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
-        {
             isGrounded = false;
-        }
 
         if (collision.gameObject.CompareTag(wallTag))
-        {
             isTouchingWall = false;
-        }
     }
 
-    // Opcional: garante atualização de contato se o objeto permanecer em contato
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
-        {
             isGrounded = true;
-        }
 
         if (collision.gameObject.CompareTag(wallTag))
-        {
             isTouchingWall = true;
-        }
+    }
+    public bool IsFacingRight()
+    {
+        return facingRight;
     }
 }
