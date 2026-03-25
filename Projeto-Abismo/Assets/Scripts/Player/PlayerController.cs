@@ -81,8 +81,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isDashing)
         {
-            // Aplicar dash mantendo a velocidade vertical atual (para não "quebrar" o pulo)
-            rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, rb.linearVelocity.y);
+            // Aplicar dash apenas na horizontal: zera componente vertical para evitar diagonal/vertical
+            rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
             return;
         }
 
@@ -228,8 +228,9 @@ public class PlayerController : MonoBehaviour
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            // reduzir/gravar gravidade para evitar queda brusca durante o dash
+            // Zera gravidade e força vertical para garantir movimento puramente horizontal
             rb.gravityScale = 0f;
+            rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
 
         if (isDashing)
