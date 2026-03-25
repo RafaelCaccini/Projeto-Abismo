@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lampiaoPlaceHolder_0: 3493751805927744696
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
