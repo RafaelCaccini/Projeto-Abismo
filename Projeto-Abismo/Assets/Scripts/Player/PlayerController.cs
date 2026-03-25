@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
     private float lastDashTime;
     private Vector2 dashDirection;
     private float originalGravityScale;
+    private float storedVerticalVelocity; // guarda velocity.y antes do dash
 
     private void Awake()
     {
@@ -81,7 +82,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isDashing)
         {
-            // Aplicar dash apenas na horizontal: zera componente vertical para evitar diagonal/vertical
+            // Movimento 100% travado na vertical: componente Y fixa em 0 durante o dash
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
             return;
         }
@@ -105,24 +106,20 @@ public class PlayerController : MonoBehaviour
 
     void HandleJump()
     {
-        // Evita que o pulo normal dispare quando o jogador está tentando o super jump (CTRL + Space)
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-        // Só permite iniciar o pulo se estiver no chão e não estiver encostando numa parede
         if (Input.GetButtonDown("Jump") && isGrounded && !isTouchingWall && !ctrlHeld)
         {
             isJumping = true;
             jumpTimeCounter = jumpHoldTime;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            isGrounded = false; // evita re-pular até colidir de novo com o chão
+            isGrounded = false;
         }
 
-        // Enquanto o botão estiver pressionado e dentro do tempo permitido, mantém/estende o pulo
         if (Input.GetButton("Jump") && isJumping)
         {
             if (jumpTimeCounter > 0f)
             {
-                // Mantém a velocidade vertical para sustentar o pulo por um curto período
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
@@ -132,7 +129,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Ao soltar a tecla, encerra a fase de "hold" do pulo
         if (Input.GetButtonUp("Jump"))
         {
             isJumping = false;
@@ -143,7 +139,6 @@ public class PlayerController : MonoBehaviour
     {
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-        // Iniciar Super Jump: CTRL + Space (apenas quando estiver no chão e cooldown)
         if (ctrlHeld && Input.GetKeyDown(KeyCode.Space) && isGrounded && !isTouchingWall && Time.time >= lastSuperJumpTime + superJumpCooldown)
         {
             isSuperJumping = true;
@@ -153,7 +148,6 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
 
-        // Enquanto CTRL e Space estiverem pressionados, manter a força por superJumpHoldTime
         if (ctrlHeld && Input.GetKey(KeyCode.Space) && isSuperJumping)
         {
             if (superJumpTimeCounter > 0f)
@@ -167,7 +161,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Ao soltar Space ou CTRL, encerra a fase de hold do super jump
         if (Input.GetKeyUp(KeyCode.Space) || !ctrlHeld)
         {
             isSuperJumping = false;
@@ -228,7 +221,8 @@ public class PlayerController : MonoBehaviour
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            // Zera gravidade e força vertical para garantir movimento puramente horizontal
+            // GUARDA velocidade vertical atual e zera componente vertical + gravidade
+            storedVerticalVelocity = rb.linearVelocity.y;
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
@@ -245,6 +239,8 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = false;
         rb.gravityScale = originalGravityScale;
+        // Restaura a componente vertical que estava antes do dash
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, storedVerticalVelocity);
     }
 
     // VIDA DO PLAYER
