@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.18f;
     [SerializeField] private float dashCooldown = 0.6f;
     [SerializeField] private KeyCode dashKey = KeyCode.LeftShift;
+    [SerializeField] private float postDashFallDelay = 0.25f; // tempo após o dash antes de permitir cair
 
     [Header("Life")]
     [SerializeField] private int maxLife = 5;
@@ -59,13 +60,19 @@ public class PlayerController : MonoBehaviour
     private float lastDashTime;
     private Vector2 dashDirection;
     private float originalGravityScale;
-    private float storedVerticalVelocity; // guarda velocity.y antes do dash
+    private float storedVerticalVelocity; // valor restaurado ao fim do período de suspensão (aqui mantido 0)
+    private RigidbodyConstraints2D originalConstraints;
+
+    // Estado de espera para permitir cair depois do dash
+    private bool isAwaitingFall;
+    private float fallDelayTimer;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
+        originalConstraints = rb.constraints;
     }
 
     void Update()
@@ -80,9 +87,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isDashing)
+        // Enquanto estiver dashando ou aguardando a queda, trava Y e aplica velocidade horizontal de dash
+        if (isDashing || isAwaitingFall)
         {
-            // Movimento 100% travado na vertical: componente Y fixa em 0 durante o dash
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
             return;
         }
@@ -211,7 +218,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleDash()
     {
-        if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing)
+        if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing && !isAwaitingFall)
         {
             // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
             float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : (facingRight ? 1f : -1f);
@@ -221,25 +228,49 @@ public class PlayerController : MonoBehaviour
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            // GUARDA velocidade vertical atual e zera componente vertical + gravidade
-            storedVerticalVelocity = rb.linearVelocity.y;
+            // ZERA a velocidade vertical para não recuperar Y depois
+            storedVerticalVelocity = 0f;
+
+            // TRAVA posição Y usando constraints para eliminar qualquer movimento vertical/oscilações
+            rb.constraints = originalConstraints | RigidbodyConstraints2D.FreezePositionY;
+
+            // Desliga gravidade e aplica velocidade horizontal de dash
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
 
         if (isDashing)
-        {
+        {   
             dashTimeLeft -= Time.deltaTime;
             if (dashTimeLeft <= 0f)
-                EndDash();
+            {
+                // finalizou o dash: inicia período de suspensão antes de permitir cair
+                isDashing = false;
+                isAwaitingFall = true;
+                fallDelayTimer = postDashFallDelay;
+            }
+        }
+
+        if (isAwaitingFall)
+        {
+            fallDelayTimer -= Time.deltaTime;
+            if (fallDelayTimer <= 0f)
+            {
+                EndDash(); // aqui restauramos gravidade e constraints para que o personagem comece a cair
+            }
         }
     }
 
     void EndDash()
     {
         isDashing = false;
+        isAwaitingFall = false;
+
+        // restaura constraints e gravidade
+        rb.constraints = originalConstraints;
         rb.gravityScale = originalGravityScale;
-        // Restaura a componente vertical que estava antes do dash
+
+        // mantém componente vertical em 0 para iniciar a queda naturalmente pela gravidade
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, storedVerticalVelocity);
     }
 
