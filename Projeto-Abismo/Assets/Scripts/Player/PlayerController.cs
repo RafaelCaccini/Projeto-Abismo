@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Unity.Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,29 +35,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxLife = 5;
     private int currentLife;
 
-    [Header("Camera")]
-    [SerializeField] private CinemachineCamera vcam;
-
-    [Header("Camera Horizontal")]
-    [SerializeField] private float cameraOffsetAmount = 2f;
-    [SerializeField] private float cameraSmoothSpeed = 6f;
-
-    [Header("Camera Vertical")]
-    [SerializeField] private float cameraYOffsetAmount = 2f;
-    [SerializeField] private float verticalSmoothSpeedAir = 4f;
-    [SerializeField] private float verticalSmoothSpeedGround = 10f;
-    [SerializeField] private float verticalVelocityInfluence = 10f;
-
-    private CinemachinePositionComposer composer;
-    private float targetOffsetX;
-    private float targetOffsetY;
-
     private Rigidbody2D rb;
 
     private float horizontalInput;
     private bool isJumping;
     private float jumpTimeCounter;
 
+    // Super jump state
     private bool isSuperJumping;
     private float superJumpTimeCounter;
     private float lastSuperJumpTime;
@@ -69,6 +52,7 @@ public class PlayerController : MonoBehaviour
     private bool facingRight = true;
     private float lastAttackTime;
 
+    // Dash state
     private bool isDashing;
     private float dashTimeLeft;
     private float lastDashTime;
@@ -80,13 +64,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
-
-        if (vcam != null)
-        {
-            composer = vcam.GetComponent<CinemachinePositionComposer>();
-            targetOffsetX = cameraOffsetAmount;
-            targetOffsetY = 0f;
-        }
     }
 
     void Update()
@@ -97,8 +74,6 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleAttack();
         HandleDash();
-
-        UpdateVerticalCameraTarget();
     }
 
     void FixedUpdate()
@@ -110,11 +85,6 @@ public class PlayerController : MonoBehaviour
         }
 
         HandleMovement();
-    }
-
-    void LateUpdate()
-    {
-        SmoothCameraOffset();
     }
 
     void GetInput()
@@ -206,46 +176,10 @@ public class PlayerController : MonoBehaviour
     {
         facingRight = !facingRight;
 
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
-
-        targetOffsetX = facingRight ? cameraOffsetAmount : -cameraOffsetAmount;
-    }
-
-    // 🔥 câmera vertical inteligente
-    void UpdateVerticalCameraTarget()
-    {
-        float velocityY = rb.linearVelocity.y;
-
-        float normalized = Mathf.Clamp(velocityY / verticalVelocityInfluence, -1f, 1f);
-        float desiredOffset = normalized * cameraYOffsetAmount;
-
-        // no chão → volta rápido pro centro
-        if (isGrounded)
-        {
-            targetOffsetY = Mathf.Lerp(targetOffsetY, 0f, verticalSmoothSpeedGround * Time.deltaTime);
-        }
+        if (facingRight)
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         else
-        {
-            targetOffsetY = desiredOffset;
-        }
-    }
-
-    // 🎥 suavização geral
-    void SmoothCameraOffset()
-    {
-        if (composer != null)
-        {
-            Vector3 offset = composer.TargetOffset;
-
-            offset.x = Mathf.Lerp(offset.x, targetOffsetX, cameraSmoothSpeed * Time.deltaTime);
-
-            float verticalSpeed = isGrounded ? verticalSmoothSpeedGround : verticalSmoothSpeedAir;
-            offset.y = Mathf.Lerp(offset.y, targetOffsetY, verticalSpeed * Time.deltaTime);
-
-            composer.TargetOffset = offset;
-        }
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
     }
 
     void HandleAttack()
@@ -259,13 +193,21 @@ public class PlayerController : MonoBehaviour
 
     void PerformAttack()
     {
+        if (attackBlockPrefab == null)
+        {
+            Debug.LogError("attackBlockPrefab está NULL ou quebrado!");
+            return;
+        }
+
         float directionMultiplier = facingRight ? 1f : -1f;
 
         Vector3 spawnPosition = transform.position
             + new Vector3(attackOffsetX * directionMultiplier, attackOffsetY, 0f);
 
         GameObject block = Instantiate(attackBlockPrefab, spawnPosition, Quaternion.identity);
-        block.transform.localScale = transform.localScale;
+
+        // 🔥 importante: usar rotação em vez de scale
+        block.transform.rotation = transform.rotation;
     }
 
     void HandleDash()
@@ -300,8 +242,18 @@ public class PlayerController : MonoBehaviour
     {
         currentLife -= damage;
 
+        Debug.Log("Vida: " + currentLife);
+
         if (currentLife <= 0)
-            Destroy(gameObject);
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Player morreu");
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -313,24 +265,34 @@ public class PlayerController : MonoBehaviour
         }
 
         if (collision.gameObject.CompareTag(wallTag))
+        {
             isTouchingWall = true;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
+        {
             isGrounded = false;
+        }
 
         if (collision.gameObject.CompareTag(wallTag))
+        {
             isTouchingWall = false;
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
+        {
             isGrounded = true;
+        }
 
         if (collision.gameObject.CompareTag(wallTag))
+        {
             isTouchingWall = true;
+        }
     }
 }
