@@ -35,30 +35,30 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxLife = 5;
     private int currentLife;
 
-    private Rigidbody2D rb;
+        private Rigidbody2D rb;
 
-    private float horizontalInput;
-    private bool isJumping;
-    private float jumpTimeCounter;
+        private float horizontalInput;
+        private bool isJumping;
+        private float jumpTimeCounter;
 
-    // Super jump state
-    private bool isSuperJumping;
-    private float superJumpTimeCounter;
-    private float lastSuperJumpTime;
+        // Super jump state
+        private bool isSuperJumping;
+        private float superJumpTimeCounter;
+        private float lastSuperJumpTime;
 
-    // Estados de contato para controlar quando é permitido pular
-    private bool isGrounded;
-    private bool isTouchingWall;
+        // Estados de contato para controlar quando é permitido pular
+        private bool isGrounded;
+        private bool isTouchingWall;
 
-    private bool facingRight = true;
-    private float lastAttackTime;
+        private bool facingRight = true;
+        private float lastAttackTime;
 
-    // Dash state
-    private bool isDashing;
-    private float dashTimeLeft;
-    private float lastDashTime;
-    private Vector2 dashDirection;
-    private float originalGravityScale;
+        // Dash state
+        private bool isDashing;
+        private float dashTimeLeft;
+        private float lastDashTime;
+        private Vector2 dashDirection;
+        private float originalGravityScale;
 
     private void Awake()
     {
