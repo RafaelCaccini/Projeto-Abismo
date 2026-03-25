@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Unity.Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -35,25 +36,39 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxLife = 5;
     private int currentLife;
 
+    [Header("Camera")]
+    [SerializeField] private CinemachineCamera vcam;
+
+    [Header("Camera Horizontal")]
+    [SerializeField] private float cameraOffsetAmount = 2f;
+    [SerializeField] private float cameraSmoothSpeed = 6f;
+
+    [Header("Camera Vertical")]
+    [SerializeField] private float cameraYOffsetAmount = 2f;
+    [SerializeField] private float verticalSmoothSpeedAir = 4f;
+    [SerializeField] private float verticalSmoothSpeedGround = 10f;
+    [SerializeField] private float verticalVelocityInfluence = 10f;
+
+    private CinemachinePositionComposer composer;
+    private float targetOffsetX;
+    private float targetOffsetY;
+
     private Rigidbody2D rb;
 
     private float horizontalInput;
     private bool isJumping;
     private float jumpTimeCounter;
 
-    // Super jump state
     private bool isSuperJumping;
     private float superJumpTimeCounter;
     private float lastSuperJumpTime;
 
-    // Estados de contato para controlar quando é permitido pular
     private bool isGrounded;
     private bool isTouchingWall;
 
     private bool facingRight = true;
     private float lastAttackTime;
 
-    // Dash state
     private bool isDashing;
     private float dashTimeLeft;
     private float lastDashTime;
@@ -65,6 +80,13 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
+
+        if (vcam != null)
+        {
+            composer = vcam.GetComponent<CinemachinePositionComposer>();
+            targetOffsetX = cameraOffsetAmount;
+            targetOffsetY = 0f;
+        }
     }
 
     void Update()
@@ -75,18 +97,24 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleAttack();
         HandleDash();
+
+        UpdateVerticalCameraTarget();
     }
 
     void FixedUpdate()
     {
         if (isDashing)
         {
-            // Aplicar dash mantendo a velocidade vertical atual (para não "quebrar" o pulo)
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, rb.linearVelocity.y);
             return;
         }
 
         HandleMovement();
+    }
+
+    void LateUpdate()
+    {
+        SmoothCameraOffset();
     }
 
     void GetInput()
@@ -105,24 +133,20 @@ public class PlayerController : MonoBehaviour
 
     void HandleJump()
     {
-        // Evita que o pulo normal dispare quando o jogador está tentando o super jump (CTRL + Space)
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-        // Só permite iniciar o pulo se estiver no chão e não estiver encostando numa parede
         if (Input.GetButtonDown("Jump") && isGrounded && !isTouchingWall && !ctrlHeld)
         {
             isJumping = true;
             jumpTimeCounter = jumpHoldTime;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            isGrounded = false; // evita re-pular até colidir de novo com o chão
+            isGrounded = false;
         }
 
-        // Enquanto o botão estiver pressionado e dentro do tempo permitido, mantém/estende o pulo
         if (Input.GetButton("Jump") && isJumping)
         {
             if (jumpTimeCounter > 0f)
             {
-                // Mantém a velocidade vertical para sustentar o pulo por um curto período
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
@@ -132,7 +156,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Ao soltar a tecla, encerra a fase de "hold" do pulo
         if (Input.GetButtonUp("Jump"))
         {
             isJumping = false;
@@ -143,7 +166,6 @@ public class PlayerController : MonoBehaviour
     {
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-        // Iniciar Super Jump: CTRL + Space (apenas quando estiver no chão e cooldown)
         if (ctrlHeld && Input.GetKeyDown(KeyCode.Space) && isGrounded && !isTouchingWall && Time.time >= lastSuperJumpTime + superJumpCooldown)
         {
             isSuperJumping = true;
@@ -153,7 +175,6 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
 
-        // Enquanto CTRL e Space estiverem pressionados, manter a força por superJumpHoldTime
         if (ctrlHeld && Input.GetKey(KeyCode.Space) && isSuperJumping)
         {
             if (superJumpTimeCounter > 0f)
@@ -167,7 +188,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Ao soltar Space ou CTRL, encerra a fase de hold do super jump
         if (Input.GetKeyUp(KeyCode.Space) || !ctrlHeld)
         {
             isSuperJumping = false;
@@ -185,9 +205,47 @@ public class PlayerController : MonoBehaviour
     void Flip()
     {
         facingRight = !facingRight;
+
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+
+        targetOffsetX = facingRight ? cameraOffsetAmount : -cameraOffsetAmount;
+    }
+
+    // 🔥 câmera vertical inteligente
+    void UpdateVerticalCameraTarget()
+    {
+        float velocityY = rb.linearVelocity.y;
+
+        float normalized = Mathf.Clamp(velocityY / verticalVelocityInfluence, -1f, 1f);
+        float desiredOffset = normalized * cameraYOffsetAmount;
+
+        // no chão → volta rápido pro centro
+        if (isGrounded)
+        {
+            targetOffsetY = Mathf.Lerp(targetOffsetY, 0f, verticalSmoothSpeedGround * Time.deltaTime);
+        }
+        else
+        {
+            targetOffsetY = desiredOffset;
+        }
+    }
+
+    // 🎥 suavização geral
+    void SmoothCameraOffset()
+    {
+        if (composer != null)
+        {
+            Vector3 offset = composer.TargetOffset;
+
+            offset.x = Mathf.Lerp(offset.x, targetOffsetX, cameraSmoothSpeed * Time.deltaTime);
+
+            float verticalSpeed = isGrounded ? verticalSmoothSpeedGround : verticalSmoothSpeedAir;
+            offset.y = Mathf.Lerp(offset.y, targetOffsetY, verticalSpeed * Time.deltaTime);
+
+            composer.TargetOffset = offset;
+        }
     }
 
     void HandleAttack()
@@ -201,12 +259,6 @@ public class PlayerController : MonoBehaviour
 
     void PerformAttack()
     {
-        if (attackBlockPrefab == null)
-        {
-            Debug.LogError("attackBlockPrefab está NULL ou quebrado!");
-            return;
-        }
-
         float directionMultiplier = facingRight ? 1f : -1f;
 
         Vector3 spawnPosition = transform.position
@@ -220,7 +272,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing)
         {
-            // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
             float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : (facingRight ? 1f : -1f);
             dashDirection = new Vector2(Mathf.Sign(dir), 0f);
 
@@ -228,7 +279,6 @@ public class PlayerController : MonoBehaviour
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            // reduzir/gravar gravidade para evitar queda brusca durante o dash
             rb.gravityScale = 0f;
         }
 
@@ -246,26 +296,14 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = originalGravityScale;
     }
 
-    // VIDA DO PLAYER
     public void TakeDamage(int damage)
     {
         currentLife -= damage;
 
-        Debug.Log("Vida: " + currentLife);
-
         if (currentLife <= 0)
-        {
-            Die();
-        }
+            Destroy(gameObject);
     }
 
-    void Die()
-    {
-        Debug.Log("Player morreu");
-        Destroy(gameObject);
-    }
-
-    // Colisões para controlar isGrounded e isTouchingWall
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
@@ -275,35 +313,24 @@ public class PlayerController : MonoBehaviour
         }
 
         if (collision.gameObject.CompareTag(wallTag))
-        {
             isTouchingWall = true;
-        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
-        {
             isGrounded = false;
-        }
 
         if (collision.gameObject.CompareTag(wallTag))
-        {
             isTouchingWall = false;
-        }
     }
 
-    // Opcional: garante atualização de contato se o objeto permanecer em contato
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
-        {
             isGrounded = true;
-        }
 
         if (collision.gameObject.CompareTag(wallTag))
-        {
             isTouchingWall = true;
-        }
     }
 }
