@@ -30,17 +30,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.18f;
     [SerializeField] private float dashCooldown = 0.6f;
     [SerializeField] private KeyCode dashKey = KeyCode.LeftShift;
-    [SerializeField] private float postDashFallDelay = 0.25f;
-
-    [Header("Camera Target")]
-    [SerializeField] private Transform cameraTarget;
-    [SerializeField] private float lookAheadDistance = 2f;
-    [SerializeField] private float lookAheadSmooth = 5f;
-    [SerializeField] private float followSpeed = 10f;
 
     [Header("Life")]
     [SerializeField] private int maxLife = 5;
     private int currentLife;
+
+    [Header("Stomp")]
+    [SerializeField] private int stompDamage = 1;
+    [SerializeField] private float stompCooldown = 0.2f;
+    [SerializeField] private float stompIntentWindow = 0.5f; // tempo que o "segurar S" é válido
+    private float lastStompTime;
+    private bool stompIntent;
+    private float stompIntentTimestamp;
+    private bool stompAvailable;
 
     private Rigidbody2D rb;
 
@@ -48,30 +50,26 @@ public class PlayerController : MonoBehaviour
     private bool isJumping;
     private float jumpTimeCounter;
 
+    // Super jump state
     private bool isSuperJumping;
     private float superJumpTimeCounter;
     private float lastSuperJumpTime;
 
+    // Estados de contato para controlar quando é permitido pular
     private bool isGrounded;
     private bool isTouchingWall;
 
     private bool facingRight = true;
     private float lastAttackTime;
 
+    // Dash state
     private bool isDashing;
     private float dashTimeLeft;
     private float lastDashTime;
     private Vector2 dashDirection;
     private float originalGravityScale;
-    private float storedVerticalVelocity;
+    private float storedVerticalVelocity; // guarda velocity.y antes do dash
     private RigidbodyConstraints2D originalConstraints;
-
-    private bool isAwaitingFall;
-    private float fallDelayTimer;
-
-    // CAMERA
-    private float currentLookAhead;
-    private bool lastFacingRight;
 
     private void Awake()
     {
@@ -79,8 +77,6 @@ public class PlayerController : MonoBehaviour
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
         originalConstraints = rb.constraints;
-
-        lastFacingRight = facingRight; // 👈 AQUI
     }
 
     void Update()
@@ -91,17 +87,28 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleAttack();
         HandleDash();
-    }
 
-    void LateUpdate()
-    {
-        UpdateCameraTarget();
+        // Se houver um stomp "registrado" e o jogador apertar P, aplica impulso para cima
+        if (stompAvailable && Input.GetKeyDown(KeyCode.P))
+        {
+            stompAvailable = false;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
+            isJumping = false;
+            Debug.Log("Stomp: bounce aplicado via tecla P");
+        }
+
+        // expira a intenção de stomp passado o tempo
+        if (stompIntent && Time.time > stompIntentTimestamp + stompIntentWindow)
+            stompIntent = false;
     }
 
     void FixedUpdate()
     {
-        if (isDashing || isAwaitingFall)
+        if (isDashing)
         {
+            // Movimento 100% travado na vertical: componente Y fixa em 0 durante o dash
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
             return;
         }
@@ -112,6 +119,13 @@ public class PlayerController : MonoBehaviour
     void GetInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
+
+        // Detecta quando jogador pressiona/segura S para indicar intenção de stomp (agora suporta hold)
+        if (Input.GetKey(KeyCode.S))
+        {
+            stompIntent = true;
+            stompIntentTimestamp = Time.time;
+        }
     }
 
     void HandleMovement()
@@ -197,39 +211,15 @@ public class PlayerController : MonoBehaviour
     void Flip()
     {
         facingRight = !facingRight;
-
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
     }
 
-    // 🎥 CAMERA TARGET SYSTEM
-    void UpdateCameraTarget()
+    // Método público adicionado para suportar CameraTarget.IsFacingRight()
+    public bool IsFacingRight()
     {
-        if (cameraTarget == null) return;
-
-        // Detecta mudança de direção
-        if (facingRight != lastFacingRight)
-        {
-            currentLookAhead = 0f;
-            lastFacingRight = facingRight;
-        }
-
-        float targetLookAhead = facingRight ? lookAheadDistance : -lookAheadDistance;
-
-        currentLookAhead = Mathf.Lerp(
-            currentLookAhead,
-            targetLookAhead,
-            lookAheadSmooth * Time.deltaTime
-        );
-
-        Vector3 targetPosition = transform.position + new Vector3(currentLookAhead, 0f, 0f);
-
-        cameraTarget.position = Vector3.Lerp(
-            cameraTarget.position,
-            targetPosition,
-            followSpeed * Time.deltaTime
-        );
+        return facingRight;
     }
 
     void HandleAttack()
@@ -243,6 +233,12 @@ public class PlayerController : MonoBehaviour
 
     void PerformAttack()
     {
+        if (attackBlockPrefab == null)
+        {
+            Debug.LogError("attackBlockPrefab está NULL ou quebrado!");
+            return;
+        }
+
         float directionMultiplier = facingRight ? 1f : -1f;
 
         Vector3 spawnPosition = transform.position
@@ -254,8 +250,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleDash()
     {
-        if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing && !isAwaitingFall)
+        if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing)
         {
+            // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
             float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : (facingRight ? 1f : -1f);
             dashDirection = new Vector2(Mathf.Sign(dir), 0f);
 
@@ -263,8 +260,12 @@ public class PlayerController : MonoBehaviour
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            storedVerticalVelocity = 0f;
+            // GUARDA velocidade vertical atual e zera componente vertical + gravidade
+            storedVerticalVelocity = rb.linearVelocity.y;
+
+            // TRAVA posição Y usando constraints para eliminar qualquer movimento vertical/oscilações
             rb.constraints = originalConstraints | RigidbodyConstraints2D.FreezePositionY;
+
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
@@ -273,69 +274,137 @@ public class PlayerController : MonoBehaviour
         {
             dashTimeLeft -= Time.deltaTime;
             if (dashTimeLeft <= 0f)
-            {
-                isDashing = false;
-                isAwaitingFall = true;
-                fallDelayTimer = postDashFallDelay;
-            }
-        }
-
-        if (isAwaitingFall)
-        {
-            fallDelayTimer -= Time.deltaTime;
-            if (fallDelayTimer <= 0f)
-            {
                 EndDash();
-            }
         }
     }
 
     void EndDash()
     {
         isDashing = false;
-        isAwaitingFall = false;
 
+        // restaura constraints e gravidade
         rb.constraints = originalConstraints;
         rb.gravityScale = originalGravityScale;
+
+        // restaura a componente vertical suavemente (aqui aplicada diretamente; ajuste se quiser lerp)
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, storedVerticalVelocity);
     }
 
+    // VIDA DO PLAYER
     public void TakeDamage(int damage)
     {
         currentLife -= damage;
 
+        Debug.Log("Vida: " + currentLife);
+
         if (currentLife <= 0)
-            Destroy(gameObject);
+        {
+            Die();
+        }
     }
 
+    void Die()
+    {
+        Debug.Log("Player morreu");
+        Destroy(gameObject);
+    }
+
+    // Colisões para controlar isGrounded e isTouchingWall
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
+        {
             isGrounded = true;
+            isJumping = false;
+        }
 
         if (collision.gameObject.CompareTag(wallTag))
+        {
             isTouchingWall = true;
+        }
+
+        // STOMP: agora requer intenção (segurar S) ou segurou S durante o contato; só registra o stomp; bounce só acontece ao apertar P
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // evita stomps repetidos
+            if (Time.time < lastStompTime + stompCooldown)
+                return;
+
+            // certifica-se que o jogador estava acima do inimigo
+            float relativeY = transform.position.y - collision.transform.position.y;
+            bool movingDown = rb.linearVelocity.y <= 0f;
+            const float aboveThreshold = 0.18f;
+
+            // só processa stomp se o jogador indicou intenção (segura S) e vinha de cima
+            if (movingDown && relativeY > aboveThreshold && (stompIntent || Input.GetKey(KeyCode.S)))
+            {
+                // aplica dano ao inimigo
+                collision.gameObject.SendMessage("TakeDamage", stompDamage, SendMessageOptions.DontRequireReceiver);
+
+                // registra que o stomp foi feito e agora o jogador precisa apertar P para o bounce
+                stompAvailable = true;
+                stompIntent = false;
+                lastStompTime = Time.time;
+
+                // pequeno ajuste de posição para reduzir retriggers
+                rb.position = rb.position + Vector2.up * 0.05f;
+
+                // evita considerar imediatamente como grounded
+                isGrounded = false;
+                isJumping = false;
+
+                Debug.Log($"Stomp registrado em {collision.gameObject.name}. Aperte P para bounce.");
+            }
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
+        {
             isGrounded = false;
+        }
 
         if (collision.gameObject.CompareTag(wallTag))
+        {
             isTouchingWall = false;
+        }
     }
 
+    // Opcional: garante atualização de contato se o objeto permanecer em contato
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
+        {
             isGrounded = true;
+        }
 
         if (collision.gameObject.CompareTag(wallTag))
+        {
             isTouchingWall = true;
-    }
-    public bool IsFacingRight()
-    {
-        return facingRight;
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // permite o jogador apertar S enquanto estiver sobre o inimigo para registrar o stomp
+            if (Time.time >= lastStompTime + stompCooldown)
+            {
+                float relativeY = transform.position.y - collision.transform.position.y;
+                bool movingDown = rb.linearVelocity.y <= 0f;
+                const float aboveThreshold = 0.18f;
+
+                if (movingDown && relativeY > aboveThreshold && Input.GetKey(KeyCode.S))
+                {
+                    collision.gameObject.SendMessage("TakeDamage", stompDamage, SendMessageOptions.DontRequireReceiver);
+                    stompAvailable = true;
+                    stompIntent = false;
+                    lastStompTime = Time.time;
+                    rb.position = rb.position + Vector2.up * 0.05f;
+                    isGrounded = false;
+                    isJumping = false;
+                    Debug.Log($"Stomp registrado em {collision.gameObject.name} (stay). Aperte P para bounce.");
+                }
+            }
+        }
     }
 }
