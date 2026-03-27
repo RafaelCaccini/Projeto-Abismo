@@ -1,2 +1,13 @@
 fileFormatVersion: 2
 guid: 218d889ad035f6e449395eb750aa5a0d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - hitboxCollider: {fileID: 8094693702465005057, guid: 33fafcca17432c744a73bc7bcfa410dc, type: 3}
+  - hitboxPrefab: {fileID: 3598728556571295219, guid: 33fafcca17432c744a73bc7bcfa410dc, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

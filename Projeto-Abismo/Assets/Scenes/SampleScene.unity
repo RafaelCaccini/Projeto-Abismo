@@ -469,8 +469,12 @@ MonoBehaviour:
   downInputThreshold: -0.5
   inputBufferTime: 0.15
   hitboxCollider: {fileID: 6918900256978830482, guid: 44e59f0679b4c174ab4d8cabc9305e73, type: 3}
+  hitboxPrefab: {fileID: 3598728556571295219, guid: 33fafcca17432c744a73bc7bcfa410dc, type: 3}
   hitboxDuration: 0.12
   enemyTag: Enemy
+  hitboxYOffset: 0.6
+  hideHitboxVisual: 0
+  hitboxDebugSprite: {fileID: -5043542101568737676, guid: 5407238a8fdcc084cb77f41c78fcda19, type: 3}
   damage: 1
   bounceForce: 12
   usePerTargetLock: 1
