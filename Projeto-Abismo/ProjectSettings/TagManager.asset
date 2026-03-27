@@ -42,8 +42,20 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Fundo
+    uniqueID: 3694069319
+    locked: 0
+  - name: Assets
+    uniqueID: 2685623547
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: New Layer 4
+    uniqueID: 1685412737
+    locked: 0
+  - name: Assets frontais
+    uniqueID: 2654043759
     locked: 0
   m_RenderingLayers:
   - Default
