@@ -44,6 +44,11 @@ public class PlayerController : MonoBehaviour
     private float stompIntentTimestamp;
     private bool stompAvailable;
 
+    // Pequena proteção para evitar que o 'stomp' por colisão física conflite com a hitbox.
+    // Por padrão desligado (controle via Inspector).
+    [Header("Stomp")]
+    [SerializeField] private bool collisionStompEnabled = false;
+
     private Rigidbody2D rb;
 
     private float horizontalInput;
@@ -323,33 +328,26 @@ public class PlayerController : MonoBehaviour
             isTouchingWall = true;
         }
 
-        // STOMP: agora requer intenção (segurar S) ou segurou S durante o contato; só registra o stomp; bounce só acontece ao apertar P
-        if (collision.gameObject.CompareTag("Enemy"))
+        // STOMP POR COLISÃO (executa apenas se collisionStompEnabled == true)
+        if (collisionStompEnabled && collision.gameObject.CompareTag("Enemy"))
         {
-            // evita stomps repetidos
             if (Time.time < lastStompTime + stompCooldown)
                 return;
 
-            // certifica-se que o jogador estava acima do inimigo
             float relativeY = transform.position.y - collision.transform.position.y;
             bool movingDown = rb.linearVelocity.y <= 0f;
             const float aboveThreshold = 0.18f;
 
-            // só processa stomp se o jogador indicou intenção (segura S) e vinha de cima
             if (movingDown && relativeY > aboveThreshold && (stompIntent || Input.GetKey(KeyCode.S)))
             {
-                // aplica dano ao inimigo
                 collision.gameObject.SendMessage("TakeDamage", stompDamage, SendMessageOptions.DontRequireReceiver);
 
-                // registra que o stomp foi feito e agora o jogador precisa apertar P para o bounce
-                stompAvailable = true;
-                stompIntent = false;
-                lastStompTime = Time.time;
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
-                // pequeno ajuste de posição para reduzir retriggers
                 rb.position = rb.position + Vector2.up * 0.05f;
 
-                // evita considerar imediatamente como grounded
+                lastStompTime = Time.time;
                 isGrounded = false;
                 isJumping = false;
 

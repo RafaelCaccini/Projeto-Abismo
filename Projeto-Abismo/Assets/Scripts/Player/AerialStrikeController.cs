@@ -17,6 +17,17 @@ public class AerialStrikeController : MonoBehaviour
     [SerializeField] [Range(-1f, 0f)] private float downInputThreshold = -0.5f;
     [SerializeField] private float inputBufferTime = 0.15f; // tempo de buffer para executar ataque
 
+    // Novas opções para usar mouse como alternativa ao P
+    [Header("Input - Mouse Options")]
+    [Tooltip("Permite usar o botão esquerdo do mouse (clique) como alternativa para ativar o pogo. Geralmente usado junto com S.")]
+    [SerializeField] private bool allowMouseLeftPogo = true;
+    [Tooltip("Permite usar o botão direito do mouse (clique) como alternativa para ativar o pogo.")]
+    [SerializeField] private bool allowMouseRightPogo = false;
+    [Tooltip("Se marcado, exige que a tecla S esteja segurada para que o clique do mouse dispare o pogo.")]
+    [SerializeField] private bool requireSHoldForMousePogo = true;
+    [Tooltip("Se marcado, exige que a tecla S esteja segurada para que a tecla configurada dispare o pogo.")]
+    [SerializeField] private bool requireSHoldForKeyPogo = true;
+
     [Header("Hitbox")]
     [SerializeField] private Collider2D hitboxCollider; // usado se não quiser prefab visual
     [SerializeField] private GameObject hitboxPrefab; // prefab visual (opcional) — você vai atribuir
@@ -26,6 +37,8 @@ public class AerialStrikeController : MonoBehaviour
     [Header("Hitbox Position")]
     [Tooltip("Distância em unidades que a hitbox ficará abaixo do pivot do jogador. Use o slider ou insira um número.")]
     [SerializeField] [Range(0f, 2f)] private float hitboxYOffset = 0.6f;
+    [Tooltip("Tamanho da área de hit da hitbox (largura, altura) - usado para OverlapBox")]
+    [SerializeField] private Vector2 hitboxSize = new Vector2(0.9f, 0.4f);
 
     [Header("Visual")]
     [Tooltip("Se marcado, a hitbox (prefab ou placeholder) ficará invisível. Desmarque para ver o sprite.")]
@@ -60,6 +73,7 @@ public class AerialStrikeController : MonoBehaviour
     // ground tracking para evitar flicker
     private bool prevGrounded = false;
     private float lastLeftGroundTime = -999f;
+    private float lastAttackInputTime = -999f; // Adicione esta linha junto aos outros campos privados
 
     private void Awake()
     {
@@ -73,7 +87,7 @@ public class AerialStrikeController : MonoBehaviour
             hb.transform.localPosition = new Vector3(0f, -hitboxYOffset, 0f); // usa hitboxYOffset configurável
             var box = hb.AddComponent<BoxCollider2D>();
             box.isTrigger = true;
-            box.size = new Vector2(0.9f, 0.4f);
+            box.size = hitboxSize;
             hitboxCollider = box;
             hitboxCollider.enabled = false;
 
@@ -91,22 +105,9 @@ public class AerialStrikeController : MonoBehaviour
         {
             hitboxCollider.isTrigger = true;
             hitboxCollider.enabled = false;
-
-            // aplica visibilidade caso exista SpriteRenderer no objeto do collider
-            var srExisting = hitboxCollider.GetComponent<SpriteRenderer>();
-            if (srExisting != null)
-            {
-                srExisting.enabled = !hideHitboxVisual;
-            }
-            else if (!hideHitboxVisual && hitboxDebugSprite != null)
-            {
-                // se quiser visualizar e não houver SR, cria um placeholder sr
-                var sr = hitboxCollider.gameObject.AddComponent<SpriteRenderer>();
-                sr.sprite = hitboxDebugSprite;
-                sr.sortingOrder = 100;
-                sr.color = new Color(1f, 1f, 1f, 0.85f);
-                sr.enabled = true;
-            }
+            // tenta readaptar o tamanho se for BoxCollider2D
+            if (hitboxCollider is BoxCollider2D boxCol)
+                boxCol.size = hitboxSize;
         }
     }
 
@@ -119,13 +120,23 @@ public class AerialStrikeController : MonoBehaviour
 
     private void ReadInput()
     {
-        // Pressionar P para ativar o hit via hitbox (prefab ou collider)
+        // Tecla configurada (ex.: P). Se requerido, exige S segurado.
+        bool keyPressed = Input.GetKeyDown(attackKey) && (!requireSHoldForKeyPogo || Input.GetKey(KeyCode.S));
+
+        // Clique do mouse como alternativa (0 = esquerdo, 1 = direito).
+        // A combinação S + ClickEsquerdo é controlada por allowMouseLeftPogo + requireSHoldForMousePogo.
+        bool mouseLeft = allowMouseLeftPogo && Input.GetMouseButtonDown(0) && (!requireSHoldForMousePogo || Input.GetKey(KeyCode.S));
+        bool mouseRight = allowMouseRightPogo && Input.GetMouseButtonDown(1) && (!requireSHoldForMousePogo || Input.GetKey(KeyCode.S));
+
+        if ((keyPressed || mouseLeft || mouseRight) && Time.time >= lastStrikeTime + cooldown)
+        {
+            StartAerialStrike();
+        }
+
+        // Mantém suporte ao buffer antigo caso queira usar o attackKey com buffer/down input
         if (Input.GetKeyDown(attackKey))
         {
-            if (Time.time >= lastStrikeTime + cooldown)
-            {
-                StartAerialStrike();
-            }
+            lastAttackInputTime = Time.time;
         }
     }
 
@@ -149,7 +160,7 @@ public class AerialStrikeController : MonoBehaviour
             UpdateHitboxVisualVisibility(hitboxInstance);
         }
 
-        // detecta imediatamente os alvos dentro da hitbox (não depende de OnTrigger messages)
+        // usa área configurada para detectar alvos (não depende do collider instanciado)
         DetectAndApplyHits();
 
         // feedback leve — substituir por animação/efeito se desejar
@@ -219,20 +230,15 @@ public class AerialStrikeController : MonoBehaviour
 
     private void DetectAndApplyHits()
     {
-        Collider2D source = null;
-        if (hitboxInstance != null)
-            source = hitboxInstance.GetComponent<Collider2D>();
-        if (source == null)
-            source = hitboxCollider;
+        // define centro e tamanho explicitamente para garantir que a detecção siga hitboxYOffset / hitboxSize
+        Vector2 center = (Vector2)transform.position + Vector2.down * hitboxYOffset;
+        Vector2 size = hitboxSize;
 
-        if (source == null) return;
-
-        Bounds b = source.bounds;
-        // OverlapBoxAll com bounds do collider para detectar alvos 
-        Collider2D[] hits = Physics2D.OverlapBoxAll(b.center, b.size, 0f);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(center, size, 0f);
         foreach (var h in hits)
         {
             if (h == null) continue;
+            if (h.gameObject == gameObject) continue; // ignora o próprio jogador
             if (!h.CompareTag(enemyTag)) continue;
             if (usePerTargetLock && hitEnemiesThisActivation.Contains(h)) continue;
 
@@ -241,7 +247,7 @@ public class AerialStrikeController : MonoBehaviour
             ApplyBounce();
 
             hitEnemiesThisActivation.Add(h);
-            Debug.Log($"Aerial Strike: acertou {h.name} via hitbox");
+            Debug.Log($"Aerial Strike: acertou {h.name} via área (tag={h.tag})");
         }
     }
 
@@ -307,14 +313,10 @@ public class AerialStrikeController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Collider2D source = hitboxInstance != null ? hitboxInstance.GetComponent<Collider2D>() : hitboxCollider;
-        if (source != null)
-        {
-            Gizmos.color = Color.cyan;
-            Vector3 pos = source.bounds.center;
-            Vector3 size = new Vector3(source.bounds.size.x, source.bounds.size.y, 1f);
-            Gizmos.DrawWireCube(pos, size);
-        }
+        Gizmos.color = Color.cyan;
+        Vector3 pos = transform.position + Vector3.down * hitboxYOffset;
+        Vector3 size = new Vector3(hitboxSize.x, hitboxSize.y, 1f);
+        Gizmos.DrawWireCube(pos, size);
 
         Gizmos.color = Color.yellow;
         Vector3 checkPos = transform.position + Vector3.down * groundCheckOffset;
