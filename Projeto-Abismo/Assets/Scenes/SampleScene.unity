@@ -875,6 +875,7 @@ MonoBehaviour:
   superJumpForce: 20
   superJumpHoldTime: 0
   superJumpCooldown: 1.2
+  superJumpChargeTime: 2
   attackBlockPrefab: {fileID: 7806712149809219117, guid: 38f4acabc6312624aa8ea3a9fb4bd6db, type: 3}
   attackOffsetX: 1.6
   attackOffsetY: 0.4
@@ -885,10 +886,6 @@ MonoBehaviour:
   dashCooldown: 0.6
   dashKey: 304
   maxLife: 5
-  stompDamage: 1
-  stompCooldown: 0.2
-  stompIntentWindow: 0.5
-  collisionStompEnabled: 0
 --- !u!114 &385907413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -914,7 +911,7 @@ MonoBehaviour:
   enemyTag: Enemy
   hitboxYOffset: 2
   hitboxSize: {x: 1, y: 1}
-  hideHitboxVisual: 0
+  hideHitboxVisual: 1
   hitboxDebugSprite: {fileID: -5043542101568737676, guid: 5407238a8fdcc084cb77f41c78fcda19, type: 3}
   damage: 1
   bounceForce: 12
@@ -4332,7 +4329,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
