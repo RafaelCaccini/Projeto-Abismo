@@ -251,7 +251,8 @@ public class AerialStrikeController : MonoBehaviour
         }
     }
 
-    private void ApplyBounce()
+    // Tornado público para que outros sistemas (ex.: PlayerController ao confirmar stomp) possam chamar o bounce
+    public void ApplyBounce()
     {
         // reset Y para garantir resposta consistente e aplicar impulso
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);

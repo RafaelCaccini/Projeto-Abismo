@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float superJumpForce = 30f;
     [SerializeField] private float superJumpHoldTime = 0.35f;
     [SerializeField] private float superJumpCooldown = 1.2f;
+    [SerializeField] private float superJumpChargeTime = 3f; // tempo necessário para charge (3s)
 
     [Header("Attack")]
     [SerializeField] private GameObject attackBlockPrefab;
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxLife = 5;
     private int currentLife;
 
+    /*
     [Header("Stomp")]
     [SerializeField] private int stompDamage = 1;
     [SerializeField] private float stompCooldown = 0.2f;
@@ -43,11 +45,14 @@ public class PlayerController : MonoBehaviour
     private bool stompIntent;
     private float stompIntentTimestamp;
     private bool stompAvailable;
+    */
 
     // Pequena proteção para evitar que o 'stomp' por colisão física conflite com a hitbox.
     // Por padrão desligado (controle via Inspector).
+    /*
     [Header("Stomp")]
     [SerializeField] private bool collisionStompEnabled = false;
+    */
 
     private Rigidbody2D rb;
 
@@ -59,6 +64,7 @@ public class PlayerController : MonoBehaviour
     private bool isSuperJumping;
     private float superJumpTimeCounter;
     private float lastSuperJumpTime;
+    private float superJumpChargeTimer;
 
     // Estados de contato para controlar quando é permitido pular
     private bool isGrounded;
@@ -74,14 +80,12 @@ public class PlayerController : MonoBehaviour
     private Vector2 dashDirection;
     private float originalGravityScale;
     private float storedVerticalVelocity; // guarda velocity.y antes do dash
-    private RigidbodyConstraints2D originalConstraints;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
-        originalConstraints = rb.constraints;
     }
 
     void Update()
@@ -93,12 +97,27 @@ public class PlayerController : MonoBehaviour
         HandleAttack();
         HandleDash();
 
+        /*
+        // STOMP desativado: bloco comentado para evitar interferência com pogo/aerial strike
         // Se houver um stomp "registrado" e o jogador apertar P, aplica impulso para cima
         if (stompAvailable && Input.GetKeyDown(KeyCode.P))
         {
             stompAvailable = false;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+            // Tenta delegar o bounce ao AerialStrikeController (se existir) para evitar lógica duplicada/conflicting
+            var aerial = GetComponent<AerialStrikeController>();
+            if (aerial != null)
+            {
+                aerial.ApplyBounce();
+            }
+            else
+            {
+                // fallback: aplica bounce localmente
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                Debug.Log("Stomp: bounce aplicado via PlayerController (fallback)");
+            }
+
             isGrounded = false;
             isJumping = false;
             Debug.Log("Stomp: bounce aplicado via tecla P");
@@ -107,13 +126,14 @@ public class PlayerController : MonoBehaviour
         // expira a intenção de stomp passado o tempo
         if (stompIntent && Time.time > stompIntentTimestamp + stompIntentWindow)
             stompIntent = false;
+        */
     }
 
     void FixedUpdate()
     {
         if (isDashing)
         {
-            // Movimento 100% travado na vertical: componente Y fixa em 0 durante o dash
+            // Movimento 100% travado na vertical durante dash (não altera constraints físicas)
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
             return;
         }
@@ -126,11 +146,14 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
         // Detecta quando jogador pressiona/segura S para indicar intenção de stomp (agora suporta hold)
+        // STOMP desativado: comentário para evitar setar stompIntent
+        /*
         if (Input.GetKey(KeyCode.S))
         {
             stompIntent = true;
             stompIntentTimestamp = Time.time;
         }
+        */
     }
 
     void HandleMovement()
@@ -177,16 +200,44 @@ public class PlayerController : MonoBehaviour
     {
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-        if (ctrlHeld && Input.GetKeyDown(KeyCode.Space) && isGrounded && !isTouchingWall && Time.time >= lastSuperJumpTime + superJumpCooldown)
+        // Charging logic: segurando CTRL + SPACE acumula tempo até superJumpChargeTime
+        if (ctrlHeld && Input.GetKey(KeyCode.Space))
         {
-            isSuperJumping = true;
-            superJumpTimeCounter = superJumpHoldTime;
-            lastSuperJumpTime = Time.time;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, superJumpForce);
-            isGrounded = false;
+            superJumpChargeTimer += Time.deltaTime;
+
+            // opcional: feedback de carregamento (log)
+            if (superJumpChargeTimer >= 0.1f && superJumpChargeTimer < 0.1f + Time.deltaTime)
+                Debug.Log("Super Jump: começando carregamento...");
+
+            if (superJumpChargeTimer >= superJumpChargeTime)
+            {
+                // só executa se estiver no chão e cooldown OK
+                if (isGrounded && !isTouchingWall && Time.time >= lastSuperJumpTime + superJumpCooldown)
+                {
+                    isSuperJumping = true;
+                    superJumpTimeCounter = superJumpHoldTime;
+                    lastSuperJumpTime = Time.time;
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, superJumpForce);
+                    isGrounded = false;
+                    Debug.Log("Super Jump: executado após charge completo");
+                }
+
+                // reset do timer após execução para evitar múltiplos triggers
+                superJumpChargeTimer = 0f;
+            }
+        }
+        else
+        {
+            // soltou antes de completar: cancelar charge
+            if (superJumpChargeTimer > 0f && superJumpChargeTimer < superJumpChargeTime)
+            {
+                Debug.Log("Super Jump: charge cancelado");
+            }
+            superJumpChargeTimer = 0f;
         }
 
-        if (ctrlHeld && Input.GetKey(KeyCode.Space) && isSuperJumping)
+        // comportamento de hold pós-execução (mantém força enquanto o jogador segura, como antes)
+        if (isSuperJumping && Input.GetKey(KeyCode.Space))
         {
             if (superJumpTimeCounter > 0f)
             {
@@ -268,9 +319,7 @@ public class PlayerController : MonoBehaviour
             // GUARDA velocidade vertical atual e zera componente vertical + gravidade
             storedVerticalVelocity = rb.linearVelocity.y;
 
-            // TRAVA posição Y usando constraints para eliminar qualquer movimento vertical/oscilações
-            rb.constraints = originalConstraints | RigidbodyConstraints2D.FreezePositionY;
-
+            // Não alteramos constraints rigidbody (evita snaps/jitter). Em vez disso, desabilitamos gravidade temporariamente.
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
@@ -287,11 +336,10 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = false;
 
-        // restaura constraints e gravidade
-        rb.constraints = originalConstraints;
+        // restaura gravidade
         rb.gravityScale = originalGravityScale;
 
-        // restaura a componente vertical suavemente (aqui aplicada diretamente; ajuste se quiser lerp)
+        // restaura a componente vertical guardada
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, storedVerticalVelocity);
     }
 
@@ -328,6 +376,7 @@ public class PlayerController : MonoBehaviour
             isTouchingWall = true;
         }
 
+        /*
         // STOMP POR COLISÃO (executa apenas se collisionStompEnabled == true)
         if (collisionStompEnabled && collision.gameObject.CompareTag("Enemy"))
         {
@@ -354,6 +403,7 @@ public class PlayerController : MonoBehaviour
                 Debug.Log($"Stomp registrado em {collision.gameObject.name}. Aperte P para bounce.");
             }
         }
+        */
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -382,6 +432,7 @@ public class PlayerController : MonoBehaviour
             isTouchingWall = true;
         }
 
+        /*
         if (collision.gameObject.CompareTag("Enemy"))
         {
             // permite o jogador apertar S enquanto estiver sobre o inimigo para registrar o stomp
@@ -404,5 +455,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+        */
     }
 }
