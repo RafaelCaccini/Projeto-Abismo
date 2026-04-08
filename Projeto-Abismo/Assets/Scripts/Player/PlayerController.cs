@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
     [Header("Life")]
     [SerializeField] private int maxLife = 5;
     private int currentLife;
+    [SerializeField] private Lampiao lampiao;
+    public Lampiao Lampiao => lampiao;
 
     /*
     [Header("Stomp")]
@@ -86,6 +88,17 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
+
+        // AUTO SET DO LAMPIÃO (evita erro humano)
+        if (lampiao == null)
+        {
+            lampiao = GetComponentInChildren<Lampiao>();
+
+            if (lampiao == null)
+                Debug.LogError("[PlayerController] Lampião NÃO encontrado!");
+            else
+                Debug.Log("[PlayerController] Lampião auto-atribuído");
+        }
     }
 
     void Update()

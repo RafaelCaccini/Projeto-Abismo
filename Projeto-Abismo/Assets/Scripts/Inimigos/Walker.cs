@@ -48,7 +48,7 @@ public class Walker : MonoBehaviour
         HandleFleeTimer();
 
         // Fuga por proximidade, caso queira ativar mesmo sem Trigger
-        if (!isFleeing && lampScript != null && lampScript.lightArea != null && lampScript.lightArea.activeSelf)
+        if (!isFleeing && lampScript != null && lampScript.LightArea != null && lampScript.IsLightOn)
         {
             float dist = Vector2.Distance(transform.position, lampScript.transform.position);
             if (dist <= lightRadius)
@@ -108,7 +108,7 @@ public class Walker : MonoBehaviour
         if (lampScript == null) return;
 
         if (other.gameObject == lampScript.gameObject ||
-            other.gameObject == lampScript.lightArea)
+            other.gameObject == lampScript.LightArea)
         {
             StartFleeing();
         }
