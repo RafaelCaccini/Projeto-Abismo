@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7a20b20dbe350a54bb4b6c186dea875d
+guid: c9c29d28297cab34a9bcaaf5cdce3b2e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2803338961616286577
-    second: "Kauan\xED idle 7_0"
+      213: 2473418659517634715
+    second: "Kauan\xED idle 6_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Kauan\xED idle 7_0"
+      name: "Kauan\xED idle 6_0"
       rect:
         serializedVersion: 2
-        x: 299
-        y: 117
-        width: 536
-        height: 751
+        x: 168
+        y: 116
+        width: 543
+        height: 744
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f8c49df211a8819d0800000000000000
-      internalID: -2803338961616286577
+      spriteID: b981f558a29535220800000000000000
+      internalID: 2473418659517634715
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f3d96c306f2254f4198b7a2ab9d81f55
+    spriteID: af73f65376d1135458eea354f90f2ef6
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Kauan\xED idle 7_0": -2803338961616286577
+      "Kauan\xED idle 6_0": 2473418659517634715
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

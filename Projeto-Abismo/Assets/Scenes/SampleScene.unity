@@ -4408,7 +4408,7 @@ GameObject:
   - component: {fileID: 1698138430}
   m_Layer: 0
   m_Name: ChaoEspinho
-  m_TagString: Enemy
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4576,10 +4576,10 @@ MonoBehaviour:
   player: {fileID: 385907409}
   lightArea: {fileID: 488141073}
   toggleLightKey: 108
-  moveKey: 261
-  moveDistance: 3
+  moveKey: 113
+  moveDistance: -8
   followSpeed: 5
-  followOffsetX: 1
+  followOffsetX: -1
   floatAmplitude: 0.3
   floatFrequency: 2
   advanceTime: 1
@@ -5241,6 +5241,10 @@ PrefabInstance:
     - target: {fileID: 5489029520317292656, guid: f273eff3a21258a498d505f94bc9f2cc, type: 3}
       propertyPath: attackRange
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5489029520317292656, guid: f273eff3a21258a498d505f94bc9f2cc, type: 3}
+      propertyPath: attackCooldown
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7333817526583441465, guid: f273eff3a21258a498d505f94bc9f2cc, type: 3}
       propertyPath: m_LocalPosition.x
