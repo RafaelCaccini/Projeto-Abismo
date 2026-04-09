@@ -138,13 +138,12 @@ public class Trap : MonoBehaviour
             {
                 if (player == null) continue;
 
-                if (player.TryGetComponent<PlayerController>(out var pc))
+                IDamageable dmg = player.GetComponent<IDamageable>();
+
+                if (dmg != null)
                 {
-                    pc.TakeDamage(damage);
-                }
-                else
-                {
-                    player.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
+                    dmg.TakeDamage(damage, gameObject);
+                    if (debugLogs) Debug.Log("[Trap] Dano aplicado");
                 }
 
                 if (debugLogs) Debug.Log("[Trap] Dano aplicado");
@@ -177,12 +176,12 @@ public class Trap : MonoBehaviour
 
             var pc = player.GetComponent<PlayerController>();
 
-            if (pc != null && pc.Lampiao != null)
+            if (pc != null)
             {
                 if (debugLogs)
-                    Debug.Log($"[Trap] Luz do player: {pc.Lampiao.IsLightOn}");
+                    Debug.Log($"[Trap] Luz do player: {pc.LuzAtiva}");
 
-                if (pc.Lampiao.IsLightOn)
+                if (pc.LuzAtiva)
                     return true;
             }
         }

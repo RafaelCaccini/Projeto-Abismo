@@ -38,6 +38,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Lampiao lampiao;
     public Lampiao Lampiao => lampiao;
 
+    public bool LuzAtiva { get; private set; }
+
+    public void SetLuz(bool estado)
+    {
+        LuzAtiva = estado;
+    }
+
     /*
     [Header("Stomp")]
     [SerializeField] private int stompDamage = 1;
@@ -74,6 +81,7 @@ public class PlayerController : MonoBehaviour
 
     private bool facingRight = true;
     private float lastAttackTime;
+    private PlayerAttack playerAttack;
 
     // Dash state
     private bool isDashing;
@@ -88,6 +96,11 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
+
+        // assegura componente PlayerAttack e configura fallback
+        playerAttack = GetComponent<PlayerAttack>();
+        if (playerAttack == null)
+            playerAttack = gameObject.AddComponent<PlayerAttack>();
 
         // AUTO SET DO LAMPIÃO (evita erro humano)
         if (lampiao == null)
@@ -302,19 +315,8 @@ public class PlayerController : MonoBehaviour
 
     void PerformAttack()
     {
-        if (attackBlockPrefab == null)
-        {
-            Debug.LogError("attackBlockPrefab está NULL ou quebrado!");
-            return;
-        }
-
-        float directionMultiplier = facingRight ? 1f : -1f;
-
-        Vector3 spawnPosition = transform.position
-            + new Vector3(attackOffsetX * directionMultiplier, attackOffsetY, 0f);
-
-        GameObject block = Instantiate(attackBlockPrefab, spawnPosition, Quaternion.identity);
-        block.transform.localScale = transform.localScale;
+        // delega ao PlayerAttack (usa filho 'Dano' se existir, senão fallback prefab)
+        playerAttack.PerformAttack(facingRight, new Vector2(attackOffsetX, attackOffsetY));
     }
 
     void HandleDash()
@@ -357,11 +359,11 @@ public class PlayerController : MonoBehaviour
     }
 
     // VIDA DO PLAYER
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, GameObject source)
     {
         currentLife -= damage;
 
-        Debug.Log("Vida: " + currentLife);
+        Debug.Log($"💥 Player tomou {damage} de {source.name} | Vida: {currentLife}");
 
         if (currentLife <= 0)
         {

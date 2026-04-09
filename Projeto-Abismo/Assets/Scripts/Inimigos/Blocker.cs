@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Blocker : MonoBehaviour
+public class Blocker : MonoBehaviour, IDamageable
 {
     [Header("Referências")]
     [SerializeField] private Transform pontoFogo;
@@ -11,108 +11,176 @@ public class Blocker : MonoBehaviour
     [SerializeField] private float attackCooldown = 2f;
     [SerializeField] private float projectileSpeed = 8f;
     [SerializeField] private float arcForce = 8f;
+    [SerializeField] private float attackRange = 10f;
 
-    [Header("Debug")]
-    [SerializeField] private bool esconderPontoFogo = true;
+    [Header("Troca de Ataque")]
+    [SerializeField] private float tempoTrocaAtaque = 3f;
+
+    [Header("Vida")]
+    [SerializeField] private int maxLife = 3;
+
+    [Header("Luz")]
+    [SerializeField] private bool precisaDeLuz = true;
 
     private float timer;
+    private float timerTroca;
+    private int currentLife;
+    private bool isDead;
+
+    private TipoAtaque ataqueAtual;
+
+    enum TipoAtaque
+    {
+        Reto,
+        Arco
+    }
+
+    void Awake()
+    {
+        GarantirPontoFogo();
+    }
 
     void Start()
     {
-        if (esconderPontoFogo && pontoFogo != null)
-        {
-            var sr = pontoFogo.GetComponent<SpriteRenderer>();
-            if (sr != null)
-                sr.enabled = false;
-        }
+        currentLife = maxLife;
+        FindPlayer();
+        EscolherNovoAtaque();
     }
 
     void Update()
     {
-        // sempre tenta garantir player
-        if (player == null)
+        if (isDead) return;
+
+        if (pontoFogo == null)
         {
-            FindPlayer();
+            Debug.LogError("[Blocker] PontoFogo sumiu. Corrige no prefab.");
+            return;
         }
 
-        // sem player = não ataca, mas continua rodando
+        if (player == null)
+            FindPlayer();
+
         if (player == null) return;
 
-        timer += Time.deltaTime;
+        float distance = Vector2.Distance(transform.position, player.position);
 
-        if (timer >= attackCooldown)
+        if (distance <= attackRange)
+            AttackLoop();
+
+        // troca de ataque por tempo
+        timerTroca -= Time.deltaTime;
+
+        if (timerTroca <= 0f)
+            EscolherNovoAtaque();
+    }
+
+    void GarantirPontoFogo()
+    {
+        // 🔥 só pega, não cria, não move
+        Transform found = transform.Find("PontoFogo");
+
+        if (found != null)
         {
-            // tenta atacar; só reseta o timer se um ataque foi realmente disparado
-            bool fired = Attack();
-            if (fired)
-                timer = 0f;
-            else
-                // se falhou, tenta novamente mais cedo (metade do cooldown)
-                timer = attackCooldown * 0.5f;
+            pontoFogo = found;
+        }
+        else
+        {
+            Debug.LogError("[Blocker] CRIA um filho 'PontoFogo' no PREFAB");
+            enabled = false;
         }
     }
 
     void FindPlayer()
     {
         var p = GameObject.FindGameObjectWithTag("Player");
-
         if (p != null)
             player = p.transform;
     }
 
-    // retorna true se um projétil foi efetivamente instanciado
-    bool Attack()
+    void EscolherNovoAtaque()
     {
-        if (player == null || pontoFogo == null || projetilPrefab == null)
+        ataqueAtual = (Random.value > 0.5f) ? TipoAtaque.Reto : TipoAtaque.Arco;
+        timerTroca = tempoTrocaAtaque;
+
+        Debug.Log($"[Blocker] Ataque atual: {ataqueAtual}");
+    }
+
+    void AttackLoop()
+    {
+        timer -= Time.deltaTime;
+
+        if (timer <= 0f)
         {
-            Debug.LogWarning("Blocker: impossível atacar - referência ausente.");
-            return false;
+            Attack();
+            timer = attackCooldown;
         }
+    }
 
-        float distance = Vector2.Distance(transform.position, player.position);
+    void Attack()
+    {
+        if (projetilPrefab == null || pontoFogo == null || player == null)
+            return;
 
-        bool useArc = distance > 4f ? true : Random.value > 0.5f;
-
-        if (useArc)
+        if (ataqueAtual == TipoAtaque.Arco)
             ShootArc();
         else
             ShootStraight();
-
-        return true;
     }
 
     void ShootStraight()
     {
-        Vector2 direction = (player.position - pontoFogo.position).normalized;
+        Vector2 dir = (player.position - pontoFogo.position).normalized;
 
-        GameObject proj = Instantiate(projetilPrefab, pontoFogo.position, Quaternion.identity);
-
+        var proj = Instantiate(projetilPrefab, pontoFogo.position, Quaternion.identity);
         var p = proj.GetComponent<ProjetilBlocker>();
-        if (p == null)
-        {
-            Debug.LogError("❌ Prefab sem ProjetilBlocker!");
-            return;
-        }
 
-        p.Launch(direction, projectileSpeed, 0f);
+        if (p != null)
+            p.Launch(dir, projectileSpeed, 0f);
     }
 
     void ShootArc()
     {
-        Vector2 direction = (player.position - pontoFogo.position).normalized;
+        Vector2 dir = (player.position - pontoFogo.position).normalized;
+        Vector2 arcDir = new Vector2(dir.x, dir.y + 0.5f).normalized;
 
-        // leve inclinação pra cima
-        Vector2 arcDirection = new Vector2(direction.x, direction.y + 0.5f).normalized;
-
-        GameObject proj = Instantiate(projetilPrefab, pontoFogo.position, Quaternion.identity);
-
+        var proj = Instantiate(projetilPrefab, pontoFogo.position, Quaternion.identity);
         var p = proj.GetComponent<ProjetilBlocker>();
-        if (p == null)
+
+        if (p != null)
+            p.Launch(arcDir, arcForce, 0.8f);
+    }
+
+    public void TakeDamage(int amount, GameObject source)
+    {
+        if (isDead || amount <= 0) return;
+
+        if (player == null) return;
+
+        var pc = player.GetComponent<PlayerController>();
+
+        if (precisaDeLuz && (pc == null || !pc.LuzAtiva))
         {
-            Debug.LogError("❌ Prefab sem ProjetilBlocker!");
+            Debug.Log("[Blocker] ignorou dano (sem luz)");
             return;
         }
 
-        p.Launch(arcDirection, arcForce, 0.8f);
+        currentLife -= amount;
+
+        Debug.Log($"[{name}] tomou {amount} | HP: {currentLife}");
+
+        if (currentLife <= 0)
+            Die();
+    }
+
+    void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        foreach (var c in GetComponents<Collider2D>())
+            c.enabled = false;
+
+        Destroy(gameObject);
     }
 }

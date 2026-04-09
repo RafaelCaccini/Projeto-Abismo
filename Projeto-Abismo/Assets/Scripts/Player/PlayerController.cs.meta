@@ -1,2 +1,13 @@
 fileFormatVersion: 2
 guid: b777ca6c28ed9be44a675b5c7e93c1b6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - attackBlockPrefab: {instanceID: 0}
+  - lampiao: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

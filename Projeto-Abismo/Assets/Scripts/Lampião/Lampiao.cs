@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Lampiao : MonoBehaviour
 {
@@ -7,76 +8,119 @@ public class Lampiao : MonoBehaviour
 
     [Header("Luz")]
     [SerializeField] private GameObject lightArea;
-    [SerializeField] private KeyCode toggleKey = KeyCode.L;
+    [SerializeField] private KeyCode toggleLightKey = KeyCode.L;
+
+    [Header("Movimento")]
+    [SerializeField] private KeyCode moveKey = KeyCode.Space;
+    [SerializeField] private float moveDistance = 1.5f;     // avanço máximo
+    [SerializeField] private float followSpeed = 5f;        // velocidade horizontal
+    [SerializeField] private float followOffsetX = 0.5f;    // distância mínima atrás do player
+    [SerializeField] private float floatAmplitude = 0.2f;   // altura da flutuação
+    [SerializeField] private float floatFrequency = 2f;     // velocidade da flutuação
+    [SerializeField] private float advanceTime = 1f;        // tempo de avanço
 
     private bool isActive = false;
-    [Header("Follow")]
-    [SerializeField] private bool followPlayer = true;
-    [SerializeField] private float followSpeed = 10f;
+    private float baseY;
+    private float floatOffset;
+    private Vector3 targetPosition;
+    private Coroutine advanceRoutine;
 
-    private Vector3 followOffset;
-    private float followOffsetAbsX = 0f;
     private PlayerController playerController;
 
     void Start()
     {
+        if (player == null)
+        {
+            var pc = FindFirstObjectByType<PlayerController>();
+            if (pc != null) player = pc.transform;
+        }
+
+        baseY = transform.position.y;
+
+        if (player != null)
+        {
+            playerController = player.GetComponent<PlayerController>();
+        }
+
         if (lightArea != null)
             lightArea.SetActive(isActive);
 
-        // tenta auto-atribuir o player se não definido
-        if (player == null)
-        {
-            var pc = FindObjectOfType<PlayerController>();
-            if (pc != null)
-                player = pc.transform;
-        }
-        if (player != null)
-        {
-            followOffset = transform.position - player.position;
-            followOffsetAbsX = Mathf.Abs(followOffset.x);
-            playerController = player.GetComponent<PlayerController>();
-            if (playerController == null)
-                playerController = FindObjectOfType<PlayerController>();
-        }
+        UpdateTargetPosition();
     }
 
     void Update()
     {
         ToggleLight();
-        HandleFollow();
-    }
+        ApplyFloating();
 
-    void HandleFollow()
-    {
-        if (!followPlayer || player == null) return;
-        bool facingRight = true;
-        if (playerController != null)
-            facingRight = playerController.IsFacingRight();
+        if (advanceRoutine == null)
+        {
+            UpdateTargetPosition();
+            FollowPlayer();
+        }
 
-        // Mantém o lampião sempre na frente do jogador conforme a direção
-        float offsetX = followOffsetAbsX * (facingRight ? 1f : -1f);
-        Vector3 targetPos = player.position + new Vector3(offsetX, followOffset.y, followOffset.z);
-        transform.position = Vector3.Lerp(transform.position, targetPos, followSpeed * Time.deltaTime);
-
-        // Espelha a escala do lampião para acompanhar a direção do jogador
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * (facingRight ? 1f : -1f);
-        transform.localScale = scale;
+        if (Input.GetKeyDown(moveKey) && advanceRoutine == null)
+        {
+            advanceRoutine = StartCoroutine(AdvanceThenReturn());
+        }
     }
 
     void ToggleLight()
     {
-        if (Input.GetKeyDown(toggleKey))
+        if (Input.GetKeyDown(toggleLightKey))
         {
             isActive = !isActive;
-
-            if (lightArea != null)
-                lightArea.SetActive(isActive);
+            if (lightArea != null) lightArea.SetActive(isActive);
+            if (playerController != null) playerController.SetLuz(isActive);
         }
     }
 
-    public bool IsLightOn => lightArea != null && lightArea.activeSelf;
+    void UpdateTargetPosition()
+    {
+        if (player == null || playerController == null) return;
 
-    // Exponha a referência à área de luz para outros scripts (somente leitura)
+        // sempre atrás do player, limitado por followOffsetX
+        float offsetX = playerController.IsFacingRight() ? -followOffsetX : followOffsetX;
+        targetPosition = new Vector3(player.position.x + offsetX, baseY, transform.position.z);
+    }
+
+    void FollowPlayer()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, followSpeed * Time.deltaTime);
+    }
+
+    IEnumerator AdvanceThenReturn()
+    {
+        if (player == null || playerController == null) yield break;
+
+        // posição avançada com clamp para não ultrapassar player + limite
+        float advanceX = player.position.x + Mathf.Clamp(playerController.IsFacingRight() ? moveDistance : -moveDistance, -moveDistance, moveDistance);
+        Vector3 advancePosition = new Vector3(advanceX, transform.position.y, transform.position.z);
+
+        while (Vector3.Distance(transform.position, advancePosition) > 0.01f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, advancePosition, followSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(advanceTime);
+
+        UpdateTargetPosition();
+        while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, followSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        advanceRoutine = null;
+    }
+
+    void ApplyFloating()
+    {
+        floatOffset = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        transform.position = new Vector3(transform.position.x, baseY + floatOffset, transform.position.z);
+    }
+
+    public bool IsLightOn => isActive;
     public GameObject LightArea => lightArea;
 }

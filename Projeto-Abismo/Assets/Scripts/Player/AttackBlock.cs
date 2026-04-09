@@ -11,14 +11,34 @@ public class AttackBlock : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy"))
+        // Aplica dano diretamente para componentes de inimigo conhecidos
+        var blocker = other.GetComponent<Blocker>();
+        if (blocker != null)
         {
-            Walker enemy = other.GetComponent<Walker>();
+            blocker.TakeDamage(damage, gameObject);
+            return;
+        }
 
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-            }
+        var walker = other.GetComponent<Walker>();
+        if (walker != null)
+        {
+            walker.TakeDamage(damage);
+            return;
+        }
+
+        // tenta no pai (caso o collider esteja em filho)
+        var parentBlocker = other.GetComponentInParent<Blocker>();
+        if (parentBlocker != null)
+        {
+            parentBlocker.TakeDamage(damage, gameObject);
+            return;
+        }
+
+        var parentWalker = other.GetComponentInParent<Walker>();
+        if (parentWalker != null)
+        {
+            parentWalker.TakeDamage(damage);
+            return;
         }
     }
 }

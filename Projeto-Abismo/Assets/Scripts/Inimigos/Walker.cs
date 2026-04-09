@@ -11,8 +11,8 @@ public class Walker : MonoBehaviour
     [SerializeField] private int damage = 1;
 
     [Header("Light Detection")]
-    [SerializeField] private Lampiao lampScript;        // Referência ao Lampião
-    [SerializeField] private float lightRadius = 5f;    // Para detecção opcional por distância
+    [SerializeField] private Lampiao lampScript;
+    [SerializeField] private float lightRadius = 5f;
 
     [Header("Wall Detection")]
     [SerializeField] private float wallCheckDistance = 1f;
@@ -21,12 +21,10 @@ public class Walker : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
 
-    // Estado
     private int patrolDirection = 1;
     private int fleeDirection = 0;
     private bool isFleeing = false;
 
-    // Controle de tempo de fuga
     private float fleeTimer = 0f;
     private const float fleeDuration = 7f;
 
@@ -39,16 +37,16 @@ public class Walker : MonoBehaviour
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
 
+        // 🔥 AUTO PEGA O LAMPIAO SE NÃO SETADO
         if (lampScript == null)
-            Debug.LogWarning("Walker: Lampião não atribuído!", this);
+            lampScript = FindFirstObjectByType<Lampiao>();
     }
 
     void Update()
     {
         HandleFleeTimer();
 
-        // Fuga por proximidade, caso queira ativar mesmo sem Trigger
-        if (!isFleeing && lampScript != null && lampScript.LightArea != null && lampScript.IsLightOn)
+        if (!isFleeing && lampScript != null && lampScript.IsLightOn)
         {
             float dist = Vector2.Distance(transform.position, lampScript.transform.position);
             if (dist <= lightRadius)
@@ -79,7 +77,6 @@ public class Walker : MonoBehaviour
 
         float speed = isFleeing ? runSpeed : walkSpeed;
 
-        // Raycast para parede
         Vector2 rayOrigin = (Vector2)transform.position + new Vector2(currentDir * 0.4f, 0f);
         Vector2 rayDirection = new Vector2(currentDir, 0f);
 
@@ -102,13 +99,11 @@ public class Walker : MonoBehaviour
             sr.flipX = rb.linearVelocity.x < 0f;
     }
 
-    // Detecção por Trigger do LightArea
     void OnTriggerEnter2D(Collider2D other)
     {
         if (lampScript == null) return;
 
-        if (other.gameObject == lampScript.gameObject ||
-            other.gameObject == lampScript.LightArea)
+        if (other.gameObject == lampScript.LightArea)
         {
             StartFleeing();
         }
@@ -118,7 +113,6 @@ public class Walker : MonoBehaviour
     {
         if (lampScript == null) return;
 
-        // Define direção oposta ao Lampião
         fleeDirection = (lampScript.transform.position.x > transform.position.x) ? -1 : 1;
         isFleeing = true;
         fleeTimer = fleeDuration;
@@ -134,15 +128,5 @@ public class Walker : MonoBehaviour
     {
         life -= dmg;
         if (life <= 0) Destroy(gameObject);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, lightRadius);
-
-        Gizmos.color = Color.red;
-        int dir = isFleeing ? fleeDirection : patrolDirection;
-        Gizmos.DrawLine(transform.position, transform.position + new Vector3(dir * wallCheckDistance, 0f));
     }
 }

@@ -13,7 +13,6 @@ public class ProjetilBlocker : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-        // configuração padrão segura
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
@@ -38,7 +37,7 @@ public class ProjetilBlocker : MonoBehaviour
         var player = collision.gameObject.GetComponent<PlayerController>();
 
         if (player != null)
-            player.TakeDamage(damage);
+            player.TakeDamage(damage, gameObject);
 
         Destroy(gameObject);
     }
@@ -49,7 +48,7 @@ public class ProjetilBlocker : MonoBehaviour
 
         if (player != null)
         {
-            player.TakeDamage(damage);
+            player.TakeDamage(damage, gameObject);
             Destroy(gameObject);
         }
     }
