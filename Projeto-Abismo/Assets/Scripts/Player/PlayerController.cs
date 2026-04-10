@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Lampiao Lampiao => lampiao;
     public int CurrentLife => currentLife;
     public int MaxLife => maxLife;
-
+    private float lastMoveDirection = 1f;
     public bool LuzAtiva { get; private set; }
 
     public void SetLuz(bool estado)
@@ -129,6 +129,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     void GetInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
+
+        // guarda última direção válida
+        if (horizontalInput > 0)
+            lastMoveDirection = 1f;
+        else if (horizontalInput < 0)
+            lastMoveDirection = -1f;
     }
 
     void HandleMovement()
@@ -259,9 +265,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleFlip()
     {
-        if (horizontalInput > 0 && !facingRight)
+        if (lastMoveDirection > 0 && !facingRight)
             Flip();
-        else if (horizontalInput < 0 && facingRight)
+        else if (lastMoveDirection < 0 && facingRight)
             Flip();
     }
 
@@ -291,7 +297,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     void PerformAttack()
     {
         // delega ao PlayerAttack (usa filho 'Dano' se existir, senão fallback prefab)
-        playerAttack.PerformAttack(facingRight, new Vector2(attackOffsetX, attackOffsetY));
+        bool attackRight = lastMoveDirection > 0;
+        playerAttack.PerformAttack(attackRight, new Vector2(attackOffsetX, attackOffsetY));
     }
 
     void HandleDash()
@@ -299,8 +306,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing)
         {
             // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
-            float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : (facingRight ? 1f : -1f);
-            dashDirection = new Vector2(Mathf.Sign(dir), 0f);
+            float dir = horizontalInput != 0 ? horizontalInput : lastMoveDirection;
+            dashDirection = new Vector2(dir, 0f);
 
             isDashing = true;
             dashTimeLeft = dashDuration;

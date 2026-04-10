@@ -436,6 +436,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   attackDuration: 0.12
+  attackPointRight: {fileID: 1344187566}
+  attackPointLeft: {fileID: 1344187566}
 --- !u!114 &84382261 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2849767480004941040, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
@@ -11281,7 +11283,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -68.31
+      value: -1.9
       objectReference: {fileID: 0}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.y

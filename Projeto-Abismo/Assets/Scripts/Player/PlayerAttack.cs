@@ -33,16 +33,16 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    [SerializeField] private Transform attackPointRight;
+    [SerializeField] private Transform attackPointLeft;
+
     public void PerformAttack(bool facingRight, Vector2 offset)
     {
         if (isAttacking) return;
 
-        // reposiciona hitbox corretamente
-        Vector3 pos = damageCollider.transform.localPosition;
-        pos.x = Mathf.Abs(pos.x) * (facingRight ? 1 : -1);
-        pos.y = offset.y;
+        Transform point = facingRight ? attackPointRight : attackPointLeft;
 
-        damageCollider.transform.localPosition = pos;
+        damageCollider.transform.position = point.position;
 
         StartCoroutine(AttackRoutine());
     }
