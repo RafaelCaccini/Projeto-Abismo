@@ -438,6 +438,7 @@ MonoBehaviour:
   attackDuration: 0.12
   attackPointRight: {fileID: 1344187566}
   attackPointLeft: {fileID: 1344187566}
+  showHitbox: 0
 --- !u!114 &84382261 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2849767480004941040, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
