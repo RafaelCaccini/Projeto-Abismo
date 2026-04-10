@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private float jumpForce = 14f;
     [SerializeField] private float jumpHoldTime = 0.2f;
+    [SerializeField] private bool useHeightBasedJump = true; // alterna entre tempo (false) e altura (true)
+    [SerializeField] private float jumpMaxHeight = 2.2f; // altura máxima alcançável segurando o botão
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private string wallTag = "Wall";
 
@@ -45,29 +47,12 @@ public class PlayerController : MonoBehaviour
         LuzAtiva = estado;
     }
 
-    /*
-    [Header("Stomp")]
-    [SerializeField] private int stompDamage = 1;
-    [SerializeField] private float stompCooldown = 0.2f;
-    [SerializeField] private float stompIntentWindow = 0.5f; // tempo que o "segurar S" é válido
-    private float lastStompTime;
-    private bool stompIntent;
-    private float stompIntentTimestamp;
-    private bool stompAvailable;
-    */
-
-    // Pequena proteção para evitar que o 'stomp' por colisão física conflite com a hitbox.
-    // Por padrão desligado (controle via Inspector).
-    /*
-    [Header("Stomp")]
-    [SerializeField] private bool collisionStompEnabled = false;
-    */
-
     private Rigidbody2D rb;
 
     private float horizontalInput;
     private bool isJumping;
     private float jumpTimeCounter;
+    private float jumpStartY; // usado para pulo baseado em altura
 
     // Super jump state
     private bool isSuperJumping;
@@ -122,37 +107,6 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleAttack();
         HandleDash();
-
-        /*
-        // STOMP desativado: bloco comentado para evitar interferência com pogo/aerial strike
-        // Se houver um stomp "registrado" e o jogador apertar P, aplica impulso para cima
-        if (stompAvailable && Input.GetKeyDown(KeyCode.P))
-        {
-            stompAvailable = false;
-
-            // Tenta delegar o bounce ao AerialStrikeController (se existir) para evitar lógica duplicada/conflicting
-            var aerial = GetComponent<AerialStrikeController>();
-            if (aerial != null)
-            {
-                aerial.ApplyBounce();
-            }
-            else
-            {
-                // fallback: aplica bounce localmente
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                Debug.Log("Stomp: bounce aplicado via PlayerController (fallback)");
-            }
-
-            isGrounded = false;
-            isJumping = false;
-            Debug.Log("Stomp: bounce aplicado via tecla P");
-        }
-
-        // expira a intenção de stomp passado o tempo
-        if (stompIntent && Time.time > stompIntentTimestamp + stompIntentWindow)
-            stompIntent = false;
-        */
     }
 
     void FixedUpdate()
@@ -170,16 +124,6 @@ public class PlayerController : MonoBehaviour
     void GetInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
-
-        // Detecta quando jogador pressiona/segura S para indicar intenção de stomp (agora suporta hold)
-        // STOMP desativado: comentário para evitar setar stompIntent
-        /*
-        if (Input.GetKey(KeyCode.S))
-        {
-            stompIntent = true;
-            stompIntentTimestamp = Time.time;
-        }
-        */
     }
 
     void HandleMovement()
@@ -199,26 +143,52 @@ public class PlayerController : MonoBehaviour
         {
             isJumping = true;
             jumpTimeCounter = jumpHoldTime;
+            jumpStartY = rb.position.y;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
         }
 
-        if (Input.GetButton("Jump") && isJumping)
+        if (useHeightBasedJump)
         {
-            if (jumpTimeCounter > 0f)
+            // Pulo baseado em altura alvo enquanto segura o botão
+            if (Input.GetButton("Jump") && isJumping)
             {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-                jumpTimeCounter -= Time.deltaTime;
+                float currentHeight = rb.position.y - jumpStartY;
+                if (currentHeight < jumpMaxHeight)
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                }
+                else
+                {
+                    isJumping = false;
+                }
             }
-            else
+
+            if (Input.GetButtonUp("Jump"))
             {
                 isJumping = false;
             }
         }
-
-        if (Input.GetButtonUp("Jump"))
+        else
         {
-            isJumping = false;
+            // Comportamento clássico baseado em tempo de hold
+            if (Input.GetButton("Jump") && isJumping)
+            {
+                if (jumpTimeCounter > 0f)
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                    jumpTimeCounter -= Time.deltaTime;
+                }
+                else
+                {
+                    isJumping = false;
+                }
+            }
+
+            if (Input.GetButtonUp("Jump"))
+            {
+                isJumping = false;
+            }
         }
     }
 
@@ -390,35 +360,6 @@ public class PlayerController : MonoBehaviour
         {
             isTouchingWall = true;
         }
-
-        /*
-        // STOMP POR COLISÃO (executa apenas se collisionStompEnabled == true)
-        if (collisionStompEnabled && collision.gameObject.CompareTag("Enemy"))
-        {
-            if (Time.time < lastStompTime + stompCooldown)
-                return;
-
-            float relativeY = transform.position.y - collision.transform.position.y;
-            bool movingDown = rb.linearVelocity.y <= 0f;
-            const float aboveThreshold = 0.18f;
-
-            if (movingDown && relativeY > aboveThreshold && (stompIntent || Input.GetKey(KeyCode.S)))
-            {
-                collision.gameObject.SendMessage("TakeDamage", stompDamage, SendMessageOptions.DontRequireReceiver);
-
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
-                rb.position = rb.position + Vector2.up * 0.05f;
-
-                lastStompTime = Time.time;
-                isGrounded = false;
-                isJumping = false;
-
-                Debug.Log($"Stomp registrado em {collision.gameObject.name}. Aperte P para bounce.");
-            }
-        }
-        */
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -446,30 +387,5 @@ public class PlayerController : MonoBehaviour
         {
             isTouchingWall = true;
         }
-
-        /*
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            // permite o jogador apertar S enquanto estiver sobre o inimigo para registrar o stomp
-            if (Time.time >= lastStompTime + stompCooldown)
-            {
-                float relativeY = transform.position.y - collision.transform.position.y;
-                bool movingDown = rb.linearVelocity.y <= 0f;
-                const float aboveThreshold = 0.18f;
-
-                if (movingDown && relativeY > aboveThreshold && Input.GetKey(KeyCode.S))
-                {
-                    collision.gameObject.SendMessage("TakeDamage", stompDamage, SendMessageOptions.DontRequireReceiver);
-                    stompAvailable = true;
-                    stompIntent = false;
-                    lastStompTime = Time.time;
-                    rb.position = rb.position + Vector2.up * 0.05f;
-                    isGrounded = false;
-                    isJumping = false;
-                    Debug.Log($"Stomp registrado em {collision.gameObject.name} (stay). Aperte P para bounce.");
-                }
-            }
-        }
-        */
     }
 }
