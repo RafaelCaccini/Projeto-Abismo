@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,7 +41,8 @@ public class Trap : MonoBehaviour
 
         playersInside.Add(other.gameObject);
 
-        if (debugLogs) Debug.Log("[Trap] Player entrou");
+        if (debugLogs)
+            Debug.Log("[Trap] Player entrou");
 
         TryActivate();
     }
@@ -52,7 +53,8 @@ public class Trap : MonoBehaviour
 
         playersInside.Remove(other.gameObject);
 
-        if (debugLogs) Debug.Log("[Trap] Player saiu");
+        if (debugLogs)
+            Debug.Log("[Trap] Player saiu");
 
         if (playersInside.Count == 0)
             CancelActivation();
@@ -64,7 +66,9 @@ public class Trap : MonoBehaviour
 
         if (requirePlayerLightOn && !AnyPlayerWithLight())
         {
-            if (debugLogs) Debug.Log("[Trap] Luz n�o est� ligada");
+            if (debugLogs)
+                Debug.Log("[Trap] Luz não está ligada");
+
             return;
         }
 
@@ -83,14 +87,7 @@ public class Trap : MonoBehaviour
             yield break;
         }
 
-        if (requirePlayerLightOn && !AnyPlayerWithLight())
-        {
-            isActivating = false;
-            yield break;
-        }
-
         Close();
-
         isActivating = false;
     }
 
@@ -107,11 +104,13 @@ public class Trap : MonoBehaviour
 
     private void Close()
     {
-        if (isClosed) return;
+        if (isClosed)
+            return;
 
         isClosed = true;
 
-        if (debugLogs) Debug.Log("[Trap] FECHOU");
+        if (debugLogs)
+            Debug.Log("[Trap] 🔴 FECHOU");
 
         if (animator != null)
             animator.SetBool("Closed", true);
@@ -119,53 +118,55 @@ public class Trap : MonoBehaviour
         if (hurtbox != null)
             hurtbox.enabled = true;
 
-        if (damageRoutine != null)
-            StopCoroutine(damageRoutine);
-
-        damageRoutine = StartCoroutine(DamageRoutine());
-
-        StartCoroutine(OpenAfterDelay());
+        if (damageRoutine == null)
+            damageRoutine = StartCoroutine(DamageRoutine());
     }
 
     private IEnumerator DamageRoutine()
     {
-        while (isClosed)
+        while (true)
         {
-            // CRIA UMA C�PIA SEGURA
-            var playersSnapshot = new List<GameObject>(playersInside);
-
-            foreach (var player in playersSnapshot)
+            if (!isClosed)
             {
-                if (player == null) continue;
+                yield return null;
+                continue;
+            }
 
-                IDamageable dmg = player.GetComponent<IDamageable>();
+            var snapshot = new List<GameObject>(playersInside);
+
+            foreach (var player in snapshot)
+            {
+                if (player == null)
+                {
+                    if (debugLogs)
+                        Debug.LogWarning("[Trap] Player null");
+                    continue;
+                }
+
+                if (debugLogs)
+                    Debug.Log("[Trap] Tentando causar dano em: " + player.name);
+
+                IDamageable dmg = null;
+
+                if (!player.TryGetComponent<IDamageable>(out dmg))
+                    dmg = player.GetComponentInParent<IDamageable>();
 
                 if (dmg != null)
                 {
                     dmg.TakeDamage(damage, gameObject);
-                    if (debugLogs) Debug.Log("[Trap] Dano aplicado");
-                }
 
-                if (debugLogs) Debug.Log("[Trap] Dano aplicado");
+                    if (debugLogs)
+                        Debug.Log("[Trap] ✔ DANO aplicado em " + player.name);
+                }
+                else
+                {
+                    if (debugLogs)
+                        Debug.LogError("[Trap] ❌ SEM IDAMAGEABLE em " + player.name);
+                }
             }
 
             yield return new WaitForSeconds(damageInterval);
         }
-    }
-
-    private IEnumerator OpenAfterDelay()
-    {
-        yield return new WaitForSeconds(closeDuration);
-
-        isClosed = false;
-
-        if (animator != null)
-            animator.SetBool("Closed", false);
-
-        if (hurtbox != null)
-            hurtbox.enabled = false;
-
-        if (debugLogs) Debug.Log("[Trap] ABRIU");
     }
 
     private bool AnyPlayerWithLight()
@@ -176,14 +177,8 @@ public class Trap : MonoBehaviour
 
             var pc = player.GetComponent<PlayerController>();
 
-            if (pc != null)
-            {
-                if (debugLogs)
-                    Debug.Log($"[Trap] Luz do player: {pc.LuzAtiva}");
-
-                if (pc.LuzAtiva)
-                    return true;
-            }
+            if (pc != null && pc.LuzAtiva)
+                return true;
         }
 
         return false;

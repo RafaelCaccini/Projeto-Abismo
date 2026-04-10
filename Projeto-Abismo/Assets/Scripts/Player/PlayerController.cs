@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
+
     [Header("Movement")]
     [SerializeField] private float maxSpeed = 8f;
     [SerializeField] private float acceleration = 25f;
@@ -36,9 +37,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("Life")]
     [SerializeField] private int maxLife = 5;
-    private int currentLife;
+    [SerializeField] private int currentLife;
+
+
     [SerializeField] private Lampiao lampiao;
     public Lampiao Lampiao => lampiao;
+    public int CurrentLife => currentLife;
+    public int MaxLife => maxLife;
 
     public bool LuzAtiva { get; private set; }
 
@@ -341,6 +346,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public interface IDamageable
+    {
+        void TakeDamage(int damage, GameObject source);
+    }
+
     void Die()
     {
         Debug.Log("Player morreu");
@@ -387,5 +397,8 @@ public class PlayerController : MonoBehaviour
         {
             isTouchingWall = true;
         }
+
+
     }
+
 }

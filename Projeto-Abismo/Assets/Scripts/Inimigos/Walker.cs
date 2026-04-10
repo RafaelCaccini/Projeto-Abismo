@@ -10,6 +10,9 @@ public class Walker : MonoBehaviour
     [SerializeField] private int life = 3;
     [SerializeField] private int damage = 1;
 
+    [Header("Combat")]
+    [SerializeField] private float damageCooldown = 1f;
+
     [Header("Light Detection")]
     [SerializeField] private Lampiao lampScript;
     [SerializeField] private float lightRadius = 5f;
@@ -28,6 +31,8 @@ public class Walker : MonoBehaviour
     private float fleeTimer = 0f;
     private const float fleeDuration = 7f;
 
+    private float lastDamageTime;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -37,7 +42,6 @@ public class Walker : MonoBehaviour
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
 
-        // 🔥 AUTO PEGA O LAMPIAO SE NÃO SETADO
         if (lampScript == null)
             lampScript = FindFirstObjectByType<Lampiao>();
     }
@@ -124,9 +128,43 @@ public class Walker : MonoBehaviour
         fleeDirection = 0;
     }
 
+    // =========================
+    // 💥 DANO (CORRIGIDO)
+    // =========================
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        if (!other.gameObject.CompareTag("Player"))
+            return;
+
+        TryDamage(other.gameObject);
+    }
+
+    private void TryDamage(GameObject target)
+    {
+        if (Time.time < lastDamageTime + damageCooldown)
+            return;
+
+        IDamageable dmg = target.GetComponentInParent<IDamageable>();
+
+        if (dmg == null)
+            return;
+
+        dmg.TakeDamage(damage, gameObject);
+        lastDamageTime = Time.time;
+
+        Debug.Log($"Walker causou {damage} de dano em {target.name}");
+    }
+
+    // =========================
+    // VIDA DO WALKER
+    // =========================
+
     public void TakeDamage(int dmg)
     {
         life -= dmg;
-        if (life <= 0) Destroy(gameObject);
+
+        if (life <= 0)
+            Destroy(gameObject);
     }
 }

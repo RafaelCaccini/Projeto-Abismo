@@ -12,17 +12,24 @@ public class Lampiao : MonoBehaviour
 
     [Header("Movimento")]
     [SerializeField] private KeyCode moveKey = KeyCode.Space;
-    [SerializeField] private float moveDistance = 1.5f;     // avanço máximo
-    [SerializeField] private float followSpeed = 5f;        // velocidade horizontal
-    [SerializeField] private float followOffsetX = 0.5f;    // distância mínima atrás do player
-    [SerializeField] private float floatAmplitude = 0.2f;   // altura da flutuação
-    [SerializeField] private float floatFrequency = 2f;     // velocidade da flutuação
-    [SerializeField] private float advanceTime = 1f;        // tempo de avanço
+    [SerializeField] private float followOffsetX = 0.6f;
+    [SerializeField] private float moveDistance = 1.5f;
+    [SerializeField] private float followSpeed = 6f;
 
-    private bool isActive = false;
-    private float baseY;
-    private float floatOffset;
-    private Vector3 targetPosition;
+    [Header("Flutuação")]
+    [SerializeField] private float floatAmplitude = 0.2f;
+    [SerializeField] private float floatFrequency = 2f;
+
+    [Header("Avanço")]
+    [SerializeField] private float advanceTime = 1f;
+
+    private bool isActive;
+    private bool isAdvancing;
+
+    private Vector3 basePosition;
+    private Vector3 currentTarget;
+
+    private float floatOffsetY;
     private Coroutine advanceRoutine;
 
     private PlayerController playerController;
@@ -35,92 +42,120 @@ public class Lampiao : MonoBehaviour
             if (pc != null) player = pc.transform;
         }
 
-        baseY = transform.position.y;
-
         if (player != null)
-        {
             playerController = player.GetComponent<PlayerController>();
-        }
 
         if (lightArea != null)
-            lightArea.SetActive(isActive);
-
-        UpdateTargetPosition();
+            lightArea.SetActive(false);
     }
 
     void Update()
     {
-        ToggleLight();
-        ApplyFloating();
+        HandleLight();
 
-        if (advanceRoutine == null)
-        {
-            UpdateTargetPosition();
-            FollowPlayer();
-        }
+        UpdateBaseFollow();
 
-        if (Input.GetKeyDown(moveKey) && advanceRoutine == null)
-        {
-            advanceRoutine = StartCoroutine(AdvanceThenReturn());
-        }
+        if (!isAdvancing)
+            MoveToBase();
+
+        HandleAdvance();
+
+        ApplyFloat();
+
+        ApplyFinalPosition();
     }
 
-    void ToggleLight()
+    // ---------------- LIGHT ----------------
+    void HandleLight()
     {
         if (Input.GetKeyDown(toggleLightKey))
         {
             isActive = !isActive;
-            if (lightArea != null) lightArea.SetActive(isActive);
-            if (playerController != null) playerController.SetLuz(isActive);
+
+            if (lightArea != null)
+                lightArea.SetActive(isActive);
+
+            if (playerController != null)
+                playerController.SetLuz(isActive);
         }
     }
 
-    void UpdateTargetPosition()
+    // ---------------- FOLLOW ----------------
+    void UpdateBaseFollow()
     {
         if (player == null || playerController == null) return;
 
-        // sempre atrás do player, limitado por followOffsetX
-        float offsetX = playerController.IsFacingRight() ? -followOffsetX : followOffsetX;
-        targetPosition = new Vector3(player.position.x + offsetX, baseY, transform.position.z);
+        float dir = playerController.IsFacingRight() ? -followOffsetX : followOffsetX;
+
+        basePosition = new Vector3(
+            player.position.x + dir,
+            player.position.y,
+            transform.position.z
+        );
     }
 
-    void FollowPlayer()
+    void MoveToBase()
     {
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, followSpeed * Time.deltaTime);
+        currentTarget = basePosition;
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            currentTarget,
+            followSpeed * Time.deltaTime
+        );
     }
 
-    IEnumerator AdvanceThenReturn()
+    // ---------------- ADVANCE ----------------
+    void HandleAdvance()
     {
-        if (player == null || playerController == null) yield break;
+        if (Input.GetKeyDown(moveKey) && advanceRoutine == null)
+            advanceRoutine = StartCoroutine(AdvanceRoutine());
+    }
 
-        // posição avançada com clamp para não ultrapassar player + limite
-        float advanceX = player.position.x + Mathf.Clamp(playerController.IsFacingRight() ? moveDistance : -moveDistance, -moveDistance, moveDistance);
-        Vector3 advancePosition = new Vector3(advanceX, transform.position.y, transform.position.z);
+    IEnumerator AdvanceRoutine()
+    {
+        isAdvancing = true;
 
-        while (Vector3.Distance(transform.position, advancePosition) > 0.01f)
+        float dir = playerController != null && playerController.IsFacingRight() ? 1f : -1f;
+
+        Vector3 advanceTarget = new Vector3(
+            basePosition.x + dir * moveDistance,
+            basePosition.y,
+            transform.position.z
+        );
+
+        while (Vector3.Distance(transform.position, advanceTarget) > 0.02f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, advancePosition, followSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                advanceTarget,
+                followSpeed * Time.deltaTime
+            );
+
             yield return null;
         }
 
         yield return new WaitForSeconds(advanceTime);
 
-        UpdateTargetPosition();
-        while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, followSpeed * Time.deltaTime);
-            yield return null;
-        }
-
+        isAdvancing = false;
         advanceRoutine = null;
     }
 
-    void ApplyFloating()
+    // ---------------- FLOAT ----------------
+    void ApplyFloat()
     {
-        floatOffset = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
-        transform.position = new Vector3(transform.position.x, baseY + floatOffset, transform.position.z);
+        floatOffsetY = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
     }
 
+    // ---------------- FINAL OUTPUT ----------------
+    void ApplyFinalPosition()
+    {
+        Vector3 p = transform.position;
+        p.y = basePosition.y + floatOffsetY;
+        transform.position = p;
+    }
+
+    // ---------------- API (NÃO QUEBRAR OUTROS SCRIPTS) ----------------
     public bool IsLightOn => isActive;
     public GameObject LightArea => lightArea;
 }
