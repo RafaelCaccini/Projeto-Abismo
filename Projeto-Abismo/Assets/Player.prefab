@@ -182,6 +182,8 @@ MonoBehaviour:
   deceleration: 30
   jumpForce: 6
   jumpHoldTime: 0.6
+  useHeightBasedJump: 1
+  jumpMaxHeight: 2.2
   groundTag: Ground
   wallTag: Wall
   superJumpForce: 20
@@ -198,6 +200,7 @@ MonoBehaviour:
   dashCooldown: 0.6
   dashKey: 304
   maxLife: 5
+  currentLife: 0
   lampiao: {fileID: 0}
 --- !u!114 &6518469999317323123
 MonoBehaviour:
@@ -245,6 +248,7 @@ GameObject:
   - component: {fileID: 2800552321043901634}
   - component: {fileID: 4387505699625939848}
   - component: {fileID: 6798289216893228723}
+  - component: {fileID: 8740853357218197823}
   m_Layer: 0
   m_Name: Skin
   m_TagString: Untagged
@@ -319,7 +323,7 @@ SpriteRenderer:
   m_Size: {x: 13.58013, y: 23.55}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &6798289216893228723
@@ -344,3 +348,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!111 &8740853357218197823
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787785901623789170}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 6498ec7a58a4ca2408d8c725083b5334, type: 2}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0

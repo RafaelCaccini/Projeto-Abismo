@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
 
     [Header("Movement")]
+    private Animator anim;
     [SerializeField] private float maxSpeed = 8f;
     [SerializeField] private float acceleration = 25f;
     [SerializeField] private float deceleration = 30f;
