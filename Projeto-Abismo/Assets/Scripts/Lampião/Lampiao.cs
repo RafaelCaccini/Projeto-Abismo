@@ -85,7 +85,7 @@ public class Lampiao : MonoBehaviour
     {
         if (player == null || playerController == null) return;
 
-        float dir = playerController.IsFacingRight() ? -followOffsetX : followOffsetX;
+        float dir = playerController.IsFacingRight() ? followOffsetX : -followOffsetX;
 
         basePosition = new Vector3(
             player.position.x + dir,
