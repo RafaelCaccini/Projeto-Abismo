@@ -2576,7 +2576,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6518469999317323123, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: hideHitboxVisual
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6518469999317323123, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: hitboxDebugSprite
@@ -2663,7 +2663,7 @@ MonoBehaviour:
   attackDuration: 0.12
   attackPointRight: {fileID: 65465891}
   attackPointLeft: {fileID: 65465891}
-  showHitbox: 1
+  showHitbox: 0
 --- !u!1 &1314283239
 GameObject:
   m_ObjectHideFlags: 0

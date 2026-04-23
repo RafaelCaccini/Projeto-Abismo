@@ -86,6 +86,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
+        if (anim == null)
+            Debug.LogError("[PlayerController] Animator NÃO encontrado no Player!");
         currentLife = maxLife;
         originalGravityScale = rb.gravityScale;
 
@@ -114,6 +117,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleJump();
         HandleAttack();
         HandleDash();
+        HandleAnimations();
     }
 
     void FixedUpdate()
@@ -286,13 +290,18 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         return facingRight;
     }
-
     void HandleAttack()
     {
         if (Input.GetKeyDown(attackKey) && Time.time >= lastAttackTime + attackCooldown)
         {
             PerformAttack();
             lastAttackTime = Time.time;
+
+            if (anim != null)
+            {
+                anim.ResetTrigger("Attack");
+                anim.SetTrigger("Attack");
+            }
         }
     }
 
@@ -358,6 +367,17 @@ public class PlayerController : MonoBehaviour, IDamageable
     public interface IDamageable
     {
         void TakeDamage(int damage, GameObject source);
+    }
+
+    void HandleAnimations()
+    {
+        if (anim == null) return; // evita crash se Animator não estiver configurado
+
+        bool isRunning = Mathf.Abs(horizontalInput) > 0.01f && !isDashing;
+        anim.SetBool("IsRun", isRunning);
+
+        bool isInAir = !isGrounded;
+        anim.SetBool("IsJump", isInAir);
     }
 
     void Die()

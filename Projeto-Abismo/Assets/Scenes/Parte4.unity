@@ -862,7 +862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4dd6042e734c0c4ea48641806f63817, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 1956047016}
   lightArea: {fileID: 1820637717}
   toggleLightKey: 108
   moveKey: 113
@@ -936,7 +936,7 @@ Transform:
   m_GameObject: {fileID: 241538445}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -130.44, y: 39.7, z: 0}
+  m_LocalPosition: {x: -257.6, y: 39.7, z: 0}
   m_LocalScale: {x: 0.17507325, y: 0.15261817, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9502,7 +9502,7 @@ PrefabInstance:
     - target: {fileID: 2849767480004941040, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: lampiao
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 241538446}
     - target: {fileID: 2849767480004941040, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: maxSpeed
       value: 8
@@ -9573,11 +9573,11 @@ PrefabInstance:
       objectReference: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -126.9
+      value: -266.3
       objectReference: {fileID: 0}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 39.42
+      value: 33.5
       objectReference: {fileID: 0}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.z
