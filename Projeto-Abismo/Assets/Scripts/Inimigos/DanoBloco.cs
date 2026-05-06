@@ -22,7 +22,7 @@ public class DamageBlock : MonoBehaviour
         if (Time.time < lastHitTime + hitCooldown)
             return;
 
-        PlayerController player = obj.GetComponent<PlayerController>();
+        PlayerController player = obj.GetComponentInParent<PlayerController>();
 
         if (player != null)
         {

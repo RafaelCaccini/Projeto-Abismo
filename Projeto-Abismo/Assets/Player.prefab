@@ -201,8 +201,8 @@ MonoBehaviour:
   dashDuration: 0.1
   dashCooldown: 0.6
   dashKey: 304
-  maxLife: 5
-  currentLife: 0
+  maxLife: 10
+  invincibilityTime: 0.3
   lampiao: {fileID: 0}
 --- !u!114 &6518469999317323123
 MonoBehaviour:

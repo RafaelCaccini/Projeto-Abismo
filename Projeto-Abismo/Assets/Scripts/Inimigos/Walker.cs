@@ -18,7 +18,7 @@ public class Walker : MonoBehaviour
     [SerializeField] private float lightRadius = 5f;
 
     [Header("Wall Detection")]
-    [SerializeField] private float wallCheckDistance = 1f;
+    [SerializeField] private float wallCheckDistance = 0.5f;
     [SerializeField] private LayerMask wallLayer;
 
     private Rigidbody2D rb;
@@ -32,14 +32,15 @@ public class Walker : MonoBehaviour
     private const float fleeDuration = 7f;
 
     private float lastDamageTime;
-
+    private Collider2D col;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
 
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.gravityScale = 0f;
+        col = GetComponent<Collider2D>();
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.gravityScale = 3f; // ajusta depois
         rb.freezeRotation = true;
 
         if (lampScript == null)
@@ -81,7 +82,7 @@ public class Walker : MonoBehaviour
 
         float speed = isFleeing ? runSpeed : walkSpeed;
 
-        Vector2 rayOrigin = (Vector2)transform.position + new Vector2(currentDir * 0.4f, 0f);
+        Vector2 rayOrigin = (Vector2)col.bounds.center + new Vector2(currentDir * (col.bounds.extents.x + 0.1f), 0f);
         Vector2 rayDirection = new Vector2(currentDir, 0f);
 
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, wallCheckDistance, wallLayer);
@@ -145,15 +146,16 @@ public class Walker : MonoBehaviour
         if (Time.time < lastDamageTime + damageCooldown)
             return;
 
-        IDamageable dmg = target.GetComponentInParent<IDamageable>();
+        // 🔥 PEGA SEMPRE O PLAYER CORRETO
+        PlayerController player = target.GetComponentInParent<PlayerController>();
 
-        if (dmg == null)
+        if (player == null)
             return;
 
-        dmg.TakeDamage(damage, gameObject);
+        player.TakeDamage(damage, gameObject);
         lastDamageTime = Time.time;
 
-        Debug.Log($"Walker causou {damage} de dano em {target.name}");
+        Debug.Log($"Walker causou {damage} de dano em {player.name}");
     }
 
     // =========================

@@ -39,8 +39,10 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [Header("Life")]
     [SerializeField] private int maxLife = 5;
-    [SerializeField] private int currentLife;
+    private int currentLife;
 
+    [SerializeField] private float invincibilityTime = 0.3f;
+    private bool isInvincible;
 
     [SerializeField] private Lampiao lampiao;
     public Lampiao Lampiao => lampiao;
@@ -85,19 +87,45 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Awake()
     {
+        // 🔒 Garante instância única
+        if (FindObjectsOfType<PlayerController>().Length > 1)
+        {
+            Debug.LogWarning("Player duplicado destruído");
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject);
+
+        Debug.Log("PLAYER INSTANCIADO ID: " + GetInstanceID());
+
+        // =========================
+        // COMPONENTES
+        // =========================
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
+
         if (anim == null)
             Debug.LogError("[PlayerController] Animator NÃO encontrado no Player!");
-        currentLife = maxLife;
+
         originalGravityScale = rb.gravityScale;
 
-        // assegura componente PlayerAttack e configura fallback
+        // =========================
+        // VIDA
+        // =========================
+        currentLife = maxLife;
+
+        // =========================
+        // ATAQUE
+        // =========================
         playerAttack = GetComponent<PlayerAttack>();
+
         if (playerAttack == null)
             playerAttack = gameObject.AddComponent<PlayerAttack>();
 
-        // AUTO SET DO LAMPIÃO (evita erro humano)
+        // =========================
+        // LAMPIÃO
+        // =========================
         if (lampiao == null)
         {
             lampiao = GetComponentInChildren<Lampiao>();
@@ -354,14 +382,29 @@ public class PlayerController : MonoBehaviour, IDamageable
     // VIDA DO PLAYER
     public void TakeDamage(int damage, GameObject source)
     {
+        if (isInvincible) return;
+
         currentLife -= damage;
+
+        if (currentLife < 0)
+            currentLife = 0;
 
         Debug.Log($"💥 Player tomou {damage} de {source.name} | Vida: {currentLife}");
 
-        if (currentLife <= 0)
+        if (currentLife == 0)
         {
             Die();
+            return;
         }
+
+        StartCoroutine(InvincibilityCoroutine());
+    }
+
+    IEnumerator InvincibilityCoroutine()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibilityTime);
+        isInvincible = false;
     }
 
     public interface IDamageable
