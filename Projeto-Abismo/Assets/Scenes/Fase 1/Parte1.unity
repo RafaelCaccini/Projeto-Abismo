@@ -259,6 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &73897029
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -408,6 +409,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &84684402
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -706,6 +708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &111020461
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -934,6 +937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &117316514
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1083,6 +1087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &119167546
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1366,6 +1371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &140737047
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1745,6 +1751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &245963013
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1894,6 +1901,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &248885473
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2043,6 +2051,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &310515520
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -15648,6 +15657,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &445391001
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -15931,6 +15941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &597544635
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -16080,6 +16091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &631418089
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -16550,6 +16562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &698315133
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -16699,6 +16712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &801127783
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -16997,6 +17011,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &817740139
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17314,6 +17329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &911492616
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17463,6 +17479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &969606056
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17612,6 +17629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &974098398
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17761,6 +17779,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1029138918
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17910,6 +17929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1112574590
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18201,6 +18221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1215062466
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18350,6 +18371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1225245421
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18583,6 +18605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1266833457
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19624,6 +19647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1659225636
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19773,6 +19797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1662380948
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19922,6 +19947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1695266399
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20071,6 +20097,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1695558851
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20220,6 +20247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1718098923
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20369,6 +20397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1739189487
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20518,6 +20547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1797026652
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20667,6 +20697,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1863435166
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -21110,6 +21141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &1928045730
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -21472,6 +21504,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dano: 1
   intervaloDano: 1
+  lampiao: {fileID: 0}
 --- !u!61 &2137812043
 BoxCollider2D:
   m_ObjectHideFlags: 0
