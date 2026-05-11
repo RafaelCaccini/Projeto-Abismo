@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: dc51023e4d019804daa05f7d619ea25f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3528703761268432052
+    second: "Ru\xEDnas vinhas e pedras_0"
+  - first:
+      213: 6048171391784722428
+    second: "Ru\xEDnas vinhas e pedras_1"
+  - first:
+      213: 6594726709095936367
+    second: "Ru\xEDnas vinhas e pedras_2"
+  - first:
+      213: -8729348475316671171
+    second: "Ru\xEDnas vinhas e pedras_3"
+  - first:
+      213: 4237089714941760783
+    second: "Ru\xEDnas vinhas e pedras_4"
+  - first:
+      213: -1232538613965791684
+    second: "Ru\xEDnas vinhas e pedras_5"
+  - first:
+      213: 8506084817762137129
+    second: "Ru\xEDnas vinhas e pedras_6"
+  - first:
+      213: -9103341386079144394
+    second: "Ru\xEDnas vinhas e pedras_7"
+  - first:
+      213: 555730405184430046
+    second: "Ru\xEDnas vinhas e pedras_8"
+  - first:
+      213: 7226940109521725002
+    second: "Ru\xEDnas vinhas e pedras_9"
+  - first:
+      213: 4529171068077355329
+    second: "Ru\xEDnas vinhas e pedras_10"
+  - first:
+      213: 5395178655076190805
+    second: "Ru\xEDnas vinhas e pedras_11"
+  - first:
+      213: 5391508341451762037
+    second: "Ru\xEDnas vinhas e pedras_12"
+  - first:
+      213: -8578452780440815107
+    second: "Ru\xEDnas vinhas e pedras_13"
+  - first:
+      213: 2894473936257751268
+    second: "Ru\xEDnas vinhas e pedras_14"
+  - first:
+      213: 5901926039292829777
+    second: "Ru\xEDnas vinhas e pedras_15"
+  - first:
+      213: -5441479059863113220
+    second: "Ru\xEDnas vinhas e pedras_16"
+  - first:
+      213: -5211791715293411278
+    second: "Ru\xEDnas vinhas e pedras_17"
+  - first:
+      213: 182747124534032631
+    second: "Ru\xEDnas vinhas e pedras_18"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_0"
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 836
+        width: 464
+        height: 202
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bc5dffff5978f030800000000000000
+      internalID: 3528703761268432052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_1"
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 23
+        width: 260
+        height: 657
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cff120416db6fe350800000000000000
+      internalID: 6048171391784722428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_2"
+      rect:
+        serializedVersion: 2
+        x: 1317
+        y: 663
+        width: 314
+        height: 409
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f61b176600d258b50800000000000000
+      internalID: 6594726709095936367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_3"
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 782
+        width: 615
+        height: 229
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3de620dfcf1bd680800000000000000
+      internalID: -8729348475316671171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_4"
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 30
+        width: 276
+        height: 515
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f05909c85aa2dca30800000000000000
+      internalID: 4237089714941760783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_5"
+      rect:
+        serializedVersion: 2
+        x: 1266
+        y: 378
+        width: 48
+        height: 635
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3edd9e29a425eee0800000000000000
+      internalID: -1232538613965791684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_6"
+      rect:
+        serializedVersion: 2
+        x: 1647
+        y: 813
+        width: 245
+        height: 185
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9243e08131fab0670800000000000000
+      internalID: 8506084817762137129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_7"
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 0
+        width: 399
+        height: 689
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 636f3adad3f6aa180800000000000000
+      internalID: -9103341386079144394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_8"
+      rect:
+        serializedVersion: 2
+        x: 1345
+        y: 232
+        width: 245
+        height: 422
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edfd6efebd956b700800000000000000
+      internalID: 555730405184430046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_9"
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 556
+        width: 503
+        height: 274
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a46a0195dbf3b4460800000000000000
+      internalID: 7226940109521725002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_10"
+      rect:
+        serializedVersion: 2
+        x: 1595
+        y: 234
+        width: 307
+        height: 438
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1413abff619dade30800000000000000
+      internalID: 4529171068077355329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_11"
+      rect:
+        serializedVersion: 2
+        x: 1039
+        y: 21
+        width: 309
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55a0693e6668fda40800000000000000
+      internalID: 5395178655076190805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_12"
+      rect:
+        serializedVersion: 2
+        x: 1181
+        y: 683
+        width: 60
+        height: 343
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 579a9c7654c72da40800000000000000
+      internalID: 5391508341451762037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_13"
+      rect:
+        serializedVersion: 2
+        x: 1011
+        y: 388
+        width: 228
+        height: 205
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df9fc5395a633f880800000000000000
+      internalID: -8578452780440815107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_14"
+      rect:
+        serializedVersion: 2
+        x: 1369
+        y: 129
+        width: 36
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e8154e95bc3b2820800000000000000
+      internalID: 2894473936257751268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_15"
+      rect:
+        serializedVersion: 2
+        x: 1414
+        y: 46
+        width: 442
+        height: 191
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1506da6867ad7e150800000000000000
+      internalID: 5901926039292829777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_16"
+      rect:
+        serializedVersion: 2
+        x: 1352
+        y: 79
+        width: 35
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf1f12010abfb74b0800000000000000
+      internalID: -5441479059863113220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_17"
+      rect:
+        serializedVersion: 2
+        x: 1361
+        y: 18
+        width: 34
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 238cc965c0ffba7b0800000000000000
+      internalID: -5211791715293411278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Ru\xEDnas vinhas e pedras_18"
+      rect:
+        serializedVersion: 2
+        x: 1614
+        y: 37
+        width: 50
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f83391aa8f398200800000000000000
+      internalID: 182747124534032631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 4d3b44235a22a1f4b88faf39b5a1aed8
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "Ru\xEDnas vinhas e pedras_0": 3528703761268432052
+      "Ru\xEDnas vinhas e pedras_1": 6048171391784722428
+      "Ru\xEDnas vinhas e pedras_10": 4529171068077355329
+      "Ru\xEDnas vinhas e pedras_11": 5395178655076190805
+      "Ru\xEDnas vinhas e pedras_12": 5391508341451762037
+      "Ru\xEDnas vinhas e pedras_13": -8578452780440815107
+      "Ru\xEDnas vinhas e pedras_14": 2894473936257751268
+      "Ru\xEDnas vinhas e pedras_15": 5901926039292829777
+      "Ru\xEDnas vinhas e pedras_16": -5441479059863113220
+      "Ru\xEDnas vinhas e pedras_17": -5211791715293411278
+      "Ru\xEDnas vinhas e pedras_18": 182747124534032631
+      "Ru\xEDnas vinhas e pedras_2": 6594726709095936367
+      "Ru\xEDnas vinhas e pedras_3": -8729348475316671171
+      "Ru\xEDnas vinhas e pedras_4": 4237089714941760783
+      "Ru\xEDnas vinhas e pedras_5": -1232538613965791684
+      "Ru\xEDnas vinhas e pedras_6": 8506084817762137129
+      "Ru\xEDnas vinhas e pedras_7": -9103341386079144394
+      "Ru\xEDnas vinhas e pedras_8": 555730405184430046
+      "Ru\xEDnas vinhas e pedras_9": 7226940109521725002
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

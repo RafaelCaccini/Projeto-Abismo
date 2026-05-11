@@ -46,6 +46,18 @@ TagManager:
   - name: Fundo
     uniqueID: 3694069319
     locked: 0
+  - name: "Ru\xEDnas"
+    uniqueID: 952856969
+    locked: 0
+  - name: Morros Fundo
+    uniqueID: 2111428001
+    locked: 0
+  - name: Espeliotemas
+    uniqueID: 2270868797
+    locked: 0
+  - name: Morros Frente
+    uniqueID: 543823073
+    locked: 0
   - name: Assets
     uniqueID: 2685623547
     locked: 0
