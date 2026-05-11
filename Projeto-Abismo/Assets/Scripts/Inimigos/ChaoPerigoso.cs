@@ -5,52 +5,95 @@ public class ChaoPerigoso : MonoBehaviour
 {
     [Header("Dano")]
     [SerializeField] private int dano = 1;
+
     [SerializeField] private float intervaloDano = 1f;
+
+    [Header("Estado")]
+    [SerializeField] private bool iluminado = false;
 
     private bool podeDarDano = true;
 
+    // ---------------- DANO ----------------
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (!collision.gameObject.CompareTag("Player")) return;
+        // Só player
+        if (!collision.gameObject.CompareTag("Player"))
+            return;
 
-        bool estaEmCima = collision.transform.position.y > transform.position.y + 0.1f;
+        // Se iluminado, não dá dano
+        if (iluminado)
+            return;
 
-        Debug.Log($"[Chao] Em cima (posição): {estaEmCima}");
+        // Cooldown
+        if (!podeDarDano)
+            return;
 
-        if (!estaEmCima || !podeDarDano) return;
+        // Verifica se está pisando em cima
+        bool estaEmCima =
+            collision.transform.position.y >
+            transform.position.y + 0.1f;
 
-        PlayerController pc = collision.gameObject.GetComponentInParent<PlayerController>();
+        if (!estaEmCima)
+            return;
 
-        if (pc == null) return;
+        PlayerController pc =
+            collision.gameObject.GetComponentInParent<PlayerController>();
 
-        Debug.Log("Luz ativa? " + pc.LuzAtiva);
+        if (pc == null)
+            return;
 
-        if (!pc.LuzAtiva)
-        {
-            Debug.Log("💥 DANO APLICADO (DIRETO)");
+        Debug.Log("💥 DANO APLICADO");
 
-            pc.TakeDamage(dano, gameObject);
+        pc.TakeDamage(dano, gameObject);
 
-            StartCoroutine(CooldownDano());
-        }
+        StartCoroutine(CooldownDano());
     }
 
     IEnumerator CooldownDano()
     {
         podeDarDano = false;
+
         yield return new WaitForSeconds(intervaloDano);
+
         podeDarDano = true;
     }
 
+    // ---------------- LUZ ----------------
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("LuzLampiao"))
+        {
+            iluminado = true;
+
+            Debug.Log("✨ Espinhos desativados");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("LuzLampiao"))
+        {
+            iluminado = false;
+
+            Debug.Log("⚠️ Espinhos ativados");
+        }
+    }
+
+    // ---------------- DEBUG ----------------
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-
         Collider2D col = GetComponent<Collider2D>();
 
         if (col != null)
         {
-            Gizmos.DrawWireCube(col.bounds.center, col.bounds.size);
+            Gizmos.color = iluminado
+                ? Color.green
+                : Color.red;
+
+            Gizmos.DrawWireCube(
+                col.bounds.center,
+                col.bounds.size
+            );
         }
     }
 }

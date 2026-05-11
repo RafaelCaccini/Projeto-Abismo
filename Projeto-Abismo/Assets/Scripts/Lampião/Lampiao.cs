@@ -7,6 +7,7 @@ public class Lampiao : MonoBehaviour
     [SerializeField] private Transform player;
 
     [Header("Luz")]
+    [SerializeField] private GameObject lightVisual;
     [SerializeField] private GameObject lightArea;
     [SerializeField] private KeyCode toggleLightKey = KeyCode.L;
 
@@ -39,11 +40,17 @@ public class Lampiao : MonoBehaviour
         if (player == null)
         {
             var pc = FindFirstObjectByType<PlayerController>();
-            if (pc != null) player = pc.transform;
+
+            if (pc != null)
+                player = pc.transform;
         }
 
         if (player != null)
             playerController = player.GetComponent<PlayerController>();
+
+        // Começa desligado
+        if (lightVisual != null)
+            lightVisual.SetActive(false);
 
         if (lightArea != null)
             lightArea.SetActive(false);
@@ -72,20 +79,31 @@ public class Lampiao : MonoBehaviour
         {
             isActive = !isActive;
 
+            // Visual da luz
+            if (lightVisual != null)
+                lightVisual.SetActive(isActive);
+
+            // Área que detecta espinhos
             if (lightArea != null)
                 lightArea.SetActive(isActive);
 
             if (playerController != null)
                 playerController.SetLuz(isActive);
+
+            Debug.Log("Lampião ligado? " + isActive);
         }
     }
 
     // ---------------- FOLLOW ----------------
     void UpdateBaseFollow()
     {
-        if (player == null || playerController == null) return;
+        if (player == null || playerController == null)
+            return;
 
-        float dir = playerController.IsFacingRight() ? followOffsetX : -followOffsetX;
+        float dir =
+            playerController.IsFacingRight()
+            ? followOffsetX
+            : -followOffsetX;
 
         basePosition = new Vector3(
             player.position.x + dir,
@@ -109,14 +127,20 @@ public class Lampiao : MonoBehaviour
     void HandleAdvance()
     {
         if (Input.GetKeyDown(moveKey) && advanceRoutine == null)
+        {
             advanceRoutine = StartCoroutine(AdvanceRoutine());
+        }
     }
 
     IEnumerator AdvanceRoutine()
     {
         isAdvancing = true;
 
-        float dir = playerController != null && playerController.IsFacingRight() ? 1f : -1f;
+        float dir =
+            playerController != null &&
+            playerController.IsFacingRight()
+            ? 1f
+            : -1f;
 
         Vector3 advanceTarget = new Vector3(
             basePosition.x + dir * moveDistance,
@@ -144,18 +168,22 @@ public class Lampiao : MonoBehaviour
     // ---------------- FLOAT ----------------
     void ApplyFloat()
     {
-        floatOffsetY = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        floatOffsetY =
+            Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
     }
 
-    // ---------------- FINAL OUTPUT ----------------
+    // ---------------- FINAL POSITION ----------------
     void ApplyFinalPosition()
     {
         Vector3 p = transform.position;
+
         p.y = basePosition.y + floatOffsetY;
+
         transform.position = p;
     }
 
-    // ---------------- API (NÃO QUEBRAR OUTROS SCRIPTS) ----------------
+    // ---------------- API ----------------
     public bool IsLightOn => isActive;
+
     public GameObject LightArea => lightArea;
 }

@@ -9,6 +9,7 @@ TagManager:
   - lampiao
   - Ground
   - Ceiling
+  - LuzLampiao
   layers:
   - Default
   - TransparentFX
