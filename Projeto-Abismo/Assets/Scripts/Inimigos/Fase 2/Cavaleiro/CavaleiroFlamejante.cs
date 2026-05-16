@@ -194,7 +194,7 @@ public class CavaleiroFlamejante : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)  
     {
         if (other.CompareTag("LuzLampiao"))
             RegenerarEscudo();
