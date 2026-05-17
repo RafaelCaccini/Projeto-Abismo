@@ -1,211 +1,521 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CavaleiroFlamejante : MonoBehaviour
+public class CavaleiroFlamejante : MonoBehaviour, IDamageable
 {
     [Header("REFERÊNCIAS")]
     [SerializeField] private Transform player;
     [SerializeField] private Transform visual;
+
     [SerializeField] private GameObject colliderEspada;
     [SerializeField] private GameObject colliderEscudo;
 
     private Rigidbody2D rb;
 
+    // =====================================
+    // MOVIMENTO
+    // =====================================
+
     [Header("MOVIMENTO")]
-    [SerializeField] private float velocidade = 4f;
-    [SerializeField] private float velocidadePerseguicao = 5.8f;
+    [SerializeField] private float velocidade = 5f;
+
+    // =====================================
+    // DETECÇÃO
+    // =====================================
 
     [Header("DETECÇÃO")]
-    [SerializeField] private float rangeDeteccao = 8f;      // Range só para INICIAR a perseguição
-    [SerializeField] private Vector2 offsetDeteccao = new Vector2(0, 0.5f);
+    [SerializeField] private float rangeDeteccao = 8f;
+
+    [SerializeField] private Vector2 offsetDeteccao;
+
+    // =====================================
+    // ATAQUE
+    // =====================================
 
     [Header("ATAQUE")]
-    [SerializeField] private float rangeAtaque = 2.2f;
-    [SerializeField] private Vector2 offsetAtaque = new Vector2(0, 0.5f);
+    [SerializeField] private float rangeAtaque = 2f;
 
-    [Header("DANO")]
+    [SerializeField] private Vector2 offsetAtaque;
+
     [SerializeField] private int danoEspada = 3;
+
+    [SerializeField] private float tempoAtaque = 0.4f;
+
+    [SerializeField] private float cooldownAtaque = 1.5f;
+
+    // =====================================
+    // VIDA
+    // =====================================
+
+    [Header("VIDA")]
     [SerializeField] private int vidaMaxima = 10;
+
     private int vidaAtual;
+
+    // =====================================
+    // ESCUDO
+    // =====================================
 
     [Header("ESCUDO")]
     [SerializeField] private int vidaEscudo = 3;
+
     private int vidaAtualEscudo;
+
     private bool escudoQuebrado;
 
-    [Header("TIMERS")]
-    [SerializeField] private float tempoAtaque = 0.45f;
-    [SerializeField] private float cooldownAtaque = 1.4f;
+    // =====================================
+    // CONTROLE
+    // =====================================
 
     private bool atacando;
+
     private bool podeAtacar = true;
-    private bool isChasing = false;        // ← NOVO: Perseguição persistente
+
+    private bool perseguindo;
 
     private float ultimaDirecao = 1f;
+
+    // =====================================
+    // FEEDBACK
+    // =====================================
+
+    private SpriteRenderer spriteRenderer;
+
+    private Color corOriginal;
+
+    // =====================================
+    // AWAKE
+    // =====================================
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        rb.freezeRotation = true;
+
+        if (visual != null)
+        {
+            spriteRenderer =
+                visual.GetComponent<SpriteRenderer>();
+        }
     }
+
+    // =====================================
+    // START
+    // =====================================
 
     private void Start()
     {
         if (player == null)
         {
-            var pc = FindFirstObjectByType<PlayerController>();
-            if (pc != null) player = pc.transform;
+            PlayerController pc =
+                FindFirstObjectByType<PlayerController>();
+
+            if (pc != null)
+            {
+                player = pc.transform;
+            }
         }
 
         vidaAtual = vidaMaxima;
+
         vidaAtualEscudo = vidaEscudo;
+
         escudoQuebrado = false;
 
-        if (colliderEspada != null) colliderEspada.SetActive(false);
-        if (colliderEscudo != null) colliderEscudo.SetActive(true);
+        if (spriteRenderer != null)
+        {
+            corOriginal = spriteRenderer.color;
+        }
 
-        Debug.Log("🔥 Cavaleiro Flamejante - Perseguição PERSISTENTE");
+        if (colliderEspada != null)
+        {
+            colliderEspada.SetActive(false);
+        }
+
+        if (colliderEscudo != null)
+        {
+            colliderEscudo.SetActive(true);
+        }
+
+        Debug.Log("🔥 Cavaleiro iniciado");
     }
+
+    // =====================================
+    // UPDATE
+    // =====================================
 
     private void Update()
     {
-        if (player == null) return;
+        if (player == null)
+            return;
 
-        Vector2 centroDeteccao = (Vector2)transform.position + offsetDeteccao;
-        Vector2 centroAtaque = (Vector2)transform.position + offsetAtaque;
+        Vector2 centroDeteccao =
+            (Vector2)transform.position
+            + offsetDeteccao;
 
-        float distDeteccao = Vector2.Distance(centroDeteccao, player.position);
-        float distAtaque = Vector2.Distance(centroAtaque, player.position);
+        Vector2 centroAtaque =
+            (Vector2)transform.position
+            + offsetAtaque;
 
-        float direcao = player.position.x > transform.position.x ? 1f : -1f;
+        float distanciaDeteccao =
+            Vector2.Distance(
+                centroDeteccao,
+                player.position
+            );
 
-        // Flip do visual
-        if (visual != null && direcao != ultimaDirecao)
+        float distanciaAtaque =
+            Vector2.Distance(
+                centroAtaque,
+                player.position
+            );
+
+        // =====================================
+        // COMEÇOU A PERSEGUIR
+        // =====================================
+
+        if (
+            !perseguindo &&
+            distanciaDeteccao <= rangeDeteccao
+        )
         {
-            Vector3 escala = visual.localScale;
-            escala.x = Mathf.Abs(escala.x) * direcao;
-            visual.localScale = escala;
+            perseguindo = true;
+        }
+
+        // =====================================
+        // NÃO DETECTOU
+        // =====================================
+
+        if (!perseguindo)
+        {
+            rb.linearVelocity =
+                new Vector2(
+                    0,
+                    rb.linearVelocity.y
+                );
+
+            return;
+        }
+
+        // =====================================
+        // DIREÇÃO
+        // =====================================
+
+        float direcao =
+            player.position.x >
+            transform.position.x
+            ? 1f
+            : -1f;
+
+        // =====================================
+        // FLIP
+        // =====================================
+
+        if (direcao != ultimaDirecao)
+        {
+            Vector3 escala =
+                visual.localScale;
+
+            escala.x =
+                Mathf.Abs(escala.x)
+                * direcao;
+
+            visual.localScale =
+                escala;
+
             ultimaDirecao = direcao;
         }
 
-        // Ativa a perseguição quando entra no range
-        if (!isChasing && distDeteccao <= rangeDeteccao)
+        // =====================================
+        // ATAQUE
+        // =====================================
+
+        if (
+            distanciaAtaque <= rangeAtaque
+        )
         {
-            isChasing = true;
-            Debug.Log("⚡ Cavaleiro começou a perseguir o Player!");
+            rb.linearVelocity =
+                new Vector2(
+                    0,
+                    rb.linearVelocity.y
+                );
+
+            if (
+                podeAtacar &&
+                !atacando
+            )
+            {
+                StartCoroutine(
+                    RotinaAtaque()
+                );
+            }
         }
-
-        // === DENTRO DO RANGE DE ATAQUE ===
-        if (distAtaque <= rangeAtaque)
+        else
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            // =====================================
+            // PERSEGUIR
+            // =====================================
 
-            if (podeAtacar && !atacando)
-                StartCoroutine(RotinaAtaque());
-
-            return;
-        }
-
-        // === PERSEGUIÇÃO PERSISTENTE ===
-        if (isChasing && !atacando)
-        {
-            float vel = (distDeteccao > rangeAtaque * 2f) ? velocidadePerseguicao : velocidade;
-            rb.linearVelocity = new Vector2(direcao * vel, rb.linearVelocity.y);
-        }
-        else if (!isChasing)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            if (!atacando)
+            {
+                rb.linearVelocity =
+                    new Vector2(
+                        direcao * velocidade,
+                        rb.linearVelocity.y
+                    );
+            }
         }
     }
 
-    private IEnumerator RotinaAtaque()
+    // =====================================
+    // ATAQUE
+    // =====================================
+
+    IEnumerator RotinaAtaque()
     {
         atacando = true;
+
         podeAtacar = false;
 
-        Debug.Log("⚔️ Cavaleiro atacando!");
-        if (colliderEspada != null) colliderEspada.SetActive(true);
+        rb.linearVelocity =
+            new Vector2(
+                0,
+                rb.linearVelocity.y
+            );
 
-        yield return new WaitForSeconds(tempoAtaque);
+        Debug.Log("⚔️ ATAQUE");
 
-        if (colliderEspada != null) colliderEspada.SetActive(false);
+        if (colliderEspada != null)
+        {
+            colliderEspada.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(
+            tempoAtaque
+        );
+
+        if (colliderEspada != null)
+        {
+            colliderEspada.SetActive(false);
+        }
 
         atacando = false;
 
-        yield return new WaitForSeconds(cooldownAtaque);
+        yield return new WaitForSeconds(
+            cooldownAtaque
+        );
+
         podeAtacar = true;
     }
 
-    public void TomarDano(int dano)
+    // =====================================
+    // TOMAR DANO
+    // =====================================
+
+    public void TakeDamage(
+        int amount,
+        GameObject source
+    )
     {
-        if (vidaAtual <= 0) return;
+        // =====================================
+        // ESCUDO
+        // =====================================
 
         if (!escudoQuebrado)
         {
-            vidaAtualEscudo--;
-            Debug.Log($"🛡️ Escudo: {vidaAtualEscudo}/{vidaEscudo}");
+            vidaAtualEscudo -= amount;
+
+            Debug.Log(
+                "🛡️ Escudo restante: "
+                + vidaAtualEscudo
+            );
 
             if (vidaAtualEscudo <= 0)
+            {
                 QuebrarEscudo();
+            }
+
+            StartCoroutine(PiscarDano());
+
             return;
         }
 
-        vidaAtual -= dano;
-        Debug.Log($"💥 Cavaleiro tomou {dano} | Vida: {vidaAtual}/{vidaMaxima}");
+        // =====================================
+        // VIDA
+        // =====================================
+
+        vidaAtual -= amount;
+
+        Debug.Log(
+            "💥 Vida restante: "
+            + vidaAtual
+        );
+
+        StartCoroutine(PiscarDano());
 
         if (vidaAtual <= 0)
+        {
             Morrer();
+        }
     }
 
-    private void QuebrarEscudo()
+    // =====================================
+    // ESCUDO
+    // =====================================
+
+    void QuebrarEscudo()
     {
         escudoQuebrado = true;
-        Debug.Log("💥 ESCUDO QUEBRADO!");
-        if (colliderEscudo != null) colliderEscudo.SetActive(false);
+
+        Debug.Log("💥 Escudo quebrado");
+
+        if (colliderEscudo != null)
+        {
+            colliderEscudo.SetActive(false);
+        }
     }
 
     public void RegenerarEscudo()
     {
-        if (!escudoQuebrado) return;
+        if (!escudoQuebrado)
+            return;
 
         escudoQuebrado = false;
+
         vidaAtualEscudo = vidaEscudo;
-        Debug.Log("✨ Escudo Regenerado!");
-        if (colliderEscudo != null) colliderEscudo.SetActive(true);
+
+        Debug.Log("✨ Escudo regenerado");
+
+        if (colliderEscudo != null)
+        {
+            colliderEscudo.SetActive(true);
+        }
     }
 
-    private void Morrer()
+    // =====================================
+    // MORTE
+    // =====================================
+
+    void Morrer()
     {
-        Debug.Log("☠️ Cavaleiro morreu");
+        Debug.Log("☠️ MORREU");
+
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    // =====================================
+    // PISCAR DANO
+    // =====================================
+
+    IEnumerator PiscarDano()
     {
-        if (other.CompareTag("Player") && colliderEspada != null && colliderEspada.activeInHierarchy)
+        if (spriteRenderer == null)
+            yield break;
+
+        spriteRenderer.color =
+            Color.red;
+
+        yield return new WaitForSeconds(
+            0.1f
+        );
+
+        spriteRenderer.color =
+            corOriginal;
+    }
+
+    // =====================================
+    // TRIGGERS
+    // =====================================
+
+    private void OnTriggerEnter2D(
+        Collider2D other
+    )
+    {
+        // =====================================
+        // DANO PLAYER
+        // =====================================
+
+        if (
+            other.CompareTag("Player") &&
+            colliderEspada != null &&
+            colliderEspada.activeInHierarchy
+        )
         {
-            IDamageable damageable = other.GetComponent<IDamageable>();
-            if (damageable != null)
-                damageable.TakeDamage(danoEspada, gameObject);
+            IDamageable dmg =
+                other.GetComponent<IDamageable>();
+
+            if (dmg != null)
+            {
+                dmg.TakeDamage(
+                    danoEspada,
+                    gameObject
+                );
+
+                Debug.Log("⚔️ Espada acertou");
+            }
         }
 
-        if (other.CompareTag("Player") && colliderEscudo != null && colliderEscudo.activeInHierarchy)
+        // =====================================
+        // ATAQUE PLAYER
+        // =====================================
+
+        if (
+            other.CompareTag("PlayerAttack")
+        )
         {
-            TomarDano(1);
+            if (!escudoQuebrado)
+            {
+                TakeDamage(
+                    1,
+                    other.gameObject
+                );
+            }
+            else
+            {
+                TakeDamage(
+                    2,
+                    other.gameObject
+                );
+            }
         }
     }
 
-    private void OnTriggerStay2D(Collider2D other)  
+    // =====================================
+    // LUZ
+    // =====================================
+
+    private void OnTriggerStay2D(
+        Collider2D other
+    )
     {
-        if (other.CompareTag("LuzLampiao"))
+        if (
+            other.CompareTag("LuzLampiao")
+        )
+        {
             RegenerarEscudo();
+        }
     }
+
+    // =====================================
+    // GIZMOS
+    // =====================================
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere((Vector2)transform.position + offsetDeteccao, rangeDeteccao);
+
+        Gizmos.DrawWireSphere(
+            (Vector2)transform.position
+            + offsetDeteccao,
+            rangeDeteccao
+        );
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere((Vector2)transform.position + offsetAtaque, rangeAtaque);
+
+        Gizmos.DrawWireSphere(
+            (Vector2)transform.position
+            + offsetAtaque,
+            rangeAtaque
+        );
     }
 }
