@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.nobi.roundedcorners": "https://github.com/kirevdokimov/Unity-UI-Rounded-Corners.git",
     "com.unity.cinemachine": "3.1.6",
     "com.unity.collab-proxy": "2.11.4",
     "com.unity.feature.2d": "2.0.1",
