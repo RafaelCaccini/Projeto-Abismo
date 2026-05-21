@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      InsetoLuzPlaceHolder_0: 4076988600298800984
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
