@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3529862}
   - component: {fileID: 3529863}
+  - component: {fileID: 3529864}
   m_Layer: 0
   m_Name: Morro_2 var1_0 (3)
   m_TagString: Untagged
@@ -206,6 +207,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3529864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3529861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &70941776
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 70941777}
   - component: {fileID: 70941778}
+  - component: {fileID: 70941779}
   m_Layer: 0
   m_Name: espeleotemas_2 (2)
   m_TagString: Untagged
@@ -293,6 +309,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &70941779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70941776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &132231116
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,8 +349,8 @@ Transform:
   m_GameObject: {fileID: 132231116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -46.2, y: -21.9, z: 0}
-  m_LocalScale: {x: 0.1949044, y: 0.21246994, z: 1}
+  m_LocalPosition: {x: -47.2413, y: -21.9, z: 0}
+  m_LocalScale: {x: 0.23486726, y: 0.21246994, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1821396043}
@@ -390,6 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 139465743}
   - component: {fileID: 139465744}
+  - component: {fileID: 139465745}
   m_Layer: 0
   m_Name: espeleotemas_0
   m_TagString: Untagged
@@ -467,6 +498,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &139465745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139465742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &183022174
 GameObject:
   m_ObjectHideFlags: 0
@@ -1316,6 +1361,7 @@ GameObject:
   m_Component:
   - component: {fileID: 420562115}
   - component: {fileID: 420562116}
+  - component: {fileID: 420562117}
   m_Layer: 0
   m_Name: Ponte e destino da ponte_0
   m_TagString: Untagged
@@ -1393,6 +1439,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &420562117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420562114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1 &425013059
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,6 +1550,7 @@ GameObject:
   m_Component:
   - component: {fileID: 458386535}
   - component: {fileID: 458386536}
+  - component: {fileID: 458386537}
   m_Layer: 0
   m_Name: espeleotemas_5
   m_TagString: Untagged
@@ -1567,6 +1628,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &458386537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458386534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &475780460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,6 +1859,7 @@ GameObject:
   m_Component:
   - component: {fileID: 531574358}
   - component: {fileID: 531574359}
+  - component: {fileID: 531574360}
   m_Layer: 0
   m_Name: Ruinas e escadaria_1
   m_TagString: Untagged
@@ -1861,6 +1937,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &531574360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531574357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1 &552867880
 GameObject:
   m_ObjectHideFlags: 0
@@ -2087,6 +2177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 579835692}
   - component: {fileID: 579835693}
+  - component: {fileID: 579835694}
   m_Layer: 0
   m_Name: espeleotemas_2
   m_TagString: Untagged
@@ -2164,6 +2255,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &579835694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579835691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &579950511
 GameObject:
   m_ObjectHideFlags: 0
@@ -2174,6 +2279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 579950512}
   - component: {fileID: 579950513}
+  - component: {fileID: 579950514}
   m_Layer: 0
   m_Name: Morro_1 var5_0
   m_TagString: Untagged
@@ -2251,6 +2357,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &579950514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579950511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &604582420
 GameObject:
   m_ObjectHideFlags: 0
@@ -2261,6 +2381,7 @@ GameObject:
   m_Component:
   - component: {fileID: 604582421}
   - component: {fileID: 604582422}
+  - component: {fileID: 604582423}
   m_Layer: 0
   m_Name: Morro_1 var1_0
   m_TagString: Untagged
@@ -2338,6 +2459,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &604582423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604582420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &605692318
 GameObject:
   m_ObjectHideFlags: 0
@@ -2643,6 +2778,7 @@ GameObject:
   m_Component:
   - component: {fileID: 719964056}
   - component: {fileID: 719964057}
+  - component: {fileID: 719964058}
   m_Layer: 0
   m_Name: Morro_1 var4_0
   m_TagString: Untagged
@@ -2720,6 +2856,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &719964058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719964055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &742706835
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,6 +2967,7 @@ GameObject:
   m_Component:
   - component: {fileID: 820465162}
   - component: {fileID: 820465163}
+  - component: {fileID: 820465164}
   m_Layer: 0
   m_Name: Morro_2 var1_0 (2)
   m_TagString: Untagged
@@ -2894,6 +3045,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &820465164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820465161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &843921519
 GameObject:
   m_ObjectHideFlags: 0
@@ -30369,6 +30534,7 @@ GameObject:
   m_Component:
   - component: {fileID: 890006200}
   - component: {fileID: 890006201}
+  - component: {fileID: 890006202}
   m_Layer: 0
   m_Name: Ruinas e escadaria_5
   m_TagString: Untagged
@@ -30446,6 +30612,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &890006202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890006199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1 &900553341
 GameObject:
   m_ObjectHideFlags: 0
@@ -30456,6 +30636,7 @@ GameObject:
   m_Component:
   - component: {fileID: 900553342}
   - component: {fileID: 900553343}
+  - component: {fileID: 900553344}
   m_Layer: 0
   m_Name: espeleotemas_4 (1)
   m_TagString: Untagged
@@ -30533,6 +30714,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &900553344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900553341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &918561607
 GameObject:
   m_ObjectHideFlags: 0
@@ -30543,6 +30738,7 @@ GameObject:
   m_Component:
   - component: {fileID: 918561608}
   - component: {fileID: 918561609}
+  - component: {fileID: 918561610}
   m_Layer: 0
   m_Name: espeleotemas_1 (7)
   m_TagString: Untagged
@@ -30620,6 +30816,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &918561610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918561607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &953407492
 GameObject:
   m_ObjectHideFlags: 0
@@ -30630,6 +30840,7 @@ GameObject:
   m_Component:
   - component: {fileID: 953407493}
   - component: {fileID: 953407494}
+  - component: {fileID: 953407495}
   m_Layer: 0
   m_Name: espeleotemas_4
   m_TagString: Untagged
@@ -30707,6 +30918,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &953407495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953407492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &979222742
 GameObject:
   m_ObjectHideFlags: 0
@@ -30717,6 +30942,7 @@ GameObject:
   m_Component:
   - component: {fileID: 979222743}
   - component: {fileID: 979222744}
+  - component: {fileID: 979222745}
   m_Layer: 0
   m_Name: Morro_1 var5_0 (1)
   m_TagString: Untagged
@@ -30794,6 +31020,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &979222745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979222742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &1041119221
 GameObject:
   m_ObjectHideFlags: 0
@@ -30804,6 +31044,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1041119222}
   - component: {fileID: 1041119223}
+  - component: {fileID: 1041119224}
   m_Layer: 0
   m_Name: espeleotemas_0 (2)
   m_TagString: Untagged
@@ -30881,6 +31122,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1041119224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041119221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1001 &1052906016
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31173,6 +31428,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1077444860}
   - component: {fileID: 1077444861}
+  - component: {fileID: 1077444862}
   m_Layer: 0
   m_Name: Morro_1 var1_0 (1)
   m_TagString: Untagged
@@ -31250,6 +31506,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1077444862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077444859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &1081843572
 GameObject:
   m_ObjectHideFlags: 0
@@ -31260,6 +31530,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1081843573}
   - component: {fileID: 1081843574}
+  - component: {fileID: 1081843575}
   m_Layer: 0
   m_Name: Ruinas e escadaria_0
   m_TagString: Untagged
@@ -31337,6 +31608,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1081843575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081843572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1 &1194229720
 GameObject:
   m_ObjectHideFlags: 0
@@ -31514,6 +31799,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1233588748}
   - component: {fileID: 1233588749}
+  - component: {fileID: 1233588750}
   m_Layer: 0
   m_Name: Morro_2 var4_0
   m_TagString: Untagged
@@ -31591,6 +31877,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1233588750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233588747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &1234169062
 GameObject:
   m_ObjectHideFlags: 0
@@ -31601,6 +31901,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1234169063}
   - component: {fileID: 1234169064}
+  - component: {fileID: 1234169065}
   m_Layer: 0
   m_Name: espeleotemas_1 (2)
   m_TagString: Untagged
@@ -31678,6 +31979,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1234169065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1234169062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1243168324
 GameObject:
   m_ObjectHideFlags: 0
@@ -32422,6 +32737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1335805525}
   - component: {fileID: 1335805526}
+  - component: {fileID: 1335805527}
   m_Layer: 0
   m_Name: Ponte e destino da ponte_0 (1)
   m_TagString: Untagged
@@ -32499,6 +32815,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1335805527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335805524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1 &1368444595
 GameObject:
   m_ObjectHideFlags: 0
@@ -32509,6 +32839,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1368444596}
   - component: {fileID: 1368444597}
+  - component: {fileID: 1368444598}
   m_Layer: 0
   m_Name: espeleotemas_0 (1)
   m_TagString: Untagged
@@ -32586,6 +32917,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1368444598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368444595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1403182242
 GameObject:
   m_ObjectHideFlags: 0
@@ -32596,6 +32941,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1403182243}
   - component: {fileID: 1403182244}
+  - component: {fileID: 1403182245}
   m_Layer: 0
   m_Name: espeleotemas_3
   m_TagString: Untagged
@@ -32673,6 +33019,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1403182245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403182242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1437558276
 GameObject:
   m_ObjectHideFlags: 0
@@ -32942,6 +33302,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1520659146}
   - component: {fileID: 1520659147}
+  - component: {fileID: 1520659148}
   m_Layer: 0
   m_Name: Morro_2 var5_0
   m_TagString: Untagged
@@ -33019,6 +33380,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1520659148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520659145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &1523836160
 GameObject:
   m_ObjectHideFlags: 0
@@ -33163,6 +33538,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1536928749}
   - component: {fileID: 1536928750}
+  - component: {fileID: 1536928751}
   m_Layer: 0
   m_Name: espeleotemas_2 (1)
   m_TagString: Untagged
@@ -33240,6 +33616,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1536928751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536928748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1609410182
 GameObject:
   m_ObjectHideFlags: 0
@@ -33400,6 +33790,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1640958931}
   - component: {fileID: 1640958932}
+  - component: {fileID: 1640958933}
   m_Layer: 0
   m_Name: espeleotemas_1 (3)
   m_TagString: Untagged
@@ -33477,6 +33868,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1640958933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640958930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1660861205
 GameObject:
   m_ObjectHideFlags: 0
@@ -33503,8 +33908,8 @@ Transform:
   m_GameObject: {fileID: 1660861205}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -78.88, y: 9.35, z: 0}
-  m_LocalScale: {x: 0.1949044, y: 0.21246994, z: 1}
+  m_LocalPosition: {x: -78.88, y: 8.835, z: 0}
+  m_LocalScale: {x: 0.1949044, y: 0.22772528, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1821396043}
@@ -33647,6 +34052,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1672916110}
   - component: {fileID: 1672916111}
+  - component: {fileID: 1672916112}
   m_Layer: 0
   m_Name: Ponte e destino da ponte_1
   m_TagString: Untagged
@@ -33724,6 +34130,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1672916112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1672916109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1 &1726174364
 GameObject:
   m_ObjectHideFlags: 0
@@ -33734,6 +34154,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1726174365}
   - component: {fileID: 1726174366}
+  - component: {fileID: 1726174367}
   m_Layer: 0
   m_Name: Morro_2 var3_0
   m_TagString: Untagged
@@ -33811,6 +34232,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1726174367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726174364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &1728907284
 GameObject:
   m_ObjectHideFlags: 0
@@ -33821,6 +34256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1728907285}
   - component: {fileID: 1728907286}
+  - component: {fileID: 1728907287}
   m_Layer: 0
   m_Name: espeleotemas_1 (5)
   m_TagString: Untagged
@@ -33898,6 +34334,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1728907287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728907284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1735009474
 GameObject:
   m_ObjectHideFlags: 0
@@ -33908,6 +34358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1735009475}
   - component: {fileID: 1735009476}
+  - component: {fileID: 1735009477}
   m_Layer: 0
   m_Name: espeleotemas_1 (6)
   m_TagString: Untagged
@@ -33985,6 +34436,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1735009477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735009474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1743432376
 GameObject:
   m_ObjectHideFlags: 0
@@ -33995,6 +34460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1743432377}
   - component: {fileID: 1743432378}
+  - component: {fileID: 1743432379}
   m_Layer: 0
   m_Name: espeleotemas_1
   m_TagString: Untagged
@@ -34072,6 +34538,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1743432379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743432376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1747504251
 GameObject:
   m_ObjectHideFlags: 0
@@ -34082,6 +34562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1747504252}
   - component: {fileID: 1747504253}
+  - component: {fileID: 1747504254}
   m_Layer: 0
   m_Name: espeleotemas_1 (1)
   m_TagString: Untagged
@@ -34159,6 +34640,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1747504254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747504251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &1757187692
 GameObject:
   m_ObjectHideFlags: 0
@@ -34169,6 +34664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1757187693}
   - component: {fileID: 1757187694}
+  - component: {fileID: 1757187695}
   m_Layer: 0
   m_Name: Morro_1 var2_0
   m_TagString: Untagged
@@ -34246,6 +34742,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1757187695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757187692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &1772848721
 GameObject:
   m_ObjectHideFlags: 0
@@ -34272,8 +34782,8 @@ Transform:
   m_GameObject: {fileID: 1772848721}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -110.32, y: -4.04, z: 0}
-  m_LocalScale: {x: 0.1949044, y: 0.21246994, z: 1}
+  m_LocalPosition: {x: -108.6891, y: -4.04, z: 0}
+  m_LocalScale: {x: 0.22209357, y: 0.21246994, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1821396043}
@@ -34476,8 +34986,8 @@ Transform:
   - {fileID: 1077444860}
   - {fileID: 1757187693}
   - {fileID: 2129066349}
-  - {fileID: 719964056}
   - {fileID: 579950512}
+  - {fileID: 719964056}
   - {fileID: 1844405369}
   - {fileID: 979222743}
   - {fileID: 139465743}
@@ -34539,6 +35049,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1844405369}
   - component: {fileID: 1844405370}
+  - component: {fileID: 1844405371}
   m_Layer: 0
   m_Name: Morro_1 var5_0 (2)
   m_TagString: Untagged
@@ -34616,6 +35127,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1844405371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844405368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &1909690366
 GameObject:
   m_ObjectHideFlags: 0
@@ -34626,6 +35151,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1909690367}
   - component: {fileID: 1909690368}
+  - component: {fileID: 1909690369}
   m_Layer: 0
   m_Name: Morro_2 var1_0 (4)
   m_TagString: Untagged
@@ -34703,6 +35229,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1909690369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909690366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1001 &1921179246
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34778,6 +35318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1981002022}
   - component: {fileID: 1981002023}
+  - component: {fileID: 1981002024}
   m_Layer: 0
   m_Name: Morro_2 var1_0
   m_TagString: Untagged
@@ -34855,6 +35396,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1981002024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981002021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &2028952702
 GameObject:
   m_ObjectHideFlags: 0
@@ -34949,6 +35504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2081308588}
   - component: {fileID: 2081308589}
+  - component: {fileID: 2081308590}
   m_Layer: 0
   m_Name: Morro_2 var1_0 (1)
   m_TagString: Untagged
@@ -35026,6 +35582,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2081308590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081308587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.5
 --- !u!1 &2097435117
 GameObject:
   m_ObjectHideFlags: 0
@@ -35052,8 +35622,8 @@ Transform:
   m_GameObject: {fileID: 2097435117}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 29.95, y: -5.71, z: 0}
-  m_LocalScale: {x: 0.1949044, y: 0.21246994, z: 1}
+  m_LocalPosition: {x: 28.7428, y: -8.2149, z: 0}
+  m_LocalScale: {x: 0.21501853, y: 0.28668568, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1821396043}
@@ -35123,6 +35693,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2128749159}
   - component: {fileID: 2128749160}
+  - component: {fileID: 2128749161}
   m_Layer: 0
   m_Name: espeleotemas_1 (4)
   m_TagString: Untagged
@@ -35200,6 +35771,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2128749161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128749158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.6
 --- !u!1 &2129066348
 GameObject:
   m_ObjectHideFlags: 0
@@ -35210,6 +35795,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2129066349}
   - component: {fileID: 2129066350}
+  - component: {fileID: 2129066351}
   m_Layer: 0
   m_Name: Morro_1 var3_0
   m_TagString: Untagged
@@ -35287,6 +35873,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2129066351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129066348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.8
 --- !u!1 &2141850675
 GameObject:
   m_ObjectHideFlags: 0
@@ -35297,6 +35897,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2141850676}
   - component: {fileID: 2141850677}
+  - component: {fileID: 2141850678}
   m_Layer: 0
   m_Name: Ponte e destino da ponte_1 (1)
   m_TagString: Untagged
@@ -35374,6 +35975,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2141850678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141850675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ea3469b4c6eb942ae06f9cabaacb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraParallax3: {fileID: 552867880}
+  parallaxEffect3: 0.9
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
