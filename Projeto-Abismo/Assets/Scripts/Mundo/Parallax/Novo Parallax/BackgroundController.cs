@@ -2,20 +2,20 @@ using UnityEngine;
 
 public class BackgroundController : MonoBehaviour
 {
-    private float startPos;
-    public GameObject cam;
-    public float parallaxEffect;
+    private float startPos3;
+    public GameObject cameraParallax3;
+    public float parallaxEffect3;
 
     void Start()
     {
-        startPos = transform.position.x;
+        startPos3 = transform.position.x;
     }
 
 
     void Update()
     {
-        float distance = cam.transform.position.x * parallaxEffect;
+        float distance = cameraParallax3.transform.position.x * parallaxEffect3;
 
-        transform.position = new Vector3(startPos + distance, transform.position.y, transform.position.z);
+        transform.position = new Vector3(startPos3 + distance, transform.position.y, transform.position.z);
     }
 }
