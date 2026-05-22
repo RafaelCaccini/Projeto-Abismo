@@ -1,13 +1,16 @@
 fileFormatVersion: 2
-guid: a33d90a74e63b524a8f7f9ef79cc26c5
+guid: 817a4420c410a9145b30da175a42c969
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5003789988938808630
-    second: plataformas_0
+      213: 1113125046980072278
+    second: guerreiro_0
   - first:
-      213: -6479089480501096285
-    second: plataformas_1
+      213: 1503012668788760457
+    second: guerreiro_1
+  - first:
+      213: 9102309490161658527
+    second: guerreiro_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -54,7 +57,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 500
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -116,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: plataformas_0
+      name: guerreiro_0
       rect:
         serializedVersion: 2
-        x: 765
-        y: 1285
-        width: 771
-        height: 251
+        x: 0
+        y: 165
+        width: 2414
+        height: 3166
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ac285aa2487fe8ab0800000000000000
-      internalID: -5003789988938808630
+      spriteID: 65356d7255d927f00800000000000000
+      internalID: 1113125046980072278
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: plataformas_1
+      name: guerreiro_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 498
-        width: 1536
-        height: 271
+        x: 509
+        y: 155
+        width: 93
+        height: 54
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +156,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3a013c6f176a516a0800000000000000
-      internalID: -6479089480501096285
+      spriteID: 98fd0181f06cbd410800000000000000
+      internalID: 1503012668788760457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guerreiro_2
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 118
+        width: 213
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9aa0c45146e15e70800000000000000
+      internalID: 9102309490161658527
       vertices: []
       indices: 
       edges: []
@@ -172,9 +197,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      plataformas_0: -5003789988938808630
-      plataformas_1: -6479089480501096285
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,11 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PulgaFogo : MonoBehaviour
+public class PulgaFogo : MonoBehaviour, IDamageable
 {
+    // =====================================
+    // REFERÊNCIAS
+    // =====================================
+
     private Rigidbody2D rb;
 
     private Transform player;
+
+    private Collider2D col;
+
+    // =====================================
+    // MOVIMENTO
+    // =====================================
 
     [Header("Movimento")]
     [SerializeField] private float forcaPuloX = 4f;
@@ -16,50 +26,124 @@ public class PulgaFogo : MonoBehaviour
 
     [SerializeField] private bool iniciarViradoDireita = true;
 
+    // =====================================
+    // DETECÇÃO
+    // =====================================
+
     [Header("Detecção")]
     [SerializeField] private float rangeAtivacao = 8f;
+
+    [SerializeField] private LayerMask wallLayer;
+
+    // =====================================
+    // VIDA
+    // =====================================
+
+    [Header("Vida")]
+    [SerializeField] private int vida = 3;
+
+    // =====================================
+    // DANO
+    // =====================================
 
     [Header("Dano")]
     [SerializeField] private int dano = 1;
 
     [SerializeField] private float cooldownDano = 1f;
 
+    // =====================================
+    // DEBUG
+    // =====================================
+
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = true;
+
+    // =====================================
+    // CONTROLE
+    // =====================================
+
     private bool olhandoDireita;
 
     private bool podeDarDano = true;
 
-    private bool estaNoChao;
+    private bool morto = false;
+
+    // =====================================
+    // AWAKE
+    // =====================================
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        col = GetComponent<Collider2D>();
     }
+
+    // =====================================
+    // START
+    // =====================================
 
     private void Start()
     {
-        PlayerController pc =
-            FindFirstObjectByType<PlayerController>();
+        BuscarPlayer();
 
-        if (pc != null)
-            player = pc.transform;
-
-        olhandoDireita = iniciarViradoDireita;
+        olhandoDireita =
+            iniciarViradoDireita;
 
         AtualizarDirecaoVisual(
             olhandoDireita ? 1f : -1f
         );
 
-        StartCoroutine(RotinaPulos());
+        StartCoroutine(
+            RotinaPulos()
+        );
     }
+
+    // =====================================
+    // BUSCAR PLAYER
+    // =====================================
+
+    void BuscarPlayer()
+    {
+        PlayerController pc =
+            FindFirstObjectByType<PlayerController>();
+
+        if (pc != null)
+        {
+            player = pc.transform;
+
+            if (debugLogs)
+            {
+                Debug.Log(
+                    "✅ PLAYER ENCONTRADO"
+                );
+            }
+        }
+    }
+
+    // =====================================
+    // ROTINA PULOS
+    // =====================================
 
     IEnumerator RotinaPulos()
     {
-        while (true)
+        yield return new WaitForSeconds(1f);
+
+        while (!morto)
         {
-            yield return new WaitForSeconds(tempoEntrePulos);
+            yield return new WaitForSeconds(
+                tempoEntrePulos
+            );
+
+            // tenta achar player de novo
 
             if (player == null)
+            {
+                BuscarPlayer();
                 continue;
+            }
+
+            // DISTÂNCIA PLAYER
 
             float distancia =
                 Vector2.Distance(
@@ -67,38 +151,95 @@ public class PulgaFogo : MonoBehaviour
                     player.position
                 );
 
-            // Fora do range
-            if (distancia > rangeAtivacao)
-                continue;
+            if (debugLogs)
+            {
+                Debug.Log(
+                    "📏 Distância Player: "
+                    + distancia
+                );
+            }
 
-            // Não está no chão
-            if (!estaNoChao)
+            // PLAYER FORA RANGE
+
+            if (distancia > rangeAtivacao)
+            {
+                if (debugLogs)
+                {
+                    Debug.Log(
+                        "🚫 Player fora do range"
+                    );
+                }
+
                 continue;
+            }
+
+            // DETECÇÃO CHÃO
+
+            Vector2 origemRay =
+                new Vector2(
+                    col.bounds.center.x,
+                    col.bounds.min.y + 0.05f
+                );
+
+            bool noChao =
+                Physics2D.Raycast(
+                    origemRay,
+                    Vector2.down,
+                    0.2f,
+                    wallLayer
+                );
+
+            // DEBUG CHÃO
+
+            if (debugLogs)
+            {
+                Debug.Log(
+                    "🟢 No chão: "
+                    + noChao
+                );
+            }
+
+            // NÃO ESTÁ NO CHÃO
+
+            if (!noChao)
+            {
+                continue;
+            }
+
+            // PULAR
 
             FazerPulo();
         }
     }
 
+    // =====================================
+    // PULO
+    // =====================================
+
     void FazerPulo()
     {
-        // Chance de trocar direção
+        // chance trocar direção
+
         if (Random.value > 0.5f)
         {
-            olhandoDireita = !olhandoDireita;
+            olhandoDireita =
+                !olhandoDireita;
         }
 
         float direcao =
             olhandoDireita ? 1f : -1f;
 
-        AtualizarDirecaoVisual(direcao);
-
-        // Reseta velocidade vertical
-        rb.linearVelocity = new Vector2(
-            rb.linearVelocity.x,
-            0f
+        AtualizarDirecaoVisual(
+            direcao
         );
 
-        // Impulso
+        // RESET VELOCIDADE
+
+        rb.linearVelocity =
+            Vector2.zero;
+
+        // FORÇA PULO
+
         rb.AddForce(
             new Vector2(
                 direcao * forcaPuloX,
@@ -107,68 +248,163 @@ public class PulgaFogo : MonoBehaviour
             ForceMode2D.Impulse
         );
 
-        Debug.Log("🔥 Pulga pulou");
+        if (debugLogs)
+        {
+            Debug.Log(
+                "🔥 PULGA PULOU"
+            );
+        }
     }
 
-    void AtualizarDirecaoVisual(float direcao)
+    // =====================================
+    // VISUAL
+    // =====================================
+
+    void AtualizarDirecaoVisual(
+        float direcao
+    )
     {
-        Vector3 escala = transform.localScale;
+        Vector3 escala =
+            transform.localScale;
 
         if (direcao > 0)
-            escala.x = Mathf.Abs(escala.x);
-        else if (direcao < 0)
-            escala.x = -Mathf.Abs(escala.x);
-
-        transform.localScale = escala;
-    }
-
-    // DETECTA CHÃO
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
         {
-            estaNoChao = true;
+            escala.x =
+                Mathf.Abs(escala.x);
         }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
+        else
         {
-            estaNoChao = false;
+            escala.x =
+                -Mathf.Abs(escala.x);
         }
+
+        transform.localScale =
+            escala;
     }
 
-    // DANO
-    private void OnCollisionStay2D(Collision2D collision)
+    // =====================================
+    // DANO PLAYER
+    // =====================================
+
+    private void OnCollisionStay2D(
+        Collision2D collision
+    )
     {
+        if (morto)
+            return;
+
         if (!podeDarDano)
             return;
 
-        if (!collision.gameObject.CompareTag("Player"))
+        if (
+            !collision.gameObject.CompareTag(
+                "Player"
+            )
+        )
             return;
 
         PlayerController pc =
-            collision.gameObject.GetComponent<PlayerController>();
+            collision.gameObject
+            .GetComponent<PlayerController>();
 
         if (pc == null)
             return;
 
-        pc.TakeDamage(dano, gameObject);
+        pc.TakeDamage(
+            dano,
+            gameObject
+        );
 
-        Debug.Log("🔥 Pulga atacou");
+        if (debugLogs)
+        {
+            Debug.Log(
+                "🔥 Pulga atacou"
+            );
+        }
 
-        StartCoroutine(CooldownDano());
+        StartCoroutine(
+            CooldownDano()
+        );
     }
 
     IEnumerator CooldownDano()
     {
         podeDarDano = false;
 
-        yield return new WaitForSeconds(cooldownDano);
+        yield return new WaitForSeconds(
+            cooldownDano
+        );
 
         podeDarDano = true;
     }
+
+    // =====================================
+    // TOMAR DANO
+    // =====================================
+
+    public void TakeDamage(
+        int amount,
+        GameObject source
+    )
+    {
+        if (morto)
+            return;
+
+        vida -= amount;
+
+        if (debugLogs)
+        {
+            Debug.Log(
+                "💥 Pulga tomou "
+                + amount +
+                " | Vida: "
+                + vida
+            );
+        }
+
+        if (vida <= 0)
+        {
+            Morrer();
+        }
+    }
+
+    // =====================================
+    // MORTE
+    // =====================================
+
+    void Morrer()
+    {
+        if (morto)
+            return;
+
+        morto = true;
+
+        StopAllCoroutines();
+
+        rb.linearVelocity =
+            Vector2.zero;
+
+        foreach (
+            Collider2D c
+            in GetComponents<Collider2D>()
+        )
+        {
+            c.enabled = false;
+        }
+
+        if (debugLogs)
+        {
+            Debug.Log(
+                "☠️ Pulga morreu"
+            );
+        }
+
+        Destroy(gameObject, 0.1f);
+    }
+
+    // =====================================
+    // GIZMOS
+    // =====================================
 
     private void OnDrawGizmosSelected()
     {
@@ -178,5 +414,21 @@ public class PulgaFogo : MonoBehaviour
             transform.position,
             rangeAtivacao
         );
+
+        if (col != null)
+        {
+            Vector2 origemRay =
+                new Vector2(
+                    col.bounds.center.x,
+                    col.bounds.min.y + 0.05f
+                );
+
+            Gizmos.color = Color.red;
+
+            Gizmos.DrawRay(
+                origemRay,
+                Vector2.down * 0.2f
+            );
+        }
     }
 }

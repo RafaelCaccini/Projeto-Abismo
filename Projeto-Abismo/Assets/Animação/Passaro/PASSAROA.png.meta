@@ -1,10 +1,46 @@
 fileFormatVersion: 2
-guid: a18ec99b4e8cd3a47bf87f35dbab3203
+guid: c79bc080d82d48c4e9aa5ef937c104db
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8955892290651929733
-    second: "ch\xE3o base (1)_0"
+      213: 4262119583872645087
+    second: PASSAROA_0
+  - first:
+      213: -4807470042722438280
+    second: PASSAROA_1
+  - first:
+      213: -6235277925634307798
+    second: PASSAROA_2
+  - first:
+      213: 5662883247634772282
+    second: PASSAROA_3
+  - first:
+      213: -5049809985675259690
+    second: PASSAROA_4
+  - first:
+      213: -8730781011744795732
+    second: PASSAROA_5
+  - first:
+      213: 817418446511372952
+    second: PASSAROA_6
+  - first:
+      213: 3349036846657498595
+    second: PASSAROA_7
+  - first:
+      213: 174884885901409484
+    second: PASSAROA_8
+  - first:
+      213: -2045122224839117713
+    second: PASSAROA_9
+  - first:
+      213: -3610964800711397402
+    second: PASSAROA_10
+  - first:
+      213: 3971444903071333842
+    second: PASSAROA_11
+  - first:
+      213: -36804183670552643
+    second: PASSAROA_12
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +73,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +87,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 500
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +111,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -101,7 +137,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,199 +149,287 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_0"
+      name: PASSAROA_0
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 2455
+        width: 35
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd7f6fa0e27162b30800000000000000
+      internalID: 4262119583872645087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PASSAROA_1
+      rect:
+        serializedVersion: 2
+        x: 2177
+        y: 2471
+        width: 23
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 873723b977f684db0800000000000000
+      internalID: -4807470042722438280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PASSAROA_2
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 29
+        width: 2757
+        height: 2425
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a298bb633c7d779a0800000000000000
+      internalID: -6235277925634307798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PASSAROA_3
+      rect:
+        serializedVersion: 2
+        x: 3238
+        y: 2397
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a31f7cb7f4a969e40800000000000000
+      internalID: 5662883247634772282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PASSAROA_4
+      rect:
+        serializedVersion: 2
+        x: 3279
+        y: 2396
+        width: 229
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d01b94b2987be9b0800000000000000
+      internalID: -5049809985675259690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PASSAROA_5
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 1872
+        width: 35
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca3d93f6de806d680800000000000000
+      internalID: -8730781011744795732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PASSAROA_6
       rect:
         serializedVersion: 2
         x: 0
-        y: 1536
-        width: 768
-        height: 768
+        y: 1187
+        width: 150
+        height: 182
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: f34703d542e4a434aa10ae9dd8b91ced
-      internalID: -1171522688
+      spriteID: 89a79290fbd085b00800000000000000
+      internalID: 817418446511372952
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_1"
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 1536
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: eda278f04ff66f04c89a1ccd6bce1886
-      internalID: 1790019448
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "ch\xE3o base (1)_2"
-      rect:
-        serializedVersion: 2
-        x: 1536
-        y: 1536
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 24c086c2432dbae46a57d5a9c7378275
-      internalID: -1829192180
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "ch\xE3o base (1)_3"
+      name: PASSAROA_7
       rect:
         serializedVersion: 2
         x: 0
-        y: 768
-        width: 768
-        height: 768
+        y: 707
+        width: 122
+        height: 279
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 02aaea19c67aef44e9cb8a399cac1cbb
-      internalID: -1091120621
+      spriteID: 3ede6b0a44b2a7e20800000000000000
+      internalID: 3349036846657498595
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_4"
+      name: PASSAROA_8
       rect:
         serializedVersion: 2
-        x: 768
-        y: 768
-        width: 768
-        height: 768
+        x: 144
+        y: 493
+        width: 158
+        height: 177
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 1bf3630935cc0874bb6e5827882c6aad
-      internalID: 1763984129
+      spriteID: cccfcbc80e05d6200800000000000000
+      internalID: 174884885901409484
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_5"
+      name: PASSAROA_9
       rect:
         serializedVersion: 2
-        x: 1536
-        y: 768
-        width: 768
-        height: 768
+        x: 3400
+        y: 633
+        width: 65
+        height: 71
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 0beb0cd1ffc337f429184e01f9f2932c
-      internalID: 866898818
+      spriteID: f64353a0c244e93e0800000000000000
+      internalID: -2045122224839117713
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_6"
+      name: PASSAROA_10
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 768
-        height: 768
+        y: 468
+        width: 122
+        height: 129
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 8eaf54806c5e0dd4abc52fcca0dce6df
-      internalID: 53339798
+      spriteID: 6ef682d35a643edc0800000000000000
+      internalID: -3610964800711397402
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_7"
+      name: PASSAROA_11
       rect:
         serializedVersion: 2
-        x: 768
-        y: 0
-        width: 768
-        height: 768
+        x: 16
+        y: 417
+        width: 44
+        height: 40
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ab3beab5787c944468712e67404c465f
-      internalID: -1924988785
+      spriteID: 2dd3a9409186d1730800000000000000
+      internalID: 3971444903071333842
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_8"
+      name: PASSAROA_12
       rect:
         serializedVersion: 2
-        x: 1536
-        y: 0
-        width: 768
-        height: 768
+        x: 103
+        y: 255
+        width: 56
+        height: 59
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ae5b082ff5981ef47b3395afb134b92e
-      internalID: -1678189875
+      spriteID: db7811a3ace3d7ff0800000000000000
+      internalID: -36804183670552643
       vertices: []
       indices: 
       edges: []
@@ -314,7 +438,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 89d5fbba7b285694f8cd2f06ffe6075c
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -322,19 +446,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
-    nameFileIdTable:
-      "ch\xE3o base (1)_0": -1171522688
-      "ch\xE3o base (1)_1": 1790019448
-      "ch\xE3o base (1)_2": -1829192180
-      "ch\xE3o base (1)_3": -1091120621
-      "ch\xE3o base (1)_4": 1763984129
-      "ch\xE3o base (1)_5": 866898818
-      "ch\xE3o base (1)_6": 53339798
-      "ch\xE3o base (1)_7": -1924988785
-      "ch\xE3o base (1)_8": -1678189875
+      entries: []
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,37 @@
 fileFormatVersion: 2
-guid: 2437af9afc09f804c9bb11d8e98f03fb
+guid: a8da11c02e86a14468e098d539993d6e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1444475228354664646
-    second: cantos_0
+      213: -5936844136212628020
+    second: mini_boss_0
+  - first:
+      213: 8085224557508614966
+    second: mini_boss_1
+  - first:
+      213: 970137368558952856
+    second: mini_boss_2
+  - first:
+      213: 7388545741796203787
+    second: mini_boss_3
+  - first:
+      213: 4037132186302249700
+    second: mini_boss_4
+  - first:
+      213: -8345951883728483229
+    second: mini_boss_5
+  - first:
+      213: 7395839001847701248
+    second: mini_boss_6
+  - first:
+      213: -1703485759021322155
+    second: mini_boss_7
+  - first:
+      213: -6559467666806796991
+    second: mini_boss_8
+  - first:
+      213: -641778401562723411
+    second: mini_boss_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +78,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 500
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +140,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cantos_0
+      name: mini_boss_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1536
-        width: 768
-        height: 768
+        x: 1002
+        y: 3386
+        width: 36
+        height: 28
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,118 +155,206 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a37a117de6134fbe0800000000000000
-      internalID: -1444475228354664646
+      spriteID: ccd7f2e76b71c9da0800000000000000
+      internalID: -5936844136212628020
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cantos_1
+      name: mini_boss_1
       rect:
         serializedVersion: 2
-        x: 768
-        y: 1536
-        width: 768
-        height: 768
+        x: 178
+        y: 36
+        width: 2037
+        height: 3316
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 1aebe226c830fa349890f9999bcebaaa
-      internalID: 1818357997
+      spriteID: 63bd09fc5ec743070800000000000000
+      internalID: 8085224557508614966
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cantos_2
+      name: mini_boss_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 768
-        width: 768
-        height: 768
+        x: 845
+        y: 3340
+        width: 17
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: a89d593a0a428e744b1ceef90e784630
-      internalID: -809879338
+      spriteID: 891e944fbce967d00800000000000000
+      internalID: 970137368558952856
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cantos_3
+      name: mini_boss_3
       rect:
         serializedVersion: 2
-        x: 768
-        y: 768
-        width: 768
-        height: 768
+        x: 887
+        y: 3352
+        width: 33
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: db31bdf90aeb3724483a491861aa305c
-      internalID: -1989017733
+      spriteID: b0ddc7ab433698660800000000000000
+      internalID: 7388545741796203787
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cantos_4
+      name: mini_boss_4
       rect:
         serializedVersion: 2
-        x: 0
+        x: 901
+        y: 3341
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ea77d37556c60830800000000000000
+      internalID: 4037132186302249700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mini_boss_5
+      rect:
+        serializedVersion: 2
+        x: 2235
+        y: 2001
+        width: 27
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36c8cd10bf83d2c80800000000000000
+      internalID: -8345951883728483229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mini_boss_6
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 1166
+        width: 41
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00f9c19236c43a660800000000000000
+      internalID: 7395839001847701248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mini_boss_7
+      rect:
+        serializedVersion: 2
+        x: 2210
+        y: 257
+        width: 11
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 550f8954ab00c58e0800000000000000
+      internalID: -1703485759021322155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mini_boss_8
+      rect:
+        serializedVersion: 2
+        x: 913
+        y: 10
+        width: 16
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14d025c19e618f4a0800000000000000
+      internalID: -6559467666806796991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mini_boss_9
+      rect:
+        serializedVersion: 2
+        x: 944
         y: 0
-        width: 768
-        height: 768
+        width: 189
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 68f59196fbe1bc5428675f769b669f3b
-      internalID: -584026230
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cantos_5
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 0
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9ce486390bf84e442b469a940704510b
-      internalID: 158290727
+      spriteID: dabf55ea1f1f717f0800000000000000
+      internalID: -641778401562723411
       vertices: []
       indices: 
       edges: []
@@ -248,7 +363,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b9e36877b9b01b74380d36a499c7bb89
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -256,18 +371,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceOnImport
-        value: False
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
-    nameFileIdTable:
-      cantos_0: -1444475228354664646
-      cantos_1: 1818357997
-      cantos_2: -809879338
-      cantos_3: -1989017733
-      cantos_4: -584026230
-      cantos_5: 158290727
+      entries: []
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: a33d90a74e63b524a8f7f9ef79cc26c5
+guid: d39e32d4fa93de64cb3645bb79805281
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5003789988938808630
-    second: plataformas_0
+      213: 5679131615540843754
+    second: foguinho_0
   - first:
-      213: -6479089480501096285
-    second: plataformas_1
+      213: -2822409433058478435
+    second: foguinho_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -54,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 500
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -116,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: plataformas_0
+      name: foguinho_0
       rect:
         serializedVersion: 2
-        x: 765
-        y: 1285
-        width: 771
-        height: 251
+        x: 896
+        y: 581
+        width: 1887
+        height: 1830
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ac285aa2487fe8ab0800000000000000
-      internalID: -5003789988938808630
+      spriteID: ae490017d1450de40800000000000000
+      internalID: 5679131615540843754
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: plataformas_1
+      name: foguinho_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 498
-        width: 1536
-        height: 271
+        x: 2449
+        y: 523
+        width: 63
+        height: 38
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3a013c6f176a516a0800000000000000
-      internalID: -6479089480501096285
+      spriteID: d9676db0399c4d8d0800000000000000
+      internalID: -2822409433058478435
       vertices: []
       indices: 
       edges: []
@@ -172,9 +172,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      plataformas_0: -5003789988938808630
-      plataformas_1: -6479089480501096285
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

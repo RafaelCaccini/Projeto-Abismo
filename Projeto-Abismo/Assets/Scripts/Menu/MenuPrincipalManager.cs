@@ -15,7 +15,13 @@ public class MenuPrincipalManager : MonoBehaviour
 
     [SerializeField] private string fase4 = "Parte4";
 
-    [SerializeField] private string fase5 = "Parte5";           
+    [SerializeField] private string fase5 = "Parte5";          
+    
+    [SerializeField] private string fase21 = "Parte2.1";
+    [SerializeField] private string fase22 = "Parte2.2";
+    [SerializeField] private string fase23 = "Parte2.3";
+    [SerializeField] private string fase24 = "Parte2.4";
+
 
 
     [Header("PAINÉIS")]
@@ -89,6 +95,33 @@ public class MenuPrincipalManager : MonoBehaviour
         Debug.Log("Indo para Parte5");
         SceneManager.LoadScene(fase5);
     }
+
+    // FASE 2
+
+    public void IrParaParte21()
+    {
+        Debug.Log("Indo para Parte2.1");
+        SceneManager.LoadScene(fase21);
+    }
+
+    public void IrParaParte22()
+    {
+        Debug.Log("Indo para Parte2.2");
+        SceneManager.LoadScene(fase22);
+    }
+
+    public void IrParaParte23()
+    {
+        Debug.Log("Indo para Parte2.3");
+        SceneManager.LoadScene(fase23);
+    }
+
+    public void IrParaParte24()
+    {
+        Debug.Log("Indo para Parte2.4");
+        SceneManager.LoadScene(fase24);
+    }
+
 
     // =====================================
     // OPÇÕES
