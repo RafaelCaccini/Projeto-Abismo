@@ -197,7 +197,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      guerreiro_0: 1113125046980072278
+      guerreiro_1: 1503012668788760457
+      guerreiro_2: 9102309490161658527
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

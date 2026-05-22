@@ -172,7 +172,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      foguinho_0: 5679131615540843754
+      foguinho_1: -2822409433058478435
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
