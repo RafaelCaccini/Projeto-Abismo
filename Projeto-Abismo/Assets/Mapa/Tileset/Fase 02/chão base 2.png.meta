@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a18ec99b4e8cd3a47bf87f35dbab3203
+guid: 9927d4d07a6dbf24e9c07cf8331422c7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8955892290651929733
-    second: "ch\xE3o base (1)_0"
+      213: 1402440530924425300
+    second: "ch\xE3o base 2_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 500
+  spritePixelsToUnits: 768
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,7 +100,29 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_0"
+      name: "ch\xE3o base 2_0"
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4505c508b38767310800000000000000
+      internalID: 1402440530924425300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "ch\xE3o base 2_1"
       rect:
         serializedVersion: 2
         x: 0
@@ -115,14 +137,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f34703d542e4a434aa10ae9dd8b91ced
-      internalID: -1171522688
+      spriteID: 36f443169bc6aa849ae2e6847e2c146d
+      internalID: -920665820
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_1"
+      name: "ch\xE3o base 2_2"
       rect:
         serializedVersion: 2
         x: 768
@@ -137,14 +159,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eda278f04ff66f04c89a1ccd6bce1886
-      internalID: 1790019448
+      spriteID: 973ad1172d1096a4d90c4333e00053d0
+      internalID: -173591280
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_2"
+      name: "ch\xE3o base 2_3"
       rect:
         serializedVersion: 2
         x: 1536
@@ -159,36 +181,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 24c086c2432dbae46a57d5a9c7378275
-      internalID: -1829192180
+      spriteID: 666cee33292c14540922ddc25af50d3d
+      internalID: -1833511479
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_3"
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 768
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 02aaea19c67aef44e9cb8a399cac1cbb
-      internalID: -1091120621
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "ch\xE3o base (1)_4"
+      name: "ch\xE3o base 2_4"
       rect:
         serializedVersion: 2
         x: 768
@@ -203,17 +203,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1bf3630935cc0874bb6e5827882c6aad
-      internalID: 1763984129
+      spriteID: 7dc7da49f9304c04693a77bdb7bd6836
+      internalID: -1973960399
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_5"
+      name: "ch\xE3o base 2_5"
       rect:
         serializedVersion: 2
-        x: 1536
+        x: 0
         y: 768
         width: 768
         height: 768
@@ -225,14 +225,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0beb0cd1ffc337f429184e01f9f2932c
-      internalID: 866898818
+      spriteID: 9bc646b3b3431404eb488facd3bf2bfc
+      internalID: 854317477
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_6"
+      name: "ch\xE3o base 2_6"
       rect:
         serializedVersion: 2
         x: 0
@@ -247,14 +247,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8eaf54806c5e0dd4abc52fcca0dce6df
-      internalID: 53339798
+      spriteID: 82eafaede0b287b41a5710d7505ad693
+      internalID: -2092334426
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_7"
+      name: "ch\xE3o base 2_8"
       rect:
         serializedVersion: 2
         x: 768
@@ -269,14 +269,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ab3beab5787c944468712e67404c465f
-      internalID: -1924988785
+      spriteID: bd5d6ddeb40bbbc4e858437cbc589d25
+      internalID: 738697737
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ch\xE3o base (1)_8"
+      name: "ch\xE3o base 2_11"
       rect:
         serializedVersion: 2
         x: 1536
@@ -291,8 +291,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ae5b082ff5981ef47b3395afb134b92e
-      internalID: -1678189875
+      spriteID: 9f78237f77cdff948a96204965c2db36
+      internalID: -791591220
       vertices: []
       indices: 
       edges: []
@@ -301,7 +301,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 89d5fbba7b285694f8cd2f06ffe6075c
+    spriteID: 84618f8eba4429345ba4e78180a7b5c2
     internalID: 0
     vertices: []
     indices: 
@@ -311,17 +311,20 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":500.0,"y":600.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      "ch\xE3o base (1)_0": -1171522688
-      "ch\xE3o base (1)_1": 1790019448
-      "ch\xE3o base (1)_2": -1829192180
-      "ch\xE3o base (1)_3": -1091120621
-      "ch\xE3o base (1)_4": 1763984129
-      "ch\xE3o base (1)_5": 866898818
-      "ch\xE3o base (1)_6": 53339798
-      "ch\xE3o base (1)_7": -1924988785
-      "ch\xE3o base (1)_8": -1678189875
+      "ch\xE3o base 2_0": 1402440530924425300
+      "ch\xE3o base 2_1": -920665820
+      "ch\xE3o base 2_10": -432992896
+      "ch\xE3o base 2_11": -791591220
+      "ch\xE3o base 2_2": -173591280
+      "ch\xE3o base 2_3": -1833511479
+      "ch\xE3o base 2_4": -1973960399
+      "ch\xE3o base 2_5": 854317477
+      "ch\xE3o base 2_6": -2092334426
+      "ch\xE3o base 2_7": 989937226
+      "ch\xE3o base 2_8": 738697737
+      "ch\xE3o base 2_9": -1255806142
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
