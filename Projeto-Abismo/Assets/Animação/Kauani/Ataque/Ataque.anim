@@ -21,13 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -770851817387401921, guid: e3d6f3a2c4752084686c11d8860fce5f, type: 3}
+      value: {fileID: 21300000, guid: f464d375158f79f46b85b72f2dbba9f3, type: 3}
     - time: 0.1
-      value: {fileID: 863707879814867888, guid: 3bb8bd7e3e53b1c47ac22e8cbcf5c862, type: 3}
+      value: {fileID: 21300000, guid: e005e018d845f3148a030379149f77f1, type: 3}
     - time: 0.2
-      value: {fileID: -3080159794991381946, guid: 7b350f8a09ee47947ab7ae12adee716d, type: 3}
+      value: {fileID: 21300000, guid: 7103e6fe76f3e0446b2cdd2482391976, type: 3}
     - time: 0.3
-      value: {fileID: -770851817387401921, guid: e3d6f3a2c4752084686c11d8860fce5f, type: 3}
+      value: {fileID: 21300000, guid: 71b51fd955d063147a1681c4aeeed3d2, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,10 +50,10 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -770851817387401921, guid: e3d6f3a2c4752084686c11d8860fce5f, type: 3}
-    - {fileID: 863707879814867888, guid: 3bb8bd7e3e53b1c47ac22e8cbcf5c862, type: 3}
-    - {fileID: -3080159794991381946, guid: 7b350f8a09ee47947ab7ae12adee716d, type: 3}
-    - {fileID: -770851817387401921, guid: e3d6f3a2c4752084686c11d8860fce5f, type: 3}
+    - {fileID: 21300000, guid: f464d375158f79f46b85b72f2dbba9f3, type: 3}
+    - {fileID: 21300000, guid: e005e018d845f3148a030379149f77f1, type: 3}
+    - {fileID: 21300000, guid: 7103e6fe76f3e0446b2cdd2482391976, type: 3}
+    - {fileID: 21300000, guid: 71b51fd955d063147a1681c4aeeed3d2, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -78,11 +78,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0
-    functionName: 
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

@@ -37,7 +37,7 @@ public class MenuPrincipalManager : MonoBehaviour
 
     public void Jogar()
     {
-        SceneManager.LoadScene(nomeDaCena);
+        SceneManager.LoadScene("IntroVideo");
     }
 
     // =====================================

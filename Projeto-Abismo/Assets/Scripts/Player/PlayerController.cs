@@ -414,13 +414,53 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleAnimations()
     {
-        if (anim == null) return; // evita crash se Animator não estiver configurado
+        if (anim == null)
+            return;
 
-        bool isRunning = Mathf.Abs(horizontalInput) > 0.01f && !isDashing;
-        anim.SetBool("IsRun", isRunning);
+        float velX =
+            Mathf.Abs(rb.linearVelocity.x);
 
-        bool isInAir = !isGrounded;
-        anim.SetBool("IsJump", isInAir);
+        float velY =
+            rb.linearVelocity.y;
+
+        // RUN
+
+        bool isRunning =
+            velX > 0.1f &&
+            isGrounded &&
+            !isDashing;
+
+        anim.SetBool(
+            "IsRun",
+            isRunning
+        );
+
+        // JUMP
+
+        bool jumping =
+            velY > 0.1f;
+
+        anim.SetBool(
+            "IsJump",
+            jumping
+        );
+
+        // FALL
+
+        bool falling =
+            velY < -0.1f;
+
+        anim.SetBool(
+            "IsFalling",
+            falling
+        );
+
+        // GROUNDED
+
+        anim.SetBool(
+            "IsGrounded",
+            isGrounded
+        );
     }
 
     void Die()
@@ -444,33 +484,63 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnCollisionExit2D(
+    Collision2D collision
+)
     {
-        if (collision.gameObject.CompareTag(groundTag))
+        if (
+            collision.gameObject.CompareTag(
+                groundTag
+            )
+        )
         {
             isGrounded = false;
         }
 
-        if (collision.gameObject.CompareTag(wallTag))
+        if (
+            collision.gameObject.CompareTag(
+                wallTag
+            )
+        )
         {
             isTouchingWall = false;
         }
     }
 
     // Opcional: garante atualização de contato se o objeto permanecer em contato
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionStay2D(
+       Collision2D collision
+   )
     {
-        if (collision.gameObject.CompareTag(groundTag))
+        if (
+            collision.gameObject.CompareTag(
+                groundTag
+            )
+        )
         {
-            isGrounded = true;
+            foreach (
+                ContactPoint2D contact
+                in collision.contacts
+            )
+            {
+                // chão REAL vindo de baixo
+
+                if (contact.normal.y > 0.5f)
+                {
+                    isGrounded = true;
+                    return;
+                }
+            }
         }
 
-        if (collision.gameObject.CompareTag(wallTag))
+        if (
+            collision.gameObject.CompareTag(
+                wallTag
+            )
+        )
         {
             isTouchingWall = true;
         }
-
-
     }
 
 }

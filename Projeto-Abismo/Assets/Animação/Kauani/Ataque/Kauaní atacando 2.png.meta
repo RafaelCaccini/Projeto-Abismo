@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: 7b350f8a09ee47947ab7ae12adee716d
+guid: e005e018d845f3148a030379149f77f1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3080159794991381946
-    second: "(Teste) Kauan\xED atacando 2_0"
-  - first:
-      213: 5999211894999971250
-    second: "(Teste) Kauan\xED atacando 2_1"
-  - first:
-      213: 6712879469586161180
-    second: "(Teste) Kauan\xED atacando 2_2"
+      213: -482545652146668269
+    second: "Kauan\xED atacando 2_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -43,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -56,7 +50,7 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 7
-  spritePivot: {x: 0.5, y: 0.5}
+  spritePivot: {x: 0.5, y: 0}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -79,9 +73,9 @@ TextureImporter:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
-    resizeAlgorithm: 0
+    resizeAlgorithm: 1
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -119,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "(Teste) Kauan\xED atacando 2_0"
+      name: "Kauan\xED atacando 2_0"
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1000
-        height: 1000
+        x: 84
+        y: 54
+        width: 1133
+        height: 745
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,52 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 64249106cf21145d0800000000000000
-      internalID: -3080159794991381946
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "(Teste) Kauan\xED atacando 2_1"
-      rect:
-        serializedVersion: 2
-        x: 282
-        y: 56
-        width: 61
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2b575cdee6b714350800000000000000
-      internalID: 5999211894999971250
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "(Teste) Kauan\xED atacando 2_2"
-      rect:
-        serializedVersion: 2
-        x: 270
-        y: 49
-        width: 11
-        height: 6
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c1e12bcaf40f82d50800000000000000
-      internalID: 6712879469586161180
+      spriteID: 31d73e73947ad49f0800000000000000
+      internalID: -482545652146668269
       vertices: []
       indices: 
       edges: []
@@ -188,8 +138,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: fe28f9800ed7d304cb86e3ecaf90e175
-    internalID: 0
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
@@ -198,9 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "(Teste) Kauan\xED atacando 2_0": -3080159794991381946
-      "(Teste) Kauan\xED atacando 2_1": 5999211894999971250
-      "(Teste) Kauan\xED atacando 2_2": 6712879469586161180
+      "Kauan\xED atacando 2_0": -482545652146668269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
