@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Walker : MonoBehaviour
+public class Walker : MonoBehaviour, IDamageable
 {
     // =====================================
     // MOVEMENT
@@ -383,13 +383,31 @@ public class Walker : MonoBehaviour
     // DAMAGE WALKER
     // =====================================
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(
+        int damageAmount,
+        GameObject source
+    )
     {
-        life -= dmg;
+        life -= damageAmount;
+
+        Debug.Log(
+            $"Walker tomou {damageAmount} de {source.name} | Vida: {life}"
+        );
 
         if (life <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    // =====================================
+    // DIE
+    // =====================================
+
+    private void Die()
+    {
+        Debug.Log("Walker morreu");
+
+        Destroy(gameObject);
     }
 }

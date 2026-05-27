@@ -6,38 +6,74 @@ public class AttackBlock : MonoBehaviour
 
     void Start()
     {
-        Destroy(gameObject, 0.2f); // destrói rápido (efeito temporário)
+        Destroy(gameObject, 0.2f);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Aplica dano diretamente para componentes de inimigo conhecidos
+        // =====================================
+        // BLOCKER
+        // =====================================
+
         var blocker = other.GetComponent<Blocker>();
+
         if (blocker != null)
         {
-            blocker.TakeDamage(damage, gameObject);
+            blocker.TakeDamage(
+                damage,
+                gameObject
+            );
+
             return;
         }
+
+        // =====================================
+        // WALKER
+        // =====================================
 
         var walker = other.GetComponent<Walker>();
+
         if (walker != null)
         {
-            walker.TakeDamage(damage);
+            walker.TakeDamage(
+                damage,
+                gameObject
+            );
+
             return;
         }
 
-        // tenta no pai (caso o collider esteja em filho)
-        var parentBlocker = other.GetComponentInParent<Blocker>();
+        // =====================================
+        // BLOCKER NO PAI
+        // =====================================
+
+        var parentBlocker =
+            other.GetComponentInParent<Blocker>();
+
         if (parentBlocker != null)
         {
-            parentBlocker.TakeDamage(damage, gameObject);
+            parentBlocker.TakeDamage(
+                damage,
+                gameObject
+            );
+
             return;
         }
 
-        var parentWalker = other.GetComponentInParent<Walker>();
+        // =====================================
+        // WALKER NO PAI
+        // =====================================
+
+        var parentWalker =
+            other.GetComponentInParent<Walker>();
+
         if (parentWalker != null)
         {
-            parentWalker.TakeDamage(damage);
+            parentWalker.TakeDamage(
+                damage,
+                gameObject
+            );
+
             return;
         }
     }

@@ -87,21 +87,6 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Awake()
     {
-        // 🔒 Garante instância única
-        if (FindObjectsOfType<PlayerController>().Length > 1)
-        {
-            Debug.LogWarning("Player duplicado destruído");
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
-
-        Debug.Log("PLAYER INSTANCIADO ID: " + GetInstanceID());
-
-        // =========================
-        // COMPONENTES
-        // =========================
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
 
@@ -110,30 +95,19 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         originalGravityScale = rb.gravityScale;
 
-        // =========================
-        // VIDA
-        // =========================
         currentLife = maxLife;
 
-        // =========================
-        // ATAQUE
-        // =========================
         playerAttack = GetComponent<PlayerAttack>();
 
         if (playerAttack == null)
             playerAttack = gameObject.AddComponent<PlayerAttack>();
 
-        // =========================
-        // LAMPIÃO
-        // =========================
         if (lampiao == null)
         {
             lampiao = GetComponentInChildren<Lampiao>();
 
             if (lampiao == null)
                 Debug.LogError("[PlayerController] Lampião NÃO encontrado!");
-            else
-                Debug.Log("[PlayerController] Lampião auto-atribuído");
         }
     }
 
@@ -382,18 +356,23 @@ public class PlayerController : MonoBehaviour, IDamageable
     // VIDA DO PLAYER
     public void TakeDamage(int damage, GameObject source)
     {
-        if (isInvincible) return;
+        if (isInvincible)
+            return;
+
+        Debug.Log("PLAYER TOMOU DANO");
 
         currentLife -= damage;
 
-        if (currentLife < 0)
+        Debug.Log("VIDA ATUAL: " + currentLife);
+
+        if (currentLife <= 0)
+        {
             currentLife = 0;
 
-        Debug.Log($"💥 Player tomou {damage} de {source.name} | Vida: {currentLife}");
+            Debug.Log("CHAMANDO DIE");
 
-        if (currentLife == 0)
-        {
             Die();
+
             return;
         }
 
@@ -407,10 +386,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         isInvincible = false;
     }
 
-    public interface IDamageable
-    {
-        void TakeDamage(int damage, GameObject source);
-    }
 
     void HandleAnimations()
     {
@@ -438,7 +413,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         // JUMP
 
         bool jumping =
-            velY > 0.1f;
+    velY > 0.1f &&
+    !isGrounded;
 
         anim.SetBool(
             "IsJump",
@@ -448,7 +424,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         // FALL
 
         bool falling =
-            velY < -0.1f;
+  
+            velY < -0.1f &&
+    !isGrounded;
 
         anim.SetBool(
             "IsFalling",
@@ -466,9 +444,37 @@ public class PlayerController : MonoBehaviour, IDamageable
     void Die()
     {
         Debug.Log("Player morreu");
-        Destroy(gameObject);
-    }
 
+        // trava movimento
+        rb.linearVelocity = Vector2.zero;
+
+        // desativa física
+        rb.simulated = false;
+
+        // desativa colisão
+        Collider2D col = GetComponent<Collider2D>();
+
+        if (col != null)
+            col.enabled = false;
+
+        // desliga animações
+        if (anim != null)
+        {
+            anim.SetBool("IsRun", false);
+            anim.SetBool("IsJump", false);
+            anim.SetBool("IsFalling", false);
+        }
+
+        // mostra tela
+        if (DeathScreen.instance != null)
+        {
+            DeathScreen.instance.MostrarTelaMorte();
+        }
+        else
+        {
+            Debug.LogError("DeathScreen NULL");
+        }
+    }
     // Colisões para controlar isGrounded e isTouchingWall
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -525,7 +531,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             {
                 // chão REAL vindo de baixo
 
-                if (contact.normal.y > 0.5f)
+                if (contact.normal.y > 0.7f)
                 {
                     isGrounded = true;
                     return;

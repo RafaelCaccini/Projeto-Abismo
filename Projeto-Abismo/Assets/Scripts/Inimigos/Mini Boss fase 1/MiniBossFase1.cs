@@ -3,103 +3,54 @@ using UnityEngine;
 
 public class MiniBoss : MonoBehaviour, IDamageable
 {
-    // =========================================
-    // REFERÊNCIAS
-    // =========================================
-
-    [Header("Referencias")]
+    [Header("Player")]
     public Transform jogador;
 
     [Header("Arena")]
     public Transform pontoEsquerda;
     public Transform pontoDireita;
 
-    [Header("Porta Direita")]
-    [SerializeField] private GameObject portaDireita;
-
-    // =========================================
-    // DETECÇÃO
-    // =========================================
-
-    [Header("Deteccao")]
-    public float alcanceDeteccao = 8f;
-
-    private bool jogadorDetectado;
-
-    // =========================================
-    // COMBATE
-    // =========================================
-
-    [Header("Ritmo Combate")]
-    public float tempoEntreAtaques = 1.2f;
-
-    private bool primeiroAtaque = true;
-
-    private bool atacando;
-
-    private int ultimoAtaque = -1;
-
-    // =========================================
-    // MOVIMENTO
-    // =========================================
+    [Header("Paredes")]
+    public GameObject paredeEsquerda;
+    public GameObject paredeDireita;
 
     [Header("Movimento")]
-    public float velocidadeMovimento = 8f;
+    public float velocidade = 8f;
+    public float alturaPulo = 4f;
+    public float tempoPulo = 0.5f;
 
-    public float alturaPulo = 3f;
-
-    private int direcaoX = 1;
-
-    // =========================================
-    // SPIKES
-    // =========================================
+    [Header("Detecção")]
+    public float alcanceDeteccao = 10f;
 
     [Header("Spikes")]
     public GameObject prefabSpike;
 
-    [Header("Spikes Chao")]
     public Transform inicioChao;
     public Transform fimChao;
-    public int quantidadeChao = 5;
 
-    [Header("Spikes Teto")]
     public Transform inicioTeto;
     public Transform fimTeto;
-    public int quantidadeTeto = 5;
 
-    [Header("Tempo Spikes")]
-    public float tempoVidaSpike = 2f;
+    public int quantidadeSpikes = 6;
 
-    public float delaySpawnSpike = 0.1f;
-
-    // =========================================
-    // VIDA
-    // =========================================
+    public float tempoSpike = 2f;
 
     [Header("Vida")]
     public int vidaMaxima = 20;
 
     private int vidaAtual;
 
+    private bool lutaComecou;
     private bool morto;
 
-    // =========================================
-    // DANO CONTATO
-    // =========================================
+    private bool pulando;
 
-    [Header("Dano Contato")]
-    public int danoContato = 1;
-
-    public float cooldownContato = 1f;
-
-    private float ultimoDanoContato;
-
-    // =========================================
-    // START
-    // =========================================
+    private Rigidbody2D rb;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+
         vidaAtual = vidaMaxima;
 
         if (jogador == null)
@@ -108,258 +59,196 @@ public class MiniBoss : MonoBehaviour, IDamageable
                 GameObject.FindGameObjectWithTag("Player");
 
             if (p != null)
-            {
                 jogador = p.transform;
-            }
-            else
-            {
-                Debug.LogError("Player nao encontrado");
-            }
         }
 
-        // começa DESATIVADA
-        if (portaDireita != null)
-        {
-            portaDireita.SetActive(false);
-        }
+        if (paredeEsquerda != null)
+            paredeEsquerda.SetActive(false);
+
+        if (paredeDireita != null)
+            paredeDireita.SetActive(false);
     }
-
-    // =========================================
-    // UPDATE
-    // =========================================
 
     void Update()
     {
-        if (morto || jogador == null)
+        if (morto)
             return;
 
-        float distancia =
+        if (jogador == null)
+            return;
+
+        DetectarJogador();
+
+        if (!lutaComecou)
+            return;
+
+        VirarPlayer();
+
+        MovimentoConstante();
+    }
+
+    // =====================================
+    // DETECTAR PLAYER
+    // =====================================
+
+    void DetectarJogador()
+    {
+        if (lutaComecou)
+            return;
+
+        float dist =
             Vector2.Distance(
                 transform.position,
                 jogador.position
             );
 
-        // detectou jogador
-        if (distancia <= alcanceDeteccao)
+        if (dist <= alcanceDeteccao)
         {
-            if (!jogadorDetectado)
-            {
-                jogadorDetectado = true;
+            lutaComecou = true;
 
-                FecharPorta();
-            }
-        }
+            if (paredeEsquerda != null)
+                paredeEsquerda.SetActive(true);
 
-        // inicia ataques
-        if (jogadorDetectado && !atacando)
-        {
-            StartCoroutine(RotinaAtaque());
+            if (paredeDireita != null)
+                paredeDireita.SetActive(true);
+
+            StartCoroutine(RotinaPulo());
+
+            StartCoroutine(RotinaSpikes());
+
+            Debug.Log("LUTA INICIADA");
         }
     }
 
-    // =========================================
-    // PORTA
-    // =========================================
+    // =====================================
+    // MOVIMENTO
+    // =====================================
 
-    void FecharPorta()
+    void MovimentoConstante()
     {
-        if (portaDireita == null)
+        if (pulando)
             return;
 
-        portaDireita.SetActive(true);
+        float dir =
+            jogador.position.x >
+            transform.position.x
+            ? 1
+            : -1;
 
-        Debug.Log("🚪 Porta fechou");
-    }
+        Vector3 pos =
+            transform.position;
 
-    void AbrirPorta()
-    {
-        if (portaDireita == null)
-            return;
+        pos.x +=
+            dir *
+            velocidade *
+            Time.deltaTime;
 
-        portaDireita.SetActive(false);
+        float minX =
+            pontoEsquerda.position.x;
 
-        Debug.Log("🚪 Porta abriu");
-    }
+        float maxX =
+            pontoDireita.position.x;
 
-    // =========================================
-    // ROTINA ATAQUE
-    // =========================================
-
-    IEnumerator RotinaAtaque()
-    {
-        atacando = true;
-
-        if (!primeiroAtaque)
-        {
-            yield return new WaitForSeconds(
-                tempoEntreAtaques
+        pos.x =
+            Mathf.Clamp(
+                pos.x,
+                minX,
+                maxX
             );
-        }
 
-        int ataque = EscolherAtaque();
-
-        switch (ataque)
-        {
-            case 1:
-                yield return AtaqueParabola();
-                break;
-
-            case 2:
-                yield return AtaqueDiagonal();
-                break;
-
-            case 3:
-                yield return AtaqueEspinhos(true);
-                break;
-
-            case 4:
-                yield return AtaqueEspinhos(false);
-                break;
-        }
-
-        primeiroAtaque = false;
-        ultimoAtaque = ataque;
-
-        atacando = false;
+        transform.position = pos;
     }
 
-    int EscolherAtaque()
+    // =====================================
+    // PULO
+    // =====================================
+
+    IEnumerator RotinaPulo()
     {
-        int atk;
-
-        do
+        while (!morto)
         {
-            atk = Random.Range(1, 5);
+            yield return new WaitForSeconds(2f);
 
-        } while (atk == ultimoAtaque);
-
-        return atk;
+            yield return Pular();
+        }
     }
 
-    // =========================================
-    // ATAQUE PARÁBOLA
-    // =========================================
-
-    IEnumerator AtaqueParabola()
+    IEnumerator Pular()
     {
-        if (
-            pontoEsquerda == null ||
-            pontoDireita == null
-        )
-            yield break;
+        pulando = true;
 
         Vector2 inicio =
             transform.position;
 
-        Vector2 fim =
-            LadoOposto();
-
-        float duracao = 0.7f;
-
-        float tempo = 0f;
-
-        while (tempo < duracao)
-        {
-            float t = tempo / duracao;
-
-            transform.position =
-                Parabola(
-                    inicio,
-                    fim,
-                    alturaPulo,
-                    t
-                );
-
-            tempo += Time.deltaTime;
-
-            yield return null;
-        }
-
-        transform.position = fim;
-
-        LimitarNaArena();
-    }
-
-    // =========================================
-    // ATAQUE DIAGONAL
-    // =========================================
-
-    IEnumerator AtaqueDiagonal()
-    {
-        float duracao = 1.2f;
+        Vector2 destino =
+            jogador.position.x >
+            transform.position.x
+            ? pontoDireita.position
+            : pontoEsquerda.position;
 
         float tempo = 0f;
 
-        Vector2 dir =
-            new Vector2(direcaoX, 1).normalized;
-
-        while (tempo < duracao)
-        {
-            transform.Translate(
-                dir *
-                velocidadeMovimento *
-                Time.deltaTime
-            );
-
-            if (transform.position.y >= 4f)
-            {
-                dir.y = -1;
-            }
-            else if (transform.position.y <= 0.5f)
-            {
-                dir.y = 1;
-            }
-
-            LimitarNaArena();
-
-            tempo += Time.deltaTime;
-
-            yield return null;
-        }
-
-        yield return AtaqueParabola();
-    }
-
-    // =========================================
-    // ATAQUE ESPINHOS
-    // =========================================
-
-    IEnumerator AtaqueEspinhos(bool chao)
-    {
-        yield return SpawnSpikes(chao);
-    }
-
-    // =========================================
-    // SPAWN SPIKES
-    // =========================================
-
-    IEnumerator SpawnSpikes(bool chao)
-    {
-        Transform inicio =
-            chao ? inicioChao : inicioTeto;
-
-        Transform fim =
-            chao ? fimChao : fimTeto;
-
-        int qtd =
-            chao ? quantidadeChao : quantidadeTeto;
-
-        if (
-            inicio == null ||
-            fim == null ||
-            prefabSpike == null
-        )
-            yield break;
-
-        GameObject[] spikes =
-            new GameObject[qtd];
-
-        for (int i = 0; i < qtd; i++)
+        while (tempo < tempoPulo)
         {
             float t =
-                qtd == 1
+                tempo / tempoPulo;
+
+            float y =
+                alturaPulo *
+                4 *
+                t *
+                (1 - t);
+
+            transform.position =
+                Vector2.Lerp(
+                    inicio,
+                    destino,
+                    t
+                ) +
+                Vector2.up * y;
+
+            tempo += Time.deltaTime;
+
+            yield return null;
+        }
+
+        transform.position = destino;
+
+        pulando = false;
+    }
+
+    // =====================================
+    // SPIKES
+    // =====================================
+
+    IEnumerator RotinaSpikes()
+    {
+        while (!morto)
+        {
+            yield return new WaitForSeconds(1.5f);
+
+            bool teto =
+                Random.Range(0, 2) == 0;
+
+            SpawnSpikes(teto);
+        }
+    }
+
+    void SpawnSpikes(bool teto)
+    {
+        Transform inicio =
+            teto ? inicioTeto : inicioChao;
+
+        Transform fim =
+            teto ? fimTeto : fimChao;
+
+        for (int i = 0; i < quantidadeSpikes; i++)
+        {
+            float t =
+                quantidadeSpikes == 1
                 ? 0.5f
-                : (float)i / (qtd - 1);
+                : (float)i /
+                  (quantidadeSpikes - 1);
 
             Vector2 pos =
                 Vector2.Lerp(
@@ -368,113 +257,55 @@ public class MiniBoss : MonoBehaviour, IDamageable
                     t
                 );
 
-            GameObject s =
+            GameObject spike =
                 Instantiate(
                     prefabSpike,
                     pos,
                     Quaternion.identity
                 );
 
-            if (!chao)
+            if (teto)
             {
-                s.transform.rotation =
+                spike.transform.rotation =
                     Quaternion.Euler(0, 0, 180);
             }
 
-            spikes[i] = s;
-
-            yield return new WaitForSeconds(
-                delaySpawnSpike
+            Destroy(
+                spike,
+                tempoSpike
             );
-        }
-
-        yield return new WaitForSeconds(
-            tempoVidaSpike
-        );
-
-        foreach (GameObject s in spikes)
-        {
-            if (s != null)
-            {
-                Destroy(s);
-            }
         }
     }
 
-    // =========================================
-    // LIMITAR ARENA
-    // =========================================
+    // =====================================
+    // VIRAR
+    // =====================================
 
-    void LimitarNaArena()
+    void VirarPlayer()
     {
+        Vector3 scale =
+            transform.localScale;
+
         if (
-            pontoEsquerda == null ||
-            pontoDireita == null
+            jogador.position.x >
+            transform.position.x
         )
-            return;
-
-        float minX =
-            pontoEsquerda.position.x;
-
-        float maxX =
-            pontoDireita.position.x;
-
-        Vector3 pos =
-            transform.position;
-
-        if (pos.x <= minX)
         {
-            pos.x = minX;
-            direcaoX = 1;
+            scale.x =
+                Mathf.Abs(scale.x);
         }
-        else if (pos.x >= maxX)
+        else
         {
-            pos.x = maxX;
-            direcaoX = -1;
+            scale.x =
+                -Mathf.Abs(scale.x);
         }
 
-        transform.position = pos;
+        transform.localScale = scale;
     }
 
-    Vector2 Parabola(
-        Vector2 inicio,
-        Vector2 fim,
-        float altura,
-        float t
-    )
-    {
-        float p = t * 2 - 1;
-
-        float y =
-            altura * (1 - p * p);
-
-        return
-            Vector2.Lerp(inicio, fim, t)
-            + new Vector2(0, y);
-    }
-
-    Vector2 LadoOposto()
-    {
-        float dE =
-            Mathf.Abs(
-                transform.position.x -
-                pontoEsquerda.position.x
-            );
-
-        float dD =
-            Mathf.Abs(
-                transform.position.x -
-                pontoDireita.position.x
-            );
-
-        return dE < dD
-            ? pontoDireita.position
-            : pontoEsquerda.position;
-    }
-
-    // =========================================
+    // =====================================
     // VIDA
-    // =========================================
+    // =====================================
 
     public void TakeDamage(
         int dano,
@@ -487,7 +318,8 @@ public class MiniBoss : MonoBehaviour, IDamageable
         vidaAtual -= dano;
 
         Debug.Log(
-            $"Boss tomou {dano} de {fonte.name} | Vida: {vidaAtual}"
+            "Boss tomou dano: " +
+            vidaAtual
         );
 
         if (vidaAtual <= 0)
@@ -502,51 +334,12 @@ public class MiniBoss : MonoBehaviour, IDamageable
 
         StopAllCoroutines();
 
-        AbrirPorta();
+        if (paredeEsquerda != null)
+            paredeEsquerda.SetActive(false);
 
-        Debug.Log("☠️ Boss morreu");
+        if (paredeDireita != null)
+            paredeDireita.SetActive(false);
 
         Destroy(gameObject);
-    }
-
-    // =========================================
-    // CONTATO
-    // =========================================
-
-    void OnCollisionStay2D(Collision2D col)
-    {
-        DarDano(col.gameObject);
-    }
-
-    void OnTriggerStay2D(Collider2D col)
-    {
-        DarDano(col.gameObject);
-    }
-
-    void DarDano(GameObject alvo)
-    {
-        if (
-            Time.time <
-            ultimoDanoContato + cooldownContato
-        )
-            return;
-
-        IDamageable dmg =
-            alvo.GetComponent<IDamageable>();
-
-        if (dmg != null)
-        {
-            dmg.TakeDamage(
-                danoContato,
-                gameObject
-            );
-
-            ultimoDanoContato =
-                Time.time;
-
-            Debug.Log(
-                $"Boss deu {danoContato} em {alvo.name}"
-            );
-        }
     }
 }
