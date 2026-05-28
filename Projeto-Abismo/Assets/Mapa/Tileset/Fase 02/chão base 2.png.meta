@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 768
+  spritePixelsToUnits: 500
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,12 +103,12 @@ TextureImporter:
       name: "ch\xE3o base 2_0"
       rect:
         serializedVersion: 2
-        x: 1536
-        y: 768
+        x: 0
+        y: 1536
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,20 +125,20 @@ TextureImporter:
       name: "ch\xE3o base 2_1"
       rect:
         serializedVersion: 2
-        x: 0
+        x: 768
         y: 1536
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 36f443169bc6aa849ae2e6847e2c146d
-      internalID: -920665820
+      spriteID: 737cdcf088fcdc34e8717921d94497aa
+      internalID: -1117346872
       vertices: []
       indices: 
       edges: []
@@ -147,20 +147,20 @@ TextureImporter:
       name: "ch\xE3o base 2_2"
       rect:
         serializedVersion: 2
-        x: 768
+        x: 1536
         y: 1536
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 973ad1172d1096a4d90c4333e00053d0
-      internalID: -173591280
+      spriteID: 69dd9203625422b479469b140bb17de6
+      internalID: -747664973
       vertices: []
       indices: 
       edges: []
@@ -169,20 +169,20 @@ TextureImporter:
       name: "ch\xE3o base 2_3"
       rect:
         serializedVersion: 2
-        x: 1536
-        y: 1536
+        x: 0
+        y: 768
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 666cee33292c14540922ddc25af50d3d
-      internalID: -1833511479
+      spriteID: c741cbfa58d69b24da37f49bae7b12da
+      internalID: -1859751982
       vertices: []
       indices: 
       edges: []
@@ -196,15 +196,15 @@ TextureImporter:
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7dc7da49f9304c04693a77bdb7bd6836
-      internalID: -1973960399
+      spriteID: 35f0476bce121be4fb365b22c017291a
+      internalID: -2035122900
       vertices: []
       indices: 
       edges: []
@@ -213,20 +213,20 @@ TextureImporter:
       name: "ch\xE3o base 2_5"
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1536
         y: 768
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9bc646b3b3431404eb488facd3bf2bfc
-      internalID: 854317477
+      spriteID: 939e2a68aed84cb4999ac4564e97e518
+      internalID: 782775926
       vertices: []
       indices: 
       edges: []
@@ -240,15 +240,37 @@ TextureImporter:
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 82eafaede0b287b41a5710d7505ad693
-      internalID: -2092334426
+      spriteID: e4c57cb75fa37ba4ea1fddc9751581e6
+      internalID: 283680162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "ch\xE3o base 2_7"
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 614cd369a3e74b04b996e6a3a39e34bf
+      internalID: -144346695
       vertices: []
       indices: 
       edges: []
@@ -257,42 +279,20 @@ TextureImporter:
       name: "ch\xE3o base 2_8"
       rect:
         serializedVersion: 2
-        x: 768
-        y: 0
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bd5d6ddeb40bbbc4e858437cbc589d25
-      internalID: 738697737
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "ch\xE3o base 2_11"
-      rect:
-        serializedVersion: 2
         x: 1536
         y: 0
         width: 768
         height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f78237f77cdff948a96204965c2db36
-      internalID: -791591220
+      spriteID: 54e0078d4252bef40a1962a7f235a90e
+      internalID: 1128703074
       vertices: []
       indices: 
       edges: []
@@ -311,20 +311,17 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":500.0,"y":600.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       "ch\xE3o base 2_0": 1402440530924425300
-      "ch\xE3o base 2_1": -920665820
-      "ch\xE3o base 2_10": -432992896
-      "ch\xE3o base 2_11": -791591220
-      "ch\xE3o base 2_2": -173591280
-      "ch\xE3o base 2_3": -1833511479
-      "ch\xE3o base 2_4": -1973960399
-      "ch\xE3o base 2_5": 854317477
-      "ch\xE3o base 2_6": -2092334426
-      "ch\xE3o base 2_7": 989937226
-      "ch\xE3o base 2_8": 738697737
-      "ch\xE3o base 2_9": -1255806142
+      "ch\xE3o base 2_1": -1117346872
+      "ch\xE3o base 2_2": -747664973
+      "ch\xE3o base 2_3": -1859751982
+      "ch\xE3o base 2_4": -2035122900
+      "ch\xE3o base 2_5": 782775926
+      "ch\xE3o base 2_6": 283680162
+      "ch\xE3o base 2_7": -144346695
+      "ch\xE3o base 2_8": 1128703074
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
