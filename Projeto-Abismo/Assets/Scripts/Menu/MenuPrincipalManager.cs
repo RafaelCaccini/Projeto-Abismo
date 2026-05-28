@@ -21,7 +21,8 @@ public class MenuPrincipalManager : MonoBehaviour
     [SerializeField] private string fase22 = "Parte2.2";
     [SerializeField] private string fase23 = "Parte2.3";
     [SerializeField] private string fase24 = "Parte2.4";
-
+    [SerializeField] private string fase1Junta = "Fase1Junta";
+    [SerializeField] private string fase2Junta = "Fase2Junta";
 
 
     [Header("PAINÉIS")]
@@ -152,5 +153,23 @@ public class MenuPrincipalManager : MonoBehaviour
         );
 
         Application.Quit();
+    }
+
+    // =====================================
+    // FASES JUNTAS
+    // =====================================
+
+    public void IrParaFase1Junta()
+    {
+        Debug.Log("Indo para Fase1Junta");
+
+        SceneManager.LoadScene(fase1Junta);
+    }
+
+    public void IrParaFase2Junta()
+    {
+        Debug.Log("Indo para Fase2Junta");
+
+        SceneManager.LoadScene(fase2Junta);
     }
 }

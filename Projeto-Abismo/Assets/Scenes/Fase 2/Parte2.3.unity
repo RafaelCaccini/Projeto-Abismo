@@ -247,6 +247,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1352487817440951986, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2733547792327719817, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: player
       value: 
@@ -299,9 +303,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5605593550112199038, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6760314089535391199, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: m_Name
       value: CavaleiroFlamejante (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8728127739778498967, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -316,6 +336,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1352487817440951986, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2733547792327719817, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: player
       value: 
@@ -364,9 +388,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5605593550112199038, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6760314089535391199, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: m_Name
       value: CavaleiroFlamejante
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -381,9 +417,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2949331476063913773, guid: d7e44eff194214843a494369707d3cd7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5044607108904703324, guid: d7e44eff194214843a494369707d3cd7, type: 3}
       propertyPath: m_Name
       value: PulgaFogo
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044607108904703324, guid: d7e44eff194214843a494369707d3cd7, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5732172371879479437, guid: d7e44eff194214843a494369707d3cd7, type: 3}
       propertyPath: wallLayer.m_Bits
@@ -442,6 +486,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1352487817440951986, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2733547792327719817, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: player
       value: 
@@ -494,9 +542,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5605593550112199038, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6760314089535391199, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: m_Name
       value: CavaleiroFlamejante (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8728127739778498967, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -826,9 +890,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2949331476063913773, guid: d7e44eff194214843a494369707d3cd7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5044607108904703324, guid: d7e44eff194214843a494369707d3cd7, type: 3}
       propertyPath: m_Name
       value: PulgaFogo (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044607108904703324, guid: d7e44eff194214843a494369707d3cd7, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5732172371879479437, guid: d7e44eff194214843a494369707d3cd7, type: 3}
       propertyPath: wallLayer.m_Bits
@@ -1133,6 +1205,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: InsetoLuz
       objectReference: {fileID: 0}
+    - target: {fileID: 2508088362803830058, guid: 6f00ab20c5cb2b443b39a30064da269c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238977302118428085, guid: 6f00ab20c5cb2b443b39a30064da269c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8151065278092350230, guid: 6f00ab20c5cb2b443b39a30064da269c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -672.9654
@@ -1172,6 +1252,10 @@ PrefabInstance:
     - target: {fileID: 8151065278092350230, guid: 6f00ab20c5cb2b443b39a30064da269c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9189574348933357625, guid: 6f00ab20c5cb2b443b39a30064da269c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -93938,6 +94022,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1352487817440951986, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2733547792327719817, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: player
       value: 
@@ -93990,9 +94078,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5605593550112199038, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6760314089535391199, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
       propertyPath: m_Name
       value: CavaleiroFlamejante (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226747606100762349, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8728127739778498967, guid: 4e39b5be086e9274380c23e206afc2cf, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
