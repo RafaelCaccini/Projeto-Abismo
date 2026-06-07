@@ -1,13 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class InsetoLuz : MonoBehaviour, IDamageable
+public class InsetoCacador : MonoBehaviour, IDamageable
 {
     // =====================================
-    // REFERÊNCIAS
+    // REFER�NCIAS
     // =====================================
 
-    [Header("Referências")]
+    [Header("Refer�ncias")]
     [SerializeField] private Transform player;
 
     [SerializeField] private Lampiao lampiao;
@@ -19,7 +19,11 @@ public class InsetoLuz : MonoBehaviour, IDamageable
     // =====================================
 
     [Header("Movimento")]
-    [SerializeField] private float velocidade = 3f;
+    [SerializeField] private float velocidadeNormal = 3f;
+
+    [SerializeField] private float velocidadeLonge = 12f;
+
+    [SerializeField] private float distanciaVelocidadeAlta = 15f;
 
     [SerializeField] private float distanciaParar = 0.5f;
 
@@ -40,21 +44,14 @@ public class InsetoLuz : MonoBehaviour, IDamageable
     [SerializeField] private float cooldownDano = 1f;
 
     // =====================================
-    // DEBUG
-    // =====================================
-
-    [Header("Debug")]
-    [SerializeField] private bool debugLogs = true;
-
-    // =====================================
     // CONTROLE
     // =====================================
-
-    private bool playerNoRange = false;
 
     private bool podeDarDano = true;
 
     private bool morto = false;
+
+    private bool playerPerto = false;
 
     // =====================================
     // START
@@ -83,6 +80,18 @@ public class InsetoLuz : MonoBehaviour, IDamageable
     }
 
     // =====================================
+    // UPDATE
+    // =====================================
+
+    private void Update()
+    {
+        if (morto)
+            return;
+
+        VirarParaPlayer();
+    }
+
+    // =====================================
     // FIXED UPDATE
     // =====================================
 
@@ -91,50 +100,126 @@ public class InsetoLuz : MonoBehaviour, IDamageable
         if (morto)
             return;
 
-        if (player == null || lampiao == null)
+        if (player == null)
             return;
 
-        // Só segue:
-        // player no range
-        // lampião ligado
+        if (lampiao == null)
+            return;
 
-        if (
-            playerNoRange &&
-            lampiao.IsLightOn
-        )
+        if (!lampiao.IsLightOn)
         {
-            SeguirPlayer();
+            rb.linearVelocity =
+                Vector2.zero;
+
+            return;
         }
+
+        SeguirPlayer();
     }
 
     // =====================================
     // SEGUIR PLAYER
     // =====================================
 
-    void SeguirPlayer()
+    private void SeguirPlayer()
     {
-        Vector2 direcao =
-            (
-                player.position -
-                transform.position
-            ).normalized;
-
         float distancia =
             Vector2.Distance(
                 transform.position,
                 player.position
             );
 
-        if (distancia > distanciaParar)
+        if (distancia <= distanciaParar)
         {
-            Vector2 novaPosicao =
-                rb.position +
-                direcao *
-                velocidade *
-                Time.fixedDeltaTime;
+            rb.linearVelocity =
+                Vector2.zero;
 
-            rb.MovePosition(novaPosicao);
+            return;
         }
+
+        float velocidadeAtual;
+
+        if (playerPerto)
+        {
+            velocidadeAtual =
+                velocidadeNormal;
+        }
+        else
+        {
+            velocidadeAtual =
+                distancia >
+                distanciaVelocidadeAlta
+                ? velocidadeLonge
+                : velocidadeNormal;
+        }
+
+        Vector2 direcao =
+            (
+                player.position -
+                transform.position
+            ).normalized;
+
+        rb.linearVelocity =
+            direcao *
+            velocidadeAtual;
+    }
+
+    // =====================================
+    // RANGE PLAYER
+    // =====================================
+
+    private void OnTriggerEnter2D(
+        Collider2D other
+    )
+    {
+        if (
+            other.CompareTag("Player")
+        )
+        {
+            playerPerto = true;
+        }
+    }
+
+    private void OnTriggerExit2D(
+        Collider2D other
+    )
+    {
+        if (
+            other.CompareTag("Player")
+        )
+        {
+            playerPerto = false;
+        }
+    }
+
+    // =====================================
+    // FLIP
+    // =====================================
+
+    private void VirarParaPlayer()
+    {
+        if (player == null)
+            return;
+
+        Vector3 scale =
+            transform.localScale;
+
+        if (
+            player.position.x >
+            transform.position.x
+        )
+        {
+            scale.x =
+                Mathf.Abs(scale.x);
+        }
+        else
+        {
+            scale.x =
+                -Mathf.Abs(scale.x);
+        }
+
+        transform.localScale =
+            scale;
     }
 
     // =====================================
@@ -170,19 +255,12 @@ public class InsetoLuz : MonoBehaviour, IDamageable
             gameObject
         );
 
-        if (debugLogs)
-        {
-            Debug.Log(
-                "🪲 Inseto atacou player"
-            );
-        }
-
         StartCoroutine(
             CooldownDano()
         );
     }
 
-    IEnumerator CooldownDano()
+    private IEnumerator CooldownDano()
     {
         podeDarDano = false;
 
@@ -194,7 +272,7 @@ public class InsetoLuz : MonoBehaviour, IDamageable
     }
 
     // =====================================
-    // TOMAR DANO
+    // VIDA
     // =====================================
 
     public void TakeDamage(
@@ -207,16 +285,6 @@ public class InsetoLuz : MonoBehaviour, IDamageable
 
         vida -= amount;
 
-        if (debugLogs)
-        {
-            Debug.Log(
-                "🪲 Inseto tomou "
-                + amount +
-                " de dano | Vida: "
-                + vida
-            );
-        }
-
         if (vida <= 0)
         {
             Morrer();
@@ -227,58 +295,24 @@ public class InsetoLuz : MonoBehaviour, IDamageable
     // MORTE
     // =====================================
 
-    void Morrer()
+    private void Morrer()
     {
-        if (morto)
-            return;
-
         morto = true;
 
-        if (debugLogs)
-        {
-            Debug.Log(
-                "☠️ Inseto morreu"
-            );
-        }
+        rb.linearVelocity =
+            Vector2.zero;
 
-        rb.linearVelocity = Vector2.zero;
+        Collider2D[] colliders =
+            GetComponents<Collider2D>();
 
         foreach (
             Collider2D c
-            in GetComponents<Collider2D>()
+            in colliders
         )
         {
             c.enabled = false;
         }
 
         Destroy(gameObject, 0.1f);
-    }
-
-    // =====================================
-    // RANGE
-    // =====================================
-
-    public void PlayerEntrouRange()
-    {
-        playerNoRange = true;
-    }
-
-    public void PlayerSaiuRange()
-    {
-        playerNoRange = false;
-    }
-
-    // =====================================
-    // GIZMOS
-    // =====================================
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-
-        Gizmos.DrawWireSphere(
-            transform.position,
-            0.3f
-        );
     }
 }
