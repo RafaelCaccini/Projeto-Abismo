@@ -21,10 +21,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Fase 1/Parte2.unity
     guid: 3a2d742fa283f354aab111baa145a74d
   - enabled: 1
-    path: Assets/Scenes/Fase 1/Parte3.unity
+    path: Assets/Scenes/Fase 1/Parte4.unity
     guid: df5081da2ca4d63439993186471d8c27
   - enabled: 1
-    path: Assets/Scenes/Fase 1/Parte3.unity
+    path: Assets/Scenes/Fase 1/Parte4.unity
     guid: df5081da2ca4d63439993186471d8c27
   - enabled: 1
     path: Assets/Scenes/Fase 1/Parte4.unity
