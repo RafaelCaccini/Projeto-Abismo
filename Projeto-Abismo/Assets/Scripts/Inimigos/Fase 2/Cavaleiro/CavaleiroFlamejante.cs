@@ -1,104 +1,87 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CavaleiroFlamejante : MonoBehaviour, IDamageable
+public class EnemyDashAttack : MonoBehaviour, IDamageable
 {
-    [Header("REFERÊNCIAS")]
+    // =====================================
+    // REFERÊNCIAS
+    // =====================================
+
+
+    [Header("Referências")]
     [SerializeField] private Transform player;
     [SerializeField] private Transform visual;
 
-    [SerializeField] private GameObject colliderEspada;
-    [SerializeField] private GameObject colliderEscudo;
-
     private Rigidbody2D rb;
-
-    // =====================================
-    // MOVIMENTO
-    // =====================================
-
-    [Header("MOVIMENTO")]
-    [SerializeField] private float velocidade = 5f;
 
     // =====================================
     // DETECÇÃO
     // =====================================
 
-    [Header("DETECÇÃO")]
-    [SerializeField] private float rangeDeteccao = 8f;
-
-    [SerializeField] private Vector2 offsetDeteccao;
+    [Header("Detecção")]
+    [SerializeField] private float raioDeteccao = 12f;
+    [SerializeField] private float raioCorpoACorpo = 2f;
 
     // =====================================
-    // ATAQUE
+    // DASH
     // =====================================
 
-    [Header("ATAQUE")]
-    [SerializeField] private float rangeAtaque = 2f;
+    [Header("Dash")]
+    [SerializeField] private float velocidadeDash = 14f;
+    [SerializeField] private float duracaoDash = 0.3f;
+    [SerializeField] private float cooldownDash = 1.5f;
+    [SerializeField] private int danoDash = 15;
 
-    [SerializeField] private Vector2 offsetAtaque;
+    // =====================================
+    // CORPO A CORPO
+    // =====================================
 
-    [SerializeField] private int danoEspada = 3;
+    [Header("Corpo a Corpo")]
+    [SerializeField] private int danoCorpoACorpo = 5;
+    [SerializeField] private float cooldownCorpoACorpo = 1f;
 
-    [SerializeField] private float tempoAtaque = 0.4f;
+    // =====================================
+    // PERSEGUIÇÃO
+    // =====================================
 
-    [SerializeField] private float cooldownAtaque = 1.5f;
+    [Header("Perseguição")]
+    [SerializeField] private float velocidadePerseguicao = 2f;
 
     // =====================================
     // VIDA
     // =====================================
 
-    [Header("VIDA")]
-    [SerializeField] private int vidaMaxima = 10;
-
-    private int vidaAtual;
+    [Header("Vida")]
+    [SerializeField] private int vida = 3;
 
     // =====================================
-    // ESCUDO
+    // GIZMOS
     // =====================================
 
-    [Header("ESCUDO")]
-    [SerializeField] private int vidaEscudo = 3;
+    [Header("Gizmos")]
+    [SerializeField] private Color corDeteccao = Color.yellow;
+    [SerializeField] private Color corCorpoACorpo = Color.red;
 
-    private int vidaAtualEscudo;
+    // =====================================
+    // DEBUG
+    // =====================================
 
-    private bool escudoQuebrado;
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = true;
 
     // =====================================
     // CONTROLE
     // =====================================
 
-    private bool atacando;
+    private float dashDuracaoAtual;
+    private float dashCooldownAtual;
+    private float corpoACorpoTimer;
 
-    private bool podeAtacar = true;
+    private bool isDashing;
+    private bool podeDarDanoDash = true;
+    private bool morto = false;
 
-    private bool perseguindo;
-
-    private float ultimaDirecao = 1f;
-
-    // =====================================
-    // FEEDBACK
-    // =====================================
-
-    private SpriteRenderer spriteRenderer;
-
-    private Color corOriginal;
-
-    // =====================================
-    // AWAKE
-    // =====================================
-
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-
-        rb.freezeRotation = true;
-
-        if (visual != null)
-        {
-            spriteRenderer =
-                visual.GetComponent<SpriteRenderer>();
-        }
-    }
+    private Vector2 direcaoDash;
 
     // =====================================
     // START
@@ -106,289 +89,239 @@ public class CavaleiroFlamejante : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        dashCooldownAtual = 0f;
+        rb = GetComponent<Rigidbody2D>();
+
         if (player == null)
         {
-            PlayerController pc =
-                FindFirstObjectByType<PlayerController>();
-
-            if (pc != null)
-            {
-                player = pc.transform;
-            }
+            PlayerController pc = FindFirstObjectByType<PlayerController>();
+            if (pc != null) player = pc.transform;
         }
 
-        vidaAtual = vidaMaxima;
-
-        vidaAtualEscudo = vidaEscudo;
-
-        escudoQuebrado = false;
-
-        if (spriteRenderer != null)
-        {
-            corOriginal = spriteRenderer.color;
-        }
-
-        if (colliderEspada != null)
-        {
-            colliderEspada.SetActive(false);
-        }
-
-        if (colliderEscudo != null)
-        {
-            colliderEscudo.SetActive(true);
-        }
-
-        Debug.Log("🔥 Cavaleiro iniciado");
+        Debug.Log(
+            "[EnemyDashAttack] Start | Player: "
+            + (player != null ? player.name : "NULL")
+            + " | Rigidbody2D: "
+            + (rb != null ? "OK (BodyType=" + rb.bodyType + ")" : "NULL")
+            + " | Componente ativo: " + this.enabled
+            + " | RaioDeteccao: " + raioDeteccao
+        );
     }
 
     // =====================================
-    // UPDATE
+    // FIXED UPDATE
     // =====================================
 
-    private void Update()
+    private void FixedUpdate()
     {
+        if (morto)
+            return;
+
         if (player == null)
             return;
 
-        Vector2 centroDeteccao =
-            (Vector2)transform.position
-            + offsetDeteccao;
-
-        Vector2 centroAtaque =
-            (Vector2)transform.position
-            + offsetAtaque;
-
-        float distanciaDeteccao =
-            Vector2.Distance(
-                centroDeteccao,
-                player.position
-            );
-
-        float distanciaAtaque =
-            Vector2.Distance(
-                centroAtaque,
-                player.position
-            );
-
-        // =====================================
-        // COMEÇOU A PERSEGUIR
-        // =====================================
-
-        if (
-            !perseguindo &&
-            distanciaDeteccao <= rangeDeteccao
-        )
+        // VIRAR SPRITE
+        if (visual != null)
         {
-            perseguindo = true;
+            Vector3 escala = visual.localScale;
+
+            if (player.position.x > transform.position.x)
+            {
+                escala.x = Mathf.Abs(escala.x);
+            }
+            else
+            {
+                escala.x = -Mathf.Abs(escala.x);
+            }
+
+            visual.localScale = escala;
         }
 
-        // =====================================
-        // NÃO DETECTOU
-        // =====================================
+        dashDuracaoAtual -= Time.fixedDeltaTime;
+        dashCooldownAtual -= Time.fixedDeltaTime;
+        corpoACorpoTimer -= Time.fixedDeltaTime;
 
-        if (!perseguindo)
+        float distancia =
+            Vector2.Distance(
+                transform.position,
+                player.position
+            );
+
+        if (distancia <= raioCorpoACorpo)
         {
-            rb.linearVelocity =
-                new Vector2(
-                    0,
-                    rb.linearVelocity.y
-                );
+            isDashing = false;
+            rb.linearVelocity = Vector2.zero;
 
+            AtacarCorpoACorpo();
             return;
         }
 
-        // =====================================
-        // DIREÇÃO
-        // =====================================
-
-        float direcao =
-            player.position.x >
-            transform.position.x
-            ? 1f
-            : -1f;
-
-        // =====================================
-        // FLIP
-        // =====================================
-
-        if (direcao != ultimaDirecao)
+        if (distancia <= raioDeteccao)
         {
-            Vector3 escala =
-                visual.localScale;
-
-            escala.x =
-                Mathf.Abs(escala.x)
-                * direcao;
-
-            visual.localScale =
-                escala;
-
-            ultimaDirecao = direcao;
-        }
-
-        // =====================================
-        // ATAQUE
-        // =====================================
-
-        if (
-            distanciaAtaque <= rangeAtaque
-        )
-        {
-            rb.linearVelocity =
-                new Vector2(
-                    0,
-                    rb.linearVelocity.y
-                );
-
-            if (
-                podeAtacar &&
-                !atacando
-            )
+            if (isDashing)
             {
-                StartCoroutine(
-                    RotinaAtaque()
-                );
+                ExecutarDash();
             }
-        }
-        else
-        {
-            // =====================================
-            // PERSEGUIR
-            // =====================================
-
-            if (!atacando)
+            else if (dashCooldownAtual <= 0f)
             {
-                rb.linearVelocity =
-                    new Vector2(
-                        direcao * velocidade,
-                        rb.linearVelocity.y
-                    );
+                IniciarDash();
+            }
+            else
+            {
+                Perseguir();
             }
         }
     }
 
     // =====================================
-    // ATAQUE
+    // PERSEGUIR
     // =====================================
 
-    IEnumerator RotinaAtaque()
+    void Perseguir()
     {
-        atacando = true;
+        Vector2 direcao =
+            (player.position - transform.position)
+            .normalized;
 
-        podeAtacar = false;
+        Vector2 novaPosicao =
+            rb.position +
+            direcao *
+            velocidadePerseguicao *
+            Time.fixedDeltaTime;
 
-        rb.linearVelocity =
-            new Vector2(
-                0,
-                rb.linearVelocity.y
-            );
+        rb.MovePosition(novaPosicao);
+    }
 
-        Debug.Log("⚔️ ATAQUE");
+    // =====================================
+    // DASH
+    // =====================================
 
-        if (colliderEspada != null)
+    void IniciarDash()
+    {
+        isDashing = true;
+
+        podeDarDanoDash = true;
+
+        direcaoDash =
+            (player.position - transform.position)
+            .normalized;
+
+        dashDuracaoAtual = duracaoDash;
+
+        if (debugLogs)
         {
-            colliderEspada.SetActive(true);
+            Debug.Log("⚡ Inseto iniciou dash");
+        }
+    }
+
+    void ExecutarDash()
+    {
+        Vector2 novaPosicao =
+            rb.position +
+            direcaoDash *
+            velocidadeDash *
+            Time.fixedDeltaTime;
+
+        rb.MovePosition(novaPosicao);
+
+        if (dashDuracaoAtual <= 0f)
+        {
+            isDashing = false;
+
+            dashCooldownAtual = cooldownDash;
+
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
+    // =====================================
+    // DANO DASH (COLISÃO)
+    // =====================================
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (morto)
+            return;
+
+        if (!isDashing)
+            return;
+
+        if (!podeDarDanoDash)
+            return;
+
+        if (!collision.gameObject.CompareTag("Player"))
+            return;
+
+        PlayerController pc =
+            collision.gameObject
+            .GetComponent<PlayerController>();
+
+        if (pc == null)
+            return;
+
+        pc.TakeDamage(danoDash, gameObject);
+
+        podeDarDanoDash = false;
+
+        if (debugLogs)
+        {
+            Debug.Log("💥 Dash acertou player | Dano: " + danoDash);
         }
 
-        yield return new WaitForSeconds(
-            tempoAtaque
-        );
+        isDashing = false;
+        dashCooldownAtual = cooldownDash;
+        rb.linearVelocity = Vector2.zero;
+    }
 
-        if (colliderEspada != null)
+    // =====================================
+    // DANO CORPO A CORPO
+    // =====================================
+
+    void AtacarCorpoACorpo()
+    {
+        if (corpoACorpoTimer > 0f)
+            return;
+
+        PlayerController pc =
+            player.GetComponent<PlayerController>();
+
+        if (pc == null)
+            return;
+
+        pc.TakeDamage(danoCorpoACorpo, gameObject);
+
+        corpoACorpoTimer = cooldownCorpoACorpo;
+
+        if (debugLogs)
         {
-            colliderEspada.SetActive(false);
+            Debug.Log("👊 Inseto atacou corpo a corpo | Dano: " + danoCorpoACorpo);
         }
-
-        atacando = false;
-
-        yield return new WaitForSeconds(
-            cooldownAtaque
-        );
-
-        podeAtacar = true;
     }
 
     // =====================================
     // TOMAR DANO
     // =====================================
 
-    public void TakeDamage(
-        int amount,
-        GameObject source
-    )
+    public void TakeDamage(int amount, GameObject source)
     {
-        // =====================================
-        // ESCUDO
-        // =====================================
-
-        if (!escudoQuebrado)
-        {
-            vidaAtualEscudo -= amount;
-
-            Debug.Log(
-                "🛡️ Escudo restante: "
-                + vidaAtualEscudo
-            );
-
-            if (vidaAtualEscudo <= 0)
-            {
-                QuebrarEscudo();
-            }
-
-            StartCoroutine(PiscarDano());
-
+        if (morto)
             return;
+
+        vida -= amount;
+
+        if (debugLogs)
+        {
+            Debug.Log(
+                "🪲 Inseto tomou "
+                + amount +
+                " de dano | Vida: "
+                + vida
+            );
         }
 
-        // =====================================
-        // VIDA
-        // =====================================
-
-        vidaAtual -= amount;
-
-        Debug.Log(
-            "💥 Vida restante: "
-            + vidaAtual
-        );
-
-        StartCoroutine(PiscarDano());
-
-        if (vidaAtual <= 0)
+        if (vida <= 0)
         {
             Morrer();
-        }
-    }
-
-    // =====================================
-    // ESCUDO
-    // =====================================
-
-    void QuebrarEscudo()
-    {
-        escudoQuebrado = true;
-
-        Debug.Log("💥 Escudo quebrado");
-
-        if (colliderEscudo != null)
-        {
-            colliderEscudo.SetActive(false);
-        }
-    }
-
-    public void RegenerarEscudo()
-    {
-        if (!escudoQuebrado)
-            return;
-
-        escudoQuebrado = false;
-
-        vidaAtualEscudo = vidaEscudo;
-
-        Debug.Log("✨ Escudo regenerado");
-
-        if (colliderEscudo != null)
-        {
-            colliderEscudo.SetActive(true);
         }
     }
 
@@ -398,124 +331,46 @@ public class CavaleiroFlamejante : MonoBehaviour, IDamageable
 
     void Morrer()
     {
-        Debug.Log("☠️ MORREU");
+        if (morto)
+            return;
 
-        Destroy(gameObject);
-    }
+        morto = true;
 
-    // =====================================
-    // PISCAR DANO
-    // =====================================
-
-    IEnumerator PiscarDano()
-    {
-        if (spriteRenderer == null)
-            yield break;
-
-        spriteRenderer.color =
-            Color.red;
-
-        yield return new WaitForSeconds(
-            0.1f
-        );
-
-        spriteRenderer.color =
-            corOriginal;
-    }
-
-    // =====================================
-    // TRIGGERS
-    // =====================================
-
-    private void OnTriggerEnter2D(
-        Collider2D other
-    )
-    {
-        // =====================================
-        // DANO PLAYER
-        // =====================================
-
-        if (
-            other.CompareTag("Player") &&
-            colliderEspada != null &&
-            colliderEspada.activeInHierarchy
-        )
+        if (debugLogs)
         {
-            IDamageable dmg =
-                other.GetComponent<IDamageable>();
-
-            if (dmg != null)
-            {
-                dmg.TakeDamage(
-                    danoEspada,
-                    gameObject
-                );
-
-                Debug.Log("⚔️ Espada acertou");
-            }
+            Debug.Log("☠️ Inseto morreu");
         }
 
-        // =====================================
-        // ATAQUE PLAYER
-        // =====================================
+        rb.linearVelocity = Vector2.zero;
 
-        if (
-            other.CompareTag("PlayerAttack")
-        )
+        foreach (Collider2D c in GetComponents<Collider2D>())
         {
-            if (!escudoQuebrado)
-            {
-                TakeDamage(
-                    1,
-                    other.gameObject
-                );
-            }
-            else
-            {
-                TakeDamage(
-                    2,
-                    other.gameObject
-                );
-            }
+            c.enabled = false;
         }
-    }
 
-    // =====================================
-    // LUZ
-    // =====================================
-
-    private void OnTriggerStay2D(
-        Collider2D other
-    )
-    {
-        if (
-            other.CompareTag("LuzLampiao")
-        )
-        {
-            RegenerarEscudo();
-        }
+        Destroy(gameObject, 0.1f);
     }
 
     // =====================================
     // GIZMOS
     // =====================================
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected() 
     {
-        Gizmos.color = Color.yellow;
+        CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+        Vector3 centro = transform.position;
 
-        Gizmos.DrawWireSphere(
-            (Vector2)transform.position
-            + offsetDeteccao,
-            rangeDeteccao
-        );
+        if (col != null)
+        {
+            centro += (Vector3)col.offset;
+        }
 
-        Gizmos.color = Color.red;
+        Gizmos.color = corDeteccao;
+        Gizmos.DrawWireSphere(centro, raioDeteccao);
 
-        Gizmos.DrawWireSphere(
-            (Vector2)transform.position
-            + offsetAtaque,
-            rangeAtaque
-        );
+        Gizmos.color = corCorpoACorpo;
+        Gizmos.DrawWireSphere(centro, raioCorpoACorpo);
     }
+
+    
 }
