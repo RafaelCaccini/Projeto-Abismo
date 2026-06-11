@@ -446,7 +446,7 @@ public class Blocker : MonoBehaviour, IDamageable
         if (animator != null)
         {
             animator.SetTrigger(
-                "Death"
+                "Die"
             );
         }
 
