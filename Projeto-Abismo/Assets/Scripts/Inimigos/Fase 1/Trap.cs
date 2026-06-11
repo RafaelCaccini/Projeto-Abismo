@@ -29,6 +29,10 @@ public class Trap : MonoBehaviour
     private Coroutine activationRoutine;
     private Coroutine damageRoutine;
 
+    private void Update()
+    {
+        TryActivate();
+    }
     private void Awake()
     {
         if (hurtbox != null && !hurtbox.isTrigger)
@@ -62,17 +66,22 @@ public class Trap : MonoBehaviour
 
     private void TryActivate()
     {
-        if (isClosed || isActivating) return;
+        if (playersInside.Count == 0)
+            return;
+
+        if (isClosed)
+            return;
+
+        if (isActivating)
+            return;
 
         if (requirePlayerLightOn && !AnyPlayerWithLight())
-        {
-            if (debugLogs)
-                Debug.Log("[Trap] Luz não está ligada");
-
             return;
-        }
 
-        activationRoutine = StartCoroutine(ActivationCoroutine());
+        activationRoutine =
+            StartCoroutine(
+                ActivationCoroutine()
+            );
     }
 
     private IEnumerator ActivationCoroutine()
@@ -82,6 +91,12 @@ public class Trap : MonoBehaviour
         yield return new WaitForSeconds(activationDelay);
 
         if (playersInside.Count == 0)
+        {
+            isActivating = false;
+            yield break;
+        }
+
+        if (requirePlayerLightOn && !AnyPlayerWithLight())
         {
             isActivating = false;
             yield break;

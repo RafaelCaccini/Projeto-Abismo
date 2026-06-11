@@ -15,8 +15,8 @@ public class MiniBoss : MonoBehaviour, IDamageable
     public GameObject paredeDireita;
 
     [Header("Movimento")]
-    public float velocidade = 8f;
-    public float alturaPulo = 4f;
+    public float velocidade = 3f;
+    public float alturaPulo = 1.5f;
     public float tempoPulo = 0.5f;
 
     [Header("Detecção")]
@@ -42,14 +42,21 @@ public class MiniBoss : MonoBehaviour, IDamageable
 
     private bool lutaComecou;
     private bool morto;
+    private float distanciaMinimaDoPlayer = 1.5f;
+    private bool podeAndar = true;
 
     private bool pulando;
-
+    private float yInicial;
     private Rigidbody2D rb;
+
+
 
     void Start()
     {
+        yInicial = transform.position.y;
         rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0;
+        rb.freezeRotation = true;
 
         vidaAtual = vidaMaxima;
 
@@ -84,7 +91,45 @@ public class MiniBoss : MonoBehaviour, IDamageable
 
         VirarPlayer();
 
-        MovimentoConstante();
+        if (podeAndar && !pulando)
+        {
+            MovimentoInteligente();
+        }
+    }
+
+    void MovimentoInteligente()
+    {
+        float distancia =
+            Vector2.Distance(
+                transform.position,
+                jogador.position
+            );
+
+        if (distancia <= distanciaMinimaDoPlayer)
+            return;
+
+        float direcao =
+            jogador.position.x >
+            transform.position.x
+            ? 1f
+            : -1f;
+
+        Vector3 pos =
+            transform.position;
+
+        pos.x +=
+            direcao *
+            velocidade *
+            Time.deltaTime;
+
+        pos.x =
+            Mathf.Clamp(
+                pos.x,
+                pontoEsquerda.position.x,
+                pontoDireita.position.x
+            );
+
+        transform.position = pos;
     }
 
     // =====================================
@@ -124,40 +169,7 @@ public class MiniBoss : MonoBehaviour, IDamageable
     // MOVIMENTO
     // =====================================
 
-    void MovimentoConstante()
-    {
-        if (pulando)
-            return;
-
-        float dir =
-            jogador.position.x >
-            transform.position.x
-            ? 1
-            : -1;
-
-        Vector3 pos =
-            transform.position;
-
-        pos.x +=
-            dir *
-            velocidade *
-            Time.deltaTime;
-
-        float minX =
-            pontoEsquerda.position.x;
-
-        float maxX =
-            pontoDireita.position.x;
-
-        pos.x =
-            Mathf.Clamp(
-                pos.x,
-                minX,
-                maxX
-            );
-
-        transform.position = pos;
-    }
+    
 
     // =====================================
     // PULO
@@ -165,6 +177,7 @@ public class MiniBoss : MonoBehaviour, IDamageable
 
     IEnumerator RotinaPulo()
     {
+
         while (!morto)
         {
             yield return new WaitForSeconds(2f);
@@ -177,14 +190,29 @@ public class MiniBoss : MonoBehaviour, IDamageable
     {
         pulando = true;
 
-        Vector2 inicio =
-            transform.position;
+        Vector2 inicio = transform.position;
 
-        Vector2 destino =
+        float direcao =
             jogador.position.x >
             transform.position.x
-            ? pontoDireita.position
-            : pontoEsquerda.position;
+            ? 1f
+            : -1f;
+
+        float distanciaPulo = 2f;
+
+        Vector2 destino =
+            new Vector2(
+                inicio.x +
+                (direcao * distanciaPulo),
+                yInicial
+            );
+
+        destino.x =
+            Mathf.Clamp(
+                destino.x,
+                pontoEsquerda.position.x,
+                pontoDireita.position.x
+            );
 
         float tempo = 0f;
 
@@ -193,26 +221,36 @@ public class MiniBoss : MonoBehaviour, IDamageable
             float t =
                 tempo / tempoPulo;
 
-            float y =
-                alturaPulo *
-                4 *
-                t *
-                (1 - t);
+            float altura =
+                Mathf.Sin(
+                    t * Mathf.PI
+                ) *
+                alturaPulo;
 
-            transform.position =
+            Vector2 pos =
                 Vector2.Lerp(
                     inicio,
                     destino,
                     t
-                ) +
-                Vector2.up * y;
+                );
+
+            pos.y =
+                yInicial +
+                altura;
+
+            transform.position = pos;
 
             tempo += Time.deltaTime;
 
             yield return null;
         }
 
-        transform.position = destino;
+        transform.position =
+            new Vector3(
+                destino.x,
+                yInicial,
+                transform.position.z
+            );
 
         pulando = false;
     }
@@ -225,10 +263,9 @@ public class MiniBoss : MonoBehaviour, IDamageable
     {
         while (!morto)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(3.5f);
 
-            bool teto =
-                Random.Range(0, 2) == 0;
+            bool teto = false;
 
             SpawnSpikes(teto);
         }
@@ -258,11 +295,15 @@ public class MiniBoss : MonoBehaviour, IDamageable
                 );
 
             GameObject spike =
-                Instantiate(
-                    prefabSpike,
-                    pos,
-                    Quaternion.identity
-                );
+      Instantiate(
+          prefabSpike,
+          pos,
+          Quaternion.identity
+      );
+
+            Physics2D.IgnoreCollision(
+    spike.GetComponent<Collider2D>(),
+    GetComponent<Collider2D>());
 
             if (teto)
             {
@@ -315,10 +356,18 @@ public class MiniBoss : MonoBehaviour, IDamageable
         if (morto)
             return;
 
+        if (
+            fonte != null &&
+            fonte.CompareTag("Spike")
+        )
+        {
+            return;
+        }
+
         vidaAtual -= dano;
 
         Debug.Log(
-            "Boss tomou dano: " +
+            "Boss tomou dano. Vida: " +
             vidaAtual
         );
 
