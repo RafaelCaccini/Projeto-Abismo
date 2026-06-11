@@ -7,7 +7,7 @@ public class MenuPrincipalManager : MonoBehaviour
     [SerializeField] private string nomeDaCena;
 
     [Header("FASES")]
-    [SerializeField] private string fase1 = "Parte1";
+    [SerializeField] private string fase1 = "Fase1";
 
     [SerializeField] private string fase2 = "Parte2";
 

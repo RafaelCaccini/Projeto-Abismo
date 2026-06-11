@@ -17,6 +17,15 @@ public class Blocker : MonoBehaviour, IDamageable
     [SerializeField] private Animator animator;
 
     // =====================================
+    // ÁUDIO
+    // =====================================
+
+    [Header("ÁUDIO")]
+    [SerializeField] private AudioSource audioSource;
+
+    [SerializeField] private AudioClip detectarSom;
+
+    // =====================================
     // ATAQUE
     // =====================================
 
@@ -71,6 +80,8 @@ public class Blocker : MonoBehaviour, IDamageable
 
     private bool luzAtiva;
 
+    private bool playerEstavaNoRange;
+
     private TipoAtaque ataqueAtual;
 
     // =====================================
@@ -105,6 +116,13 @@ public class Blocker : MonoBehaviour, IDamageable
         EscolherNovoAtaque();
 
         AtualizarAnimator();
+
+        // Segurança do áudio
+        if (audioSource != null)
+        {
+            audioSource.playOnAwake = false;
+            audioSource.loop = false;
+        }
     }
 
     // =====================================
@@ -141,9 +159,28 @@ public class Blocker : MonoBehaviour, IDamageable
                 player.position
             );
 
+        bool playerNoRange =
+            distance <= attackRange;
+
+        // Entrou no range agora
+        if (
+            !playerEstavaNoRange &&
+            playerNoRange
+        )
+        {
+            PlayDetectSound();
+        }
+
+        // Atualiza estado
+        playerEstavaNoRange =
+            playerNoRange;
+
         bool podeAtacar =
             distance <= attackRange &&
-            (!precisaDeLuz || luzAtiva);
+            (
+                !precisaDeLuz ||
+                luzAtiva
+            );
 
         if (podeAtacar)
         {
@@ -232,6 +269,23 @@ public class Blocker : MonoBehaviour, IDamageable
         animator.SetBool(
             "LightOn",
             luzAtiva
+        );
+    }
+
+    // =====================================
+    // SOM DETECÇÃO
+    // =====================================
+
+    void PlayDetectSound()
+    {
+        if (
+            audioSource == null ||
+            detectarSom == null
+        )
+            return;
+
+        audioSource.PlayOneShot(
+            detectarSom
         );
     }
 
@@ -445,9 +499,9 @@ public class Blocker : MonoBehaviour, IDamageable
 
         if (animator != null)
         {
-            animator.SetTrigger(
-                "Die"
-            );
+            animator.ResetTrigger("Attack");
+
+            animator.SetTrigger("Die");
         }
 
         foreach (
@@ -465,3 +519,4 @@ public class Blocker : MonoBehaviour, IDamageable
         Destroy(gameObject);
     }
 }
+

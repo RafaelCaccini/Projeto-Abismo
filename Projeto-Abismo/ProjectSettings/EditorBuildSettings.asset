@@ -21,10 +21,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Fase 1/Parte2.unity
     guid: 3a2d742fa283f354aab111baa145a74d
   - enabled: 1
-    path: Assets/Scenes/Fase 1/Parte4.unity
+    path: Assets/Scenes/Fase 1/Parte3.unity
     guid: df5081da2ca4d63439993186471d8c27
   - enabled: 1
-    path: Assets/Scenes/Fase 1/Parte4.unity
+    path: Assets/Scenes/Fase 1/Parte3.unity
     guid: df5081da2ca4d63439993186471d8c27
   - enabled: 1
     path: Assets/Scenes/Fase 1/Parte4.unity
@@ -41,9 +41,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Fase 2/Parte2.4.unity
     guid: 41e1b7c253149b94d905a2ef380a0e7c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FasesJuntas1/teste.unity
     guid: 57cc34f209589714782d777fded4050b
+  - enabled: 1
+    path: Assets/Scenes/FasesJuntas1/Fase1.unity
+    guid: 8f2180b29a573b24dbfa1e447ab99558
   - enabled: 1
     path: Assets/Scenes/FasesJuntas1/Fase2.unity
     guid: 61e3f8f0c0c5c4b438554fb3b5127eee

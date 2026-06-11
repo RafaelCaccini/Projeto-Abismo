@@ -585,7 +585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 1855652409}
-  nomeCena: Parte1
+  nomeCena: Fase1
 --- !u!4 &1150245442
 Transform:
   m_ObjectHideFlags: 0
