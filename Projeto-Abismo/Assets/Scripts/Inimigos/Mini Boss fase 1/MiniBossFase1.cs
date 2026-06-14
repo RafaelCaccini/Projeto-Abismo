@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿// Projeto-Abismo/Assets/Scripts/Inimigos/Mini Boss fase 1/MiniBossFase1.cs
+using System.Collections;
 using UnityEngine;
 
 public class MiniBossFase1 : MonoBehaviour, IDamageable
@@ -25,52 +26,39 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
 
     [Header("Spikes")]
     public GameObject prefabSpike;
-
     public Transform inicioChao;
     public Transform fimChao;
-
     public Transform inicioTeto;
     public Transform fimTeto;
-
     public int quantidadeSpikes = 6;
-
     public float tempoSpike = 2f;
-    [SerializeField] private Animator animator;
-
-    [Header("Vida")]
-    public int vidaMaxima = 20;
-
-    private int vidaAtual;
-
-    private bool lutaComecou;
-    private bool morto;
-
-    // =====================================
-    // CONTROLE DE ESTADO
-    // =====================================
-    // Apenas UMA ação especial (pulo, spikes ou projetil)
-    // pode acontecer por vez.
-    private bool ocupado;
-    private bool pulando;
-
-    private float yInicial;
-    private Rigidbody2D rb;
-
-    [Header("Tempos de ataque")]
-    public float intervaloPulo = 2f;
-    public float intervaloSpikes = 4f;
-    public float intervaloProjetil = 6f;
 
     [Header("Projetil")]
     public GameObject prefabProjetil;
     public Transform pontoTiro;
-
     public float intervaloEntreTiros = 0.3f;
     public float velocidadeProjetil = 8f;
 
+    [Header("Vida")]
+    public int vidaMaxima = 20;
+    private int vidaAtual;
+
+    private bool lutaComecou;
+    private bool morto;
+    private bool ocupado;
+    private bool pulando;
+    private Vector3 posicaoInicial;
+    private Rigidbody2D rb;
+    private Animator animator;
+    private float tempoUltimoAtaque = 0f;
+
+    // Estados de IA
+    private enum Estado { Idle, Perseguindo, Atacando }
+    private Estado estadoAtual = Estado.Idle;
+
     void Start()
     {
-        yInicial = transform.position.y;
+        posicaoInicial = transform.position;
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.freezeRotation = true;
@@ -78,19 +66,15 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         vidaAtual = vidaMaxima;
 
         if (jogador == null)
-        {
-            GameObject p =
-                GameObject.FindGameObjectWithTag("Player");
-
-            if (p != null)
-                jogador = p.transform;
-        }
+            jogador = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (paredeEsquerda != null)
             paredeEsquerda.SetActive(false);
 
         if (paredeDireita != null)
             paredeDireita.SetActive(false);
+
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -101,444 +85,208 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         if (jogador == null)
             return;
 
-        DetectarJogador();
+        // Verifica se o player está no alcance
+        float distancia = Vector2.Distance(transform.position, jogador.position);
 
-        if (!lutaComecou)
-            return;
-
-        VirarPlayer();
-
-        if (!ocupado)
+        if (!lutaComecou && distancia <= alcanceDeteccao)
         {
-            MovimentoInteligente();
+            lutaComecou = true;
+            AtivarParedes();
+            //IniciarRotinasAtaques();
+            Debug.Log("LUTA INICIADA");
+        }
+
+        // Gestão de estado
+        switch (estadoAtual)
+        {
+            case Estado.Idle:
+                if (distancia <= alcanceDeteccao)
+                    estadoAtual = Estado.Perseguindo;
+                break;
+
+            case Estado.Perseguindo:
+                MovimentoInteligente();
+                GerenciarAtaques();
+                break;
+
+            case Estado.Atacando:
+                GerenciarAtaques();
+                break;
         }
     }
-
-    // =====================================
-    // MOVIMENTO
-    // =====================================
-    // Persegue o player agressivamente, encurralando-o
-    // contra os limites da arena.
 
     void MovimentoInteligente()
     {
-        float distancia =
-            Vector2.Distance(
-                transform.position,
-                jogador.position
-            );
+        Vector2 direcao = (jogador.position - transform.position).normalized;
 
-        // Zona mínima: praticamente colado no player
-        if (distancia <= 0.3f)
-            return;
+        // Movimento suave com limites de arena
+        float novoX = Mathf.Clamp(transform.position.x + direcao.x * velocidadePerseguicao * Time.deltaTime,
+                                pontoEsquerda.position.x,
+                                pontoDireita.position.x);
 
-        float direcao =
-            jogador.position.x >
-            transform.position.x
-            ? 1f
-            : -1f;
+        transform.position = new Vector3(novoX, posicaoInicial.y, 0);
 
-        Vector3 pos =
-            transform.position;
-
-        float minX = Mathf.Min(pontoEsquerda.position.x, pontoDireita.position.x);
-        float maxX = Mathf.Max(pontoEsquerda.position.x, pontoDireita.position.x);
-
-        // Velocidade agressiva enquanto o player está dentro
-        // do alcance de detecção (perseguição "sem piedade")
-        float velAtual =
-            distancia <= alcanceDeteccao
-            ? velocidadePerseguicao
-            : velocidade;
-
-        float novoX =
-            pos.x +
-            direcao *
-            velAtual *
-            Time.deltaTime;
-
-        novoX =
-            Mathf.Clamp(
-                novoX,
-                minX,
-                maxX
-            );
-
-        pos.x = novoX;
-
-        transform.position = pos;
+        // Virar conforme a direção
+        if (direcao.x > 0)
+            transform.localScale = new Vector3(1, 1, 1);
+        else
+            transform.localScale = new Vector3(-1, 1, 1);
     }
 
-    // =====================================
-    // DETECTAR PLAYER
-    // =====================================
-
-    void DetectarJogador()
+    void GerenciarAtaques()
     {
-        if (lutaComecou)
-            return;
+        // Atualiza timer para ataques
+        tempoUltimoAtaque += Time.deltaTime;
 
-        float dist =
-            Vector2.Distance(
-                transform.position,
-                jogador.position
-            );
-
-        if (dist <= alcanceDeteccao)
+        // Verifica se é hora de atacar
+        if (tempoUltimoAtaque >= 3f)
         {
-            lutaComecou = true;
-
-            if (paredeEsquerda != null)
-                paredeEsquerda.SetActive(true);
-
-            if (paredeDireita != null)
-                paredeDireita.SetActive(true);
-
-            StartCoroutine(RotinaPulo());
-            StartCoroutine(RotinaSpikes());
-            StartCoroutine(RotinaProjetil());
-
-            Debug.Log("LUTA INICIADA");
+            EscolherAtaqueAleatorio();
+            tempoUltimoAtaque = 0f;
         }
     }
 
-    // =====================================
-    // PULO
-    // =====================================
-
-    IEnumerator RotinaPulo()
+    void EscolherAtaqueAleatorio()
     {
-        while (!morto)
+        int escolha = Random.Range(0, 3);
+
+        switch (escolha)
         {
-            yield return new WaitForSeconds(intervaloPulo);
+            case 0: // Pular
+                if (!pulando && !ocupado)
+                {
+                    animator.SetTrigger("Pulo");
+                    StartCoroutine(Jump());
+                }
+                break;
 
-            // Só pula se não estiver fazendo outra ação
-            if (ocupado)
-                continue;
+            case 1: // Atirar
+                if (!pulando && !ocupado)
+                {
+                    animator.SetTrigger("Atirar");
+                    StartCoroutine(Shoot());
+                }
+                break;
 
-            yield return Pular();
+            case 2: // Lançar espinhos
+                if (!pulando && !ocupado)
+                {
+                    animator.SetTrigger("Pisao");
+                    StartCoroutine(SpawnSpikes());
+                }
+                break;
         }
     }
 
-    IEnumerator Pular()
+    IEnumerator Jump()
     {
         ocupado = true;
         pulando = true;
 
-        Vector2 inicio = transform.position;
-
-        float distanciaPlayer =
-            jogador.position.x -
-            transform.position.x;
-
-        distanciaPlayer =
-            Mathf.Clamp(
-                distanciaPlayer,
-                -3f,
-                3f
-            );
-
-        float minX = Mathf.Min(pontoEsquerda.position.x, pontoDireita.position.x);
-        float maxX = Mathf.Max(pontoEsquerda.position.x, pontoDireita.position.x);
-
-        Vector2 destino =
-            new Vector2(
-                inicio.x + distanciaPlayer,
-                yInicial
-            );
-
-        destino.x =
-            Mathf.Clamp(
-                destino.x,
-                minX,
-                maxX
-            );
-
+        // Movimento de pulo suave
         float tempo = 0f;
+        Vector2 inicio = transform.position;
+        Vector2 destino = new Vector2(transform.position.x, posicaoInicial.y + alturaPulo);
 
         while (tempo < tempoPulo)
         {
             float t = tempo / tempoPulo;
-
-            float altura =
-                Mathf.Sin(
-                    t * Mathf.PI
-                ) *
-                alturaPulo;
-
-            Vector2 pos =
-                Vector2.Lerp(
-                    inicio,
-                    destino,
-                    t
-                );
-
-            pos.y = yInicial + altura;
-
+            Vector2 pos = Vector2.Lerp(inicio, destino, t);
             transform.position = pos;
-
             tempo += Time.deltaTime;
-
             yield return null;
         }
-
-        transform.position =
-            new Vector3(
-                destino.x,
-                yInicial,
-                transform.position.z
-            );
 
         pulando = false;
         ocupado = false;
     }
 
-    // =====================================
-    // SPIKES
-    // =====================================
-
-    IEnumerator RotinaSpikes()
+    IEnumerator Shoot()
     {
-        while (!morto)
+        ocupado = true;
+
+        // Atira em sequência
+        for (int i = 0; i < 3 && !pulando; i++)
         {
-            yield return new WaitForSeconds(intervaloSpikes);
+            if (prefabProjetil == null || pontoTiro == null)
+                break;
 
-            // Só pode usar espinhos se estiver no chão e livre
-            if (ocupado || pulando)
-                continue;
+            Vector2 direcao = (jogador.position - pontoTiro.position).normalized;
+            GameObject proj = Instantiate(prefabProjetil, pontoTiro.position, Quaternion.identity);
 
-            ocupado = true;
-
-            if (animator != null)
-                animator.SetTrigger("Pisao");
-
-            yield return new WaitForSeconds(0.6f);
-
-            // Verifica de novo: se pulou durante a animação, cancela
-            if (!pulando)
+            Rigidbody2D rbProj = proj.GetComponent<Rigidbody2D>();
+            if (rbProj != null)
             {
-                SpawnSpikes(false);
+                rbProj.linearVelocity = direcao * velocidadeProjetil;
             }
 
-            ocupado = false;
-        }
-    }
+            float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+            proj.transform.rotation = Quaternion.Euler(0, 0, angulo);
 
-    // =====================================
-    // PROJETIL
-    // =====================================
+            Destroy(proj, 5f);
 
-    IEnumerator RotinaProjetil()
-    {
-        while (!morto)
-        {
-            yield return new WaitForSeconds(intervaloProjetil);
-
-            if (ocupado || pulando)
-                continue;
-
-            ocupado = true;
-
-            if (animator != null)
-                animator.SetTrigger("Atirar");
-
-            yield return new WaitForSeconds(0.3f);
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (pulando || morto)
-                    break;
-
-                AtirarProjetil();
-
-                yield return new WaitForSeconds(intervaloEntreTiros);
-            }
-
-            ocupado = false;
-        }
-    }
-
-    void AtirarProjetil()
-    {
-        if (prefabProjetil == null)
-            return;
-
-        if (pontoTiro == null)
-            return;
-
-        if (jogador == null)
-            return;
-
-        Vector2 direcao =
-            (jogador.position -
-            pontoTiro.position).normalized;
-
-        GameObject proj =
-            Instantiate(
-                prefabProjetil,
-                pontoTiro.position,
-                Quaternion.identity
-            );
-
-        Rigidbody2D rbProj =
-            proj.GetComponent<Rigidbody2D>();
-
-        if (rbProj != null)
-        {
-            rbProj.linearVelocity =
-                direcao *
-                velocidadeProjetil;
+            yield return new WaitForSeconds(intervaloEntreTiros);
         }
 
-        float angulo =
-            Mathf.Atan2(
-                direcao.y,
-                direcao.x
-            ) * Mathf.Rad2Deg;
-
-        proj.transform.rotation =
-            Quaternion.Euler(
-                0,
-                0,
-                angulo
-            );
-
-        Destroy(proj, 5f);
+        ocupado = false;
     }
 
-    // =====================================
-    // SPAWN SPIKES
-    // =====================================
-
-    void SpawnSpikes(bool teto)
+    IEnumerator SpawnSpikes()
     {
-        Transform inicio =
-            teto ? inicioTeto : inicioChao;
+        ocupado = true;
+        animator.SetTrigger("Pisao");
 
-        Transform fim =
-            teto ? fimTeto : fimChao;
+        // Lança espinhos no chão
+        Transform inicio = inicioChao;
+        Transform fim = fimChao;
 
         if (inicio == null || fim == null || prefabSpike == null)
-            return;
+            yield break;
 
         Collider2D colliderBoss = GetComponent<Collider2D>();
 
         for (int i = 0; i < quantidadeSpikes; i++)
         {
-            float t =
-                quantidadeSpikes == 1
-                ? 0.5f
-                : (float)i /
-                  (quantidadeSpikes - 1);
+            float t = (float)i / (quantidadeSpikes - 1);
+            Vector2 pos = Vector2.Lerp(inicio.position, fim.position, t);
 
-            Vector2 pos =
-                Vector2.Lerp(
-                    inicio.position,
-                    fim.position,
-                    t
-                );
-
-            GameObject spike =
-                Instantiate(
-                    prefabSpike,
-                    pos,
-                    Quaternion.identity
-                );
-
-            Collider2D colliderSpike =
-                spike.GetComponent<Collider2D>();
+            GameObject spike = Instantiate(prefabSpike, pos, Quaternion.identity);
+            Collider2D colliderSpike = spike.GetComponent<Collider2D>();
 
             if (colliderSpike != null && colliderBoss != null)
-            {
-                Physics2D.IgnoreCollision(
-                    colliderSpike,
-                    colliderBoss
-                );
-            }
+                Physics2D.IgnoreCollision(colliderSpike, colliderBoss);
 
-            if (teto)
-            {
-                spike.transform.rotation =
-                    Quaternion.Euler(0, 0, 180);
-            }
-
-            Destroy(
-                spike,
-                tempoSpike
-            );
+            Destroy(spike, tempoSpike);
         }
+
+        ocupado = false;
     }
 
-    // =====================================
-    // VIRAR
-    // =====================================
-
-    void VirarPlayer()
+    void AtivarParedes()
     {
-        Vector3 scale =
-            transform.localScale;
-
-        if (
-            jogador.position.x >
-            transform.position.x
-        )
-        {
-            scale.x =
-                Mathf.Abs(scale.x);
-        }
-        else
-        {
-            scale.x =
-                -Mathf.Abs(scale.x);
-        }
-
-        transform.localScale = scale;
+        if (paredeEsquerda != null) paredeEsquerda.SetActive(true);
+        if (paredeDireita != null) paredeDireita.SetActive(true);
     }
 
-    // =====================================
-    // VIDA
-    // =====================================
-
-    public void TakeDamage(
-        int dano,
-        GameObject fonte
-    )
+    public void TakeDamage(int dano, GameObject fonte)
     {
-        if (morto)
+        if (morto || fonte.CompareTag("Spike"))
             return;
-
-        if (
-            fonte != null &&
-            fonte.CompareTag("Spike")
-        )
-        {
-            return;
-        }
 
         vidaAtual -= dano;
-
-        Debug.Log(
-            "Boss tomou dano. Vida: " +
-            vidaAtual
-        );
+        Debug.Log($"Boss tomou {dano} de dano. Vida: {vidaAtual}");
 
         if (vidaAtual <= 0)
-        {
             Morrer();
-        }
     }
 
     void Morrer()
     {
         morto = true;
-
         StopAllCoroutines();
 
-        if (paredeEsquerda != null)
-            paredeEsquerda.SetActive(false);
-
-        if (paredeDireita != null)
-            paredeDireita.SetActive(false);
+        if (paredeEsquerda != null) paredeEsquerda.SetActive(false);
+        if (paredeDireita != null) paredeDireita.SetActive(false);
 
         Destroy(gameObject);
     }
