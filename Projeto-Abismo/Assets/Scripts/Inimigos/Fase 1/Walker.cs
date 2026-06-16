@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Walker : MonoBehaviour, IDamageable
 {
@@ -85,6 +86,7 @@ public class Walker : MonoBehaviour, IDamageable
     // =====================================
 
     private float lastDamageTime;
+    private bool morreu = false;
 
     // =====================================
     // START
@@ -121,10 +123,11 @@ public class Walker : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (morreu)
+            return;
+
         HandleFleeTimer();
-
         DetectLamp();
-
         UpdateAnimations();
     }
 
@@ -134,8 +137,10 @@ public class Walker : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
-        Move();
+        if (morreu)
+            return;
 
+        Move();
         UpdateFlip();
     }
 
@@ -406,8 +411,68 @@ public class Walker : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        if (morreu)
+            return;
+
+        morreu = true;
+
         Debug.Log("Walker morreu");
 
-        Destroy(gameObject);
+        // stop movement and interactions
+        if (col != null)
+            col.enabled = false;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+
+        // ensure Running flag off
+        if (animator != null)
+            animator.SetBool("Running", false);
+
+        // play death state directly (avoid transitions back)
+        if (animator != null)
+        {
+            // try to play the death state by name, fallback to trigger
+            try
+            {
+                animator.Play("Morrendo", 0, 0f);
+            }
+            catch { animator.SetTrigger("Morrer"); }
+
+            StartCoroutine(HandleDeathAndDestroy());
+        }
+        else
+        {
+            Destroy(gameObject, 1f);
+        }
+    }
+
+    private IEnumerator HandleDeathAndDestroy()
+    {
+        // determine death clip length
+        float length = 1f;
+        var ac = animator.runtimeAnimatorController;
+        if (ac != null)
+        {
+            foreach (var clip in ac.animationClips)
+            {
+                var name = clip.name.ToLower();
+                if (name.Contains("morr") || name.Contains("morrendo") || name.Contains("morrer") || name.Contains("death"))
+                {
+                    length = clip.length;
+                    break;
+                }
+            }
+        }
+
+        // wait the clip duration
+        yield return new WaitForSeconds(length);
+
+        // pause animator so it doesn't transition to other states
+        if (animator != null)
+            animator.speed = 0f;
+
+        // keep object a short moment on last frame then destroy
+        Destroy(gameObject, 0.2f);
     }
 }

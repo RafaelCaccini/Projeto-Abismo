@@ -1,3 +1,4 @@
+// Assets/Scripts/Menu/PauseMenu.cs
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,7 +10,8 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject painelOpcoes;
 
     [Header("Audio")]
-    [SerializeField] private Slider sliderVolume;
+    [SerializeField] private Slider sliderVolume;        // Música
+    [SerializeField] private Slider sliderVolumeGeral;   // SFX
 
     private bool pausado;
 
@@ -18,16 +20,34 @@ public class PauseMenu : MonoBehaviour
         painelPause.SetActive(false);
         painelOpcoes.SetActive(false);
 
-        // volume salvo
-        float volume =
-            PlayerPrefs.GetFloat("volume", 1f);
+        // carregar valores (aplica defaults)
+        float volumeMusica = PlayerPrefs.GetFloat("volumeMusica", 1f);
+        float volumeGeral = PlayerPrefs.GetFloat("volumeSFX", 1f);
 
-        AudioListener.volume = volume;
+        sliderVolume.value = volumeMusica;
+        sliderVolumeGeral.value = volumeGeral;
 
-        sliderVolume.value = volume;
+        // listeners em tempo real
+        sliderVolume.onValueChanged.AddListener(MudarVolumeMusica);
+        sliderVolumeGeral.onValueChanged.AddListener(MudarVolumeGeral);
+    }
 
-        sliderVolume.onValueChanged
-            .AddListener(MudarVolume);
+    public void MudarVolumeMusica(float volume)
+    {
+        PlayerPrefs.SetFloat("volumeMusica", volume);
+        PlayerPrefs.Save();
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.AtualizarVolumeMusica();
+    }
+
+    public void MudarVolumeGeral(float volume)
+    {
+        PlayerPrefs.SetFloat("volumeSFX", volume);
+        PlayerPrefs.Save();
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.AtualizarVolumeSFX();
     }
 
     void Update()
@@ -39,80 +59,40 @@ public class PauseMenu : MonoBehaviour
                 FecharOpcoes();
                 return;
             }
-
-            if (pausado)
-                Continuar();
-            else
-                Pausar();
+            if (pausado) Continuar(); else Pausar();
         }
     }
-
-    // =====================================
-    // PAUSE
-    // =====================================
 
     public void Pausar()
     {
         painelPause.SetActive(true);
-
         Time.timeScale = 0f;
-
         pausado = true;
     }
 
     public void Continuar()
     {
         painelPause.SetActive(false);
-
         painelOpcoes.SetActive(false);
-
         Time.timeScale = 1f;
-
         pausado = false;
     }
-
-    // =====================================
-    // OPÇÕES
-    // =====================================
 
     public void AbrirOpcoes()
     {
         painelPause.SetActive(false);
-
         painelOpcoes.SetActive(true);
     }
 
     public void FecharOpcoes()
     {
         painelOpcoes.SetActive(false);
-
         painelPause.SetActive(true);
     }
-
-    // =====================================
-    // VOLUME
-    // =====================================
-
-    public void MudarVolume(float volume)
-    {
-        AudioListener.volume = volume;
-
-        PlayerPrefs.SetFloat(
-            "volume",
-            volume
-        );
-
-        PlayerPrefs.Save();
-    }
-
-    // =====================================
-    // MENU
-    // =====================================
 
     public void IrMenu()
     {
         Time.timeScale = 1f;
-
         SceneManager.LoadScene("Menu");
     }
 }
