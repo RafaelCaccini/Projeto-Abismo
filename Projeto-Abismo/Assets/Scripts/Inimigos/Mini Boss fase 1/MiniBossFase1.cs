@@ -209,10 +209,12 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     IEnumerator PularEntrePontos(int repeticoes)
     {
         ocupado = true;
-        animator.SetTrigger("Pulo");
 
         for (int i = 0; i < repeticoes; i++)
         {
+            // garante que a animação de pulo seja disparada a cada salto
+            if (animator != null) animator.SetTrigger("Pular");
+
             float targetX = (transform.position.x <= (pontoEsquerda.position.x + pontoDireita.position.x) / 2)
                 ? pontoDireita.position.x
                 : pontoEsquerda.position.x;
@@ -230,11 +232,11 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     {
         ocupado = true;
         pulando = true;
-        animator.SetTrigger("Pulo");
 
         // 1) Pulinhos verticais no local atual (subir reto)
         for (int i = 0; i < pulosVerticaisPorLinha; i++)
         {
+            if (animator != null) animator.SetTrigger("Pular");
             yield return JumpArc(transform.position.x, alturaVertical, duracaoPulo);
             yield return new WaitForSeconds(intervaloEntrePulos);
         }
@@ -242,10 +244,12 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         // 2) Depois, sequencia de pulos diagonais cruzando a arena (cair diagonalmente)
         for (int i = 0; i < pulosDiagonais; i++)
         {
+            if (animator != null) animator.SetTrigger("Pular");
+
             float targetX = (transform.position.x <= (pontoEsquerda.position.x + pontoDireita.position.x) / 2)
                 ? pontoDireita.position.x
                 : pontoEsquerda.position.x;
-            // aumenta levemente a altura para pulos diagonais
+
             yield return JumpArc(targetX, alturaVertical * 1.0f, duracaoPulo * 1.05f);
             yield return new WaitForSeconds(intervaloEntrePulos);
         }

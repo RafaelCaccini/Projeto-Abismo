@@ -13,6 +13,8 @@ public class PulgaFogo : MonoBehaviour, IDamageable
 
     private Collider2D col;
 
+    private Animator animator;
+
     // =====================================
     // MOVIMENTO
     // =====================================
@@ -77,6 +79,7 @@ public class PulgaFogo : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
 
         col = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
     }
 
     // =====================================
@@ -232,6 +235,10 @@ public class PulgaFogo : MonoBehaviour, IDamageable
         AtualizarDirecaoVisual(
             direcao
         );
+
+        // dispara animação de pulo
+        if (animator != null)
+            animator.SetTrigger("Pular");
 
         // RESET VELOCIDADE
 
