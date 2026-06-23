@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 87386318ee47fc946b02ab0fe5ba4435
+guid: 67e0891782a19ab4b9168517643802cb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5003789988938808630
-    second: plataformas_0
+      213: 3850610872369423546
+    second: "Ru\xEDnas-1_0"
   - first:
-      213: -6479089480501096285
-    second: plataformas_1
+      213: -7240401784363472538
+    second: "Ru\xEDnas-1_1"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -54,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 330
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,85 +103,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Plataforma grande_2
+      name: "Ru\xEDnas-1_0"
       rect:
         serializedVersion: 2
-        x: 0
-        y: 256
-        width: 512
-        height: 512
+        x: 179
+        y: 244
+        width: 2491
+        height: 2664
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape:
-      - - {x: 256, y: 256}
-        - {x: -256, y: 256}
-        - {x: -256, y: 197}
-        - {x: -194, y: 79}
-        - {x: -21, y: 13}
-        - {x: 256, y: 13}
-      tessellationDetail: 0
+      physicsShape: []
+      tessellationDetail: -1
       bones: []
-      spriteID: 848f11e662b7f8b4989e06fbe93ef5b1
-      internalID: 1057855149
+      spriteID: ab426dfdf2e107530800000000000000
+      internalID: 3850610872369423546
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Plataforma grande_3
+      name: "Ru\xEDnas-1_1"
       rect:
         serializedVersion: 2
-        x: 512
-        y: 256
-        width: 512
-        height: 512
+        x: 3003
+        y: 286
+        width: 1734
+        height: 1606
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape:
-      - - {x: 256, y: 256}
-        - {x: -256, y: 256}
-        - {x: -256, y: -2}
-        - {x: -243, y: -14}
-        - {x: 256, y: -14}
-      tessellationDetail: 0
+      physicsShape: []
+      tessellationDetail: -1
       bones: []
-      spriteID: ea72912a3444880438d213e49fcb80db
-      internalID: 1701430419
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Plataforma grande_4
-      rect:
-        serializedVersion: 2
-        x: 1024
-        y: 256
-        width: 512
-        height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape:
-      - - {x: 51, y: 20}
-        - {x: 194, y: 52}
-        - {x: 256, y: 193}
-        - {x: 256, y: 256}
-        - {x: -256, y: 256}
-        - {x: -256, y: 13}
-        - {x: -217, y: 13}
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2e925ac0e3b20c445b79d62dda3d3b10
-      internalID: 849902304
+      spriteID: 66929eb30fce48b90800000000000000
+      internalID: -7240401784363472538
       vertices: []
       indices: 
       edges: []
@@ -190,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 34d8bf1a4b2dff444a630f5300aa9dcc
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -198,16 +158,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":512.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Plataforma grande_0: 1892920836
-      Plataforma grande_1: -1961060732
-      Plataforma grande_2: 1057855149
-      Plataforma grande_3: 1701430419
-      Plataforma grande_4: 849902304
-      Plataforma grande_5: 1670263835
+      "Ru\xEDnas-1_0": 3850610872369423546
+      "Ru\xEDnas-1_1": -7240401784363472538
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

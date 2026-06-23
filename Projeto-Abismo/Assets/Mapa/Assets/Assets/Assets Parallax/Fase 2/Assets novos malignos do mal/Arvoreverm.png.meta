@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 87386318ee47fc946b02ab0fe5ba4435
+guid: 494009074a9b9e9488f2477a7d3e5c45
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5003789988938808630
-    second: plataformas_0
+      213: -6303343504178361586
+    second: Arvoreverm_0
   - first:
-      213: -6479089480501096285
-    second: plataformas_1
+      213: -7929219861772694575
+    second: Arvoreverm_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,12 +49,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 330
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,85 +103,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Plataforma grande_2
+      name: Arvoreverm_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 256
-        width: 512
-        height: 512
+        x: 189
+        y: 2294
+        width: 44
+        height: 114
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape:
-      - - {x: 256, y: 256}
-        - {x: -256, y: 256}
-        - {x: -256, y: 197}
-        - {x: -194, y: 79}
-        - {x: -21, y: 13}
-        - {x: 256, y: 13}
-      tessellationDetail: 0
+      physicsShape: []
+      tessellationDetail: -1
       bones: []
-      spriteID: 848f11e662b7f8b4989e06fbe93ef5b1
-      internalID: 1057855149
+      spriteID: e0bce20ca760688a0800000000000000
+      internalID: -6303343504178361586
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Plataforma grande_3
+      name: Arvoreverm_1
       rect:
         serializedVersion: 2
-        x: 512
-        y: 256
-        width: 512
-        height: 512
+        x: 223
+        y: 123
+        width: 1975
+        height: 3207
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape:
-      - - {x: 256, y: 256}
-        - {x: -256, y: 256}
-        - {x: -256, y: -2}
-        - {x: -243, y: -14}
-        - {x: 256, y: -14}
-      tessellationDetail: 0
+      physicsShape: []
+      tessellationDetail: -1
       bones: []
-      spriteID: ea72912a3444880438d213e49fcb80db
-      internalID: 1701430419
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Plataforma grande_4
-      rect:
-        serializedVersion: 2
-        x: 1024
-        y: 256
-        width: 512
-        height: 512
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape:
-      - - {x: 51, y: 20}
-        - {x: 194, y: 52}
-        - {x: 256, y: 193}
-        - {x: 256, y: 256}
-        - {x: -256, y: 256}
-        - {x: -256, y: 13}
-        - {x: -217, y: 13}
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2e925ac0e3b20c445b79d62dda3d3b10
-      internalID: 849902304
+      spriteID: 1db0119eb80c5f190800000000000000
+      internalID: -7929219861772694575
       vertices: []
       indices: 
       edges: []
@@ -190,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 34d8bf1a4b2dff444a630f5300aa9dcc
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -198,16 +158,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":512.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Plataforma grande_0: 1892920836
-      Plataforma grande_1: -1961060732
-      Plataforma grande_2: 1057855149
-      Plataforma grande_3: 1701430419
-      Plataforma grande_4: 849902304
-      Plataforma grande_5: 1670263835
+      Arvoreverm_0: -6303343504178361586
+      Arvoreverm_1: -7929219861772694575
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

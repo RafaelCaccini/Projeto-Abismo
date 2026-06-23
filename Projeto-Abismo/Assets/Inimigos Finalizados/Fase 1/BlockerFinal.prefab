@@ -154,6 +154,8 @@ MonoBehaviour:
   projetilPrefab: {fileID: 835826101196084873, guid: c65500664534e7847a54db37d3cbdeea, type: 3}
   player: {fileID: 0}
   animator: {fileID: 166931044914830690}
+  audioSource: {fileID: 0}
+  detectarSom: {fileID: 0}
   attackCooldown: 5
   projectileSpeed: 20
   arcForce: 10
@@ -236,7 +238,7 @@ Transform:
   m_GameObject: {fileID: 2456239698694661881}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.31, y: -0.03, z: 0}
+  m_LocalPosition: {x: -5.92, y: -0.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
