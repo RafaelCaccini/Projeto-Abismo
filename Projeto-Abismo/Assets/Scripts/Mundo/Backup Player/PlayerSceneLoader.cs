@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class PlayerSceneLoader : MonoBehaviour
 {
@@ -48,11 +48,26 @@ public class PlayerSceneLoader : MonoBehaviour
         // TELEPORTAR
         // =========================
 
-        player.transform.position =
+        Vector3 posicaoSpawn =
             spawnPoint.position;
 
+        // Usa checkpoint se disponível
+        if (
+            GameManager.Instance != null &&
+            GameManager.Instance.HasCheckpoint
+        )
+        {
+            posicaoSpawn =
+                GameManager.Instance
+                    .CheckpointPosition;
+        }
+
+        player.transform.position =
+            posicaoSpawn;
+
         Debug.Log(
-            "Player movido pro spawn"
+            "Player movido para: " +
+            posicaoSpawn
         );
     }
 }
