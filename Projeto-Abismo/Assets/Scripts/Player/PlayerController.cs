@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour, IDamageable
@@ -18,14 +19,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private string wallTag = "Wall";
 
-    [Header("Super Jump")]
-    [SerializeField] private float superJumpForce = 30f;
-    [SerializeField] private float superJumpHoldTime = 0.35f;
-    [SerializeField] private float superJumpCooldown = 1.2f;
-    [SerializeField] private float superJumpChargeTime = 3f; // tempo necessário para charge (3s)
-
     [Header("Attack")]
-    [SerializeField] private GameObject attackBlockPrefab;
     [SerializeField] private float attackOffsetX = 1.6f;
     [SerializeField] private float attackOffsetY = 0.4f;
     [SerializeField] private float attackCooldown = 0.35f;
@@ -63,11 +57,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float jumpTimeCounter;
     private float jumpStartY; // usado para pulo baseado em altura
 
-    // Super jump state
-    private bool isSuperJumping;
-    private float superJumpTimeCounter;
-    private float lastSuperJumpTime;
-    private float superJumpChargeTimer;
+    // (Super Jump state removed)
 
     // Estados de contato para controlar quando é permitido pular
     private bool isGrounded;
@@ -76,6 +66,11 @@ public class PlayerController : MonoBehaviour, IDamageable
     private bool facingRight = true;
     private float lastAttackTime;
     private PlayerAttack playerAttack;
+
+    [Header("Abilities")]
+    [SerializeField] private PlayerAbilities playerAbilities; // optional assign in inspector
+    private PlayerAbilities abilities;
+    private bool abilitiesAvailable = false;
 
     // Dash state
     private bool isDashing;
@@ -109,14 +104,38 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (lampiao == null)
                 Debug.LogError("[PlayerController] Lampião NÃO encontrado!");
         }
+
+        // Abilities: prefer inspector assignment, fallback to GetComponent
+        if (playerAbilities != null)
+        {
+            abilities = playerAbilities;
+        }
+        else
+        {
+            abilities = GetComponent<PlayerAbilities>();
+        }
+
+        if (abilities == null)
+        {
+            Debug.LogError("[PlayerController] PlayerAbilities componente NÃO encontrado no Player. Adicione PlayerAbilities ao GameObject para gerenciar habilidades.");
+            abilitiesAvailable = false;
+        }
+        else
+        {
+            abilitiesAvailable = true;
+        }
     }
 
     void Update()
     {
         GetInput();
         HandleFlip();
-        HandleSuperJump();
         HandleJump();
+        // Charged jump handled separately and only when ability unlocked
+        if (abilitiesAvailable && abilities.Has(SkillType.ChargedJump))
+        {
+            HandleChargedJump();
+        }
         HandleAttack();
         HandleDash();
         HandleAnimations();
@@ -156,17 +175,22 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleJump()
     {
-        bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-
-        if (Input.GetButtonDown("Jump") && isGrounded && !isTouchingWall && !ctrlHeld)
+        if (Input.GetButtonDown("Jump") && isGrounded && !isTouchingWall)
         {
-            isJumping = true;
+            // initial jump impulse
             jumpTimeCounter = jumpHoldTime;
             jumpStartY = rb.position.y;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
-        }
 
+            // enable hold behavior only if ChargedJump ability is available
+            isJumping = abilitiesAvailable && abilities.Has(SkillType.ChargedJump);
+        }
+    }
+
+    void HandleChargedJump()
+    {
+        // Pulo pressionado separado: mantém lógica de hold baseada em tempo ou altura
         if (useHeightBasedJump)
         {
             // Pulo baseado em altura alvo enquanto segura o botão
@@ -211,65 +235,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
-    void HandleSuperJump()
-    {
-        bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-        // Charging logic: segurando CTRL + SPACE acumula tempo até superJumpChargeTime
-        if (ctrlHeld && Input.GetKey(KeyCode.Space))
-        {
-            superJumpChargeTimer += Time.deltaTime;
-
-            // opcional: feedback de carregamento (log)
-            if (superJumpChargeTimer >= 0.1f && superJumpChargeTimer < 0.1f + Time.deltaTime)
-                Debug.Log("Super Jump: começando carregamento...");
-
-            if (superJumpChargeTimer >= superJumpChargeTime)
-            {
-                // só executa se estiver no chão e cooldown OK
-                if (isGrounded && !isTouchingWall && Time.time >= lastSuperJumpTime + superJumpCooldown)
-                {
-                    isSuperJumping = true;
-                    superJumpTimeCounter = superJumpHoldTime;
-                    lastSuperJumpTime = Time.time;
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, superJumpForce);
-                    isGrounded = false;
-                    Debug.Log("Super Jump: executado após charge completo");
-                }
-
-                // reset do timer após execução para evitar múltiplos triggers
-                superJumpChargeTimer = 0f;
-            }
-        }
-        else
-        {
-            // soltou antes de completar: cancelar charge
-            if (superJumpChargeTimer > 0f && superJumpChargeTimer < superJumpChargeTime)
-            {
-                Debug.Log("Super Jump: charge cancelado");
-            }
-            superJumpChargeTimer = 0f;
-        }
-
-        // comportamento de hold pós-execução (mantém força enquanto o jogador segura, como antes)
-        if (isSuperJumping && Input.GetKey(KeyCode.Space))
-        {
-            if (superJumpTimeCounter > 0f)
-            {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, superJumpForce);
-                superJumpTimeCounter -= Time.deltaTime;
-            }
-            else
-            {
-                isSuperJumping = false;
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space) || !ctrlHeld)
-        {
-            isSuperJumping = false;
-        }
-    }
 
     void HandleFlip()
     {
@@ -318,6 +284,11 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing)
         {
+            // Habilita dash apenas se o sistema de habilidades existir e dash estiver desbloqueado
+            if (!abilitiesAvailable || !abilities.Has(SkillType.Dash))
+            {
+                return;
+            }
             // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
             float dir = horizontalInput != 0 ? horizontalInput : lastMoveDirection;
             dashDirection = new Vector2(dir, 0f);
