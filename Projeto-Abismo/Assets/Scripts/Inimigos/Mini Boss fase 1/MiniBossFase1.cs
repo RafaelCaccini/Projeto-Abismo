@@ -57,6 +57,76 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     public int vidaMaxima = 20;
     private int vidaAtual;
 
+    // ========================= Paredes controláveis =========================
+    [Header("Paredes - Configuração")]
+    [SerializeField] private float wallEnterMargin = 0.1f; // quanto além do X da parede o player deve ultrapassar para considerar "passou pela parede"
+    [SerializeField] private float wallReenableDistance = 1.2f; // distância a partir da parede para reativar colisão (sair do "raio")
+
+    // estado interno das paredes
+    private class WallInfo
+    {
+        public GameObject go;
+        public Collider2D col;
+        public SpriteRenderer sr;
+        public Color originalColor;
+        public bool originalIsTrigger;
+        public bool originalActive;
+        public bool passedThrough = false;
+        public bool reenabled = false;
+
+        public WallInfo(GameObject g)
+        {
+            go = g;
+            originalActive = g.activeSelf;
+            col = g != null ? g.GetComponent<Collider2D>() : null;
+            sr = g != null ? g.GetComponent<SpriteRenderer>() : null;
+            if (sr != null) originalColor = sr.color;
+            if (col != null) originalIsTrigger = col.isTrigger;
+        }
+
+        public void MakeTransparentOpen()
+        {
+            if (go != null && !go.activeSelf) go.SetActive(true);
+            if (sr != null)
+            {
+                var c = sr.color;
+                c.a = 0.35f;
+                sr.color = c;
+            }
+            if (col != null)
+            {
+                col.isTrigger = true; // permite atravessar
+            }
+            passedThrough = false;
+            reenabled = false;
+        }
+
+        public void ReenableCollision()
+        {
+            if (col != null)
+                col.isTrigger = false;
+            if (sr != null)
+            {
+                var c = originalColor;
+                c.a = 1f;
+                sr.color = c;
+            }
+            reenabled = true;
+        }
+
+        public void RestoreOriginal()
+        {
+            if (go != null) go.SetActive(originalActive);
+            if (col != null) col.isTrigger = originalIsTrigger;
+            if (sr != null) sr.color = originalColor;
+            passedThrough = false;
+            reenabled = false;
+        }
+    }
+
+    private WallInfo leftWall;
+    private WallInfo rightWall;
+
     private bool lutaComecou;
     private bool morto;
     private bool ocupado;
@@ -89,12 +159,14 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         if (jogador == null)
             jogador = GameObject.FindGameObjectWithTag("Player")?.transform;
 
+        // Inicializa estados das paredes (não altera ativo original aqui)
         if (paredeEsquerda != null)
-            paredeEsquerda.SetActive(false);
+            leftWall = new WallInfo(paredeEsquerda);
 
         if (paredeDireita != null)
-            paredeDireita.SetActive(false);
+            rightWall = new WallInfo(paredeDireita);
 
+        // NÃO desativa as paredes aqui — elas serão configuradas quando a luta começar.
         animator = GetComponent<Animator>();
     }
 
@@ -108,8 +180,14 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         if (!lutaComecou && distancia <= alcanceDeteccao)
         {
             lutaComecou = true;
-            AtivarParedes();
+            AtivarParedes(); // ativa e deixa transparentes/atravessáveis no começo
             Debug.Log("LUTA INICIADA");
+        }
+
+        // Se a luta começou, gerencia reativação de colisão das paredes com base no jogador
+        if (lutaComecou)
+        {
+            ManageWallsDuringFight();
         }
 
         // Gestão de estado
@@ -128,6 +206,56 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
             case Estado.Atacando:
                 GerenciarAtaques();
                 break;
+        }
+    }
+
+    void ManageWallsDuringFight()
+    {
+        if (jogador == null) return;
+
+        // checa cada parede individualmente: quando jogador "passou pela parede" e saiu do raio (distância) reativa colisão
+        if (leftWall != null && !leftWall.reenabled)
+        {
+            // considerar "passou" se jogador estiver à direita da parede (ultrapassou seu X)
+            float wallX = leftWall.go.transform.position.x;
+            if (!leftWall.passedThrough)
+            {
+                if (jogador.position.x > wallX + wallEnterMargin)
+                {
+                    leftWall.passedThrough = true;
+                    Debug.Log("[MiniBoss] Player passou pela parede esquerda.");
+                }
+            }
+            else
+            {
+                // se já passou e saiu do "raio", reabilita colisão
+                if (Mathf.Abs(jogador.position.x - wallX) >= wallReenableDistance)
+                {
+                    leftWall.ReenableCollision();
+                    Debug.Log("[MiniBoss] Parede esquerda reativou colisão.");
+                }
+            }
+        }
+
+        if (rightWall != null && !rightWall.reenabled)
+        {
+            float wallX = rightWall.go.transform.position.x;
+            if (!rightWall.passedThrough)
+            {
+                if (jogador.position.x < wallX - wallEnterMargin)
+                {
+                    rightWall.passedThrough = true;
+                    Debug.Log("[MiniBoss] Player passou pela parede direita.");
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(jogador.position.x - wallX) >= wallReenableDistance)
+                {
+                    rightWall.ReenableCollision();
+                    Debug.Log("[MiniBoss] Parede direita reativou colisão.");
+                }
+            }
         }
     }
 
@@ -421,6 +549,17 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
 
     void AtivarParedes()
     {
+        // Ativa visualmente e deixa ABERTAS (transparentes e isTrigger=true) para o começo da luta
+        if (leftWall != null)
+        {
+            leftWall.MakeTransparentOpen();
+        }
+        if (rightWall != null)
+        {
+            rightWall.MakeTransparentOpen();
+        }
+
+        // Caso você queira garantir que o GameObject esteja ativo:
         if (paredeEsquerda != null) paredeEsquerda.SetActive(true);
         if (paredeDireita != null) paredeDireita.SetActive(true);
     }
@@ -442,8 +581,9 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         morto = true;
         StopAllCoroutines();
 
-        if (paredeEsquerda != null) paredeEsquerda.SetActive(false);
-        if (paredeDireita != null) paredeDireita.SetActive(false);
+        // quando boss morre, restaura estado original das paredes (permitir atravessar conforme origem)
+        if (leftWall != null) leftWall.RestoreOriginal();
+        if (rightWall != null) rightWall.RestoreOriginal();
 
         // tocar animação de morte aqui se quiser (notificar animator)
         Destroy(gameObject);

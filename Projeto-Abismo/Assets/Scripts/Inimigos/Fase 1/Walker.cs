@@ -47,6 +47,17 @@ public class Walker : MonoBehaviour, IDamageable
     [SerializeField] private LayerMask wallLayer;
 
     // =====================================
+    // PLAYER INTERACTION (HEAD SLIDE)
+    // =====================================
+
+    [Header("Player Interaction")]
+    [Tooltip("Velocidade horizontal imediata aplicada ao player ao tocar o topo do Walker (substitui componente X da velocidade)")]
+    [SerializeField] private float headSlideSpeed = 6f;
+
+    [Tooltip("Impulso horizontal adicional (ForceMode2D.Impulse) aplicado ao player ao tocar o topo")]
+    [SerializeField] private float headSlideForce = 4f;
+
+    // =====================================
     // REFERENCES
     // =====================================
 
@@ -337,7 +348,7 @@ public class Walker : MonoBehaviour, IDamageable
     }
 
     // =====================================
-    // DAMAGE PLAYER
+    // DAMAGE PLAYER (mantém sistema existente)
     // =====================================
 
     private void OnCollisionStay2D(
@@ -351,7 +362,61 @@ public class Walker : MonoBehaviour, IDamageable
         )
             return;
 
+        // mantém sistema de dano existente (sem alterar)
         TryDamage(other.gameObject);
+    }
+
+    // =====================================
+    // HEAD SLIDE — AÇÃO IMEDIATA QUANDO O PLAYER PISA NA PARTE SUPERIOR DA BOX COLLIDER
+    // =====================================
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Player"))
+            return;
+
+        if (col == null)
+            return;
+
+        // Considera contato no "topo da box" quando ANY ponto de contato estiver próximo ou acima do bounds.max.y
+        bool playerOnTop = false;
+        float topY = col.bounds.max.y;
+        const float epsilon = 0.02f; // tolerância para colisões ligeiramente internas
+
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.point.y >= topY - epsilon)
+            {
+                playerOnTop = true;
+                break;
+            }
+        }
+
+        if (!playerOnTop)
+            return;
+
+        // obtém o Rigidbody2D do player (suporta hierarquias)
+        Rigidbody2D playerRb =
+            collision.gameObject.GetComponentInParent<Rigidbody2D>();
+
+        if (playerRb == null)
+            playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
+
+        if (playerRb == null)
+            return;
+
+        // direção para empurrar: para o lado mais próximo (longe do centro do Walker)
+        float dir = collision.transform.position.x >= transform.position.x ? 1f : -1f;
+        if (dir == 0f) dir = 1f;
+
+        // aplica velocidade imediata horizontal mantendo a componente vertical intacta
+        playerRb.linearVelocity = new Vector2(dir * headSlideSpeed, playerRb.linearVelocityY);
+
+        // aplica impulso horizontal configurável para garantir separação e "escorregamento" físico
+        if (headSlideForce != 0f)
+            playerRb.AddForce(new Vector2(dir * headSlideForce, 0f), ForceMode2D.Impulse);
+
+        Debug.Log($"Walker -> Player pisou no topo. Forçando slide para {(dir > 0f ? "direita" : "esquerda")} (speed={headSlideSpeed}, impulse={headSlideForce})");
     }
 
     private void TryDamage(
