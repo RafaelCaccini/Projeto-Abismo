@@ -80,7 +80,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: c45d03a541f4cb0408e962a4a6fd03b4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -159,7 +159,7 @@ MonoBehaviour:
   attackCooldown: 5
   projectileSpeed: 20
   arcForce: 10
-  attackRange: 15
+  attackRange: 10
   tempoTrocaAtaque: 3
   maxLife: 3
   precisaDeLuz: 1
