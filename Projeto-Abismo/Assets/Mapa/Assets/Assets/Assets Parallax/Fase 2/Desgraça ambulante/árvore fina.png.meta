@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: c4b35dbb634548341a9a3292de7e51dc
+guid: 32957f749b33bca4083ba8b64ce5a62c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2416173747771641456
-    second: Boss1 idle3_0
+      213: 7636806093289775112
+    second: "\xE1rvore fina_0"
   - first:
-      213: 1286650470246926182
-    second: Boss1 idle3_1
+      213: -6144117857720345587
+    second: "\xE1rvore fina_1"
+  - first:
+      213: -2741612250532456491
+    second: "\xE1rvore fina_2"
+  - first:
+      213: -3169561814347868478
+    second: "\xE1rvore fina_3"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -52,8 +58,8 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 9
-  spritePivot: {x: 0.4836944, y: 0.5059896}
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -75,10 +81,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
-    resizeAlgorithm: 1
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -99,62 +105,93 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boss1 idle3_0
+      name: "\xE1rvore fina_0"
       rect:
         serializedVersion: 2
-        x: 104
-        y: 744
-        width: 6
-        height: 6
+        x: 73
+        y: 191
+        width: 875
+        height: 1247
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 091727027c6087ed0800000000000000
-      internalID: -2416173747771641456
+      spriteID: 80063192ea26bf960800000000000000
+      internalID: 7636806093289775112
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Boss1 idle3_1
+      name: "\xE1rvore fina_1"
       rect:
         serializedVersion: 2
-        x: 256
-        y: 98
-        width: 655
-        height: 937
+        x: 639
+        y: 176
+        width: 14
+        height: 8
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 667482529c91bd110800000000000000
-      internalID: 1286650470246926182
+      spriteID: d0cd1708c55bbbaa0800000000000000
+      internalID: -6144117857720345587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xE1rvore fina_2"
+      rect:
+        serializedVersion: 2
+        x: 849
+        y: 142
+        width: 39
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d7572f0f26d3f9d0800000000000000
+      internalID: -2741612250532456491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xE1rvore fina_3"
+      rect:
+        serializedVersion: 2
+        x: 807
+        y: 130
+        width: 23
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c6172aa2547304d0800000000000000
+      internalID: -3169561814347868478
       vertices: []
       indices: 
       edges: []
@@ -164,7 +201,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -173,8 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Boss1 idle3_0: -2416173747771641456
-      Boss1 idle3_1: 1286650470246926182
+      "\xE1rvore fina_0": 7636806093289775112
+      "\xE1rvore fina_1": -6144117857720345587
+      "\xE1rvore fina_2": -2741612250532456491
+      "\xE1rvore fina_3": -3169561814347868478
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
