@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "port\xE3o fase 1_0": -6133944293925723667
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

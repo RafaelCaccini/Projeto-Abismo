@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Barra-lamp_0: -1168913885492726992
+      Barra-lamp_1: 4356175749848984627
+      Barra-lamp_2: -8664343377204013371
+      Barra-lamp_3: 6969282715736654758
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
