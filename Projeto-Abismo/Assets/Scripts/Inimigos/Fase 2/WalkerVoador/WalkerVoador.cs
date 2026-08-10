@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class WalkerVoador : MonoBehaviour, IDamageable
 {
     // =====================================
@@ -7,8 +9,10 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     // =====================================
 
     [Header("REFERÊNCIAS")]
-    [SerializeField] private Transform visual;
+    [Tooltip("SpriteRenderer que será flipado horizontalmente. Se nulo, busca automaticamente no filho.")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
+    [Tooltip("Ponto de origem do raycast que detecta paredes à frente.")]
     [SerializeField] private Transform wallCheck;
 
     // =====================================
@@ -23,9 +27,13 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     // =====================================
 
     [Header("PAREDE")]
-    [SerializeField] private float distanciaParede = 0.6f;
-
+    [Tooltip("LayerMask para detecção por layer (ex: wallLayer).")]
     [SerializeField] private LayerMask paredeLayer;
+
+    [Tooltip("Tag usada como fallback quando a LayerMask não bate. Deixe vazio para desativar.")]
+    [SerializeField] private string wallTag = "Wall";
+
+    [SerializeField] private float distanciaParede = 0.6f;
 
     // =====================================
     // DANO
@@ -52,6 +60,15 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     [Header("DEBUG")]
     [SerializeField] private bool mostrarRaycast = true;
 
+    [Tooltip("Loga informações completas sobre visibilidade do sprite para diagnosticar inimigos invisíveis.")]
+    [SerializeField] private bool debugInvisibilidade = true;
+
+    [Tooltip("Se true, corrige automaticamente a posição local do visual quando está muito distante do pai.")]
+    [SerializeField] private bool corrigirPosicaoVisual = true;
+
+    [Tooltip("Distância máxima permitida entre o WalkerVoador e seu visual antes de considerar um problema.")]
+    [SerializeField] private float distanciaMaxVisual = 2f;
+
     // =====================================
     // COMPONENTES
     // =====================================
@@ -59,6 +76,8 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     private Rigidbody2D rb;
 
     private Collider2D col;
+
+    private Transform visualTransform;
 
     // =====================================
     // CONTROLE
@@ -80,8 +99,33 @@ public class WalkerVoador : MonoBehaviour, IDamageable
 
         col = GetComponent<Collider2D>();
 
+        spriteRenderer =
+            spriteRenderer != null
+            ? spriteRenderer
+            : GetComponentInChildren<SpriteRenderer>();
+
+        if (spriteRenderer != null)
+            visualTransform = spriteRenderer.transform;
+
+        if (
+            wallCheck == null
+        )
+        {
+            wallCheck = new GameObject(
+                "WallCheck"
+            ).transform;
+
+            wallCheck.SetParent(
+                transform,
+                worldPositionStays: false
+            );
+
+            wallCheck.localPosition =
+                new Vector3(0.72f, 0f, 0f);
+        }
+
         // =====================================
-        // SEGURANÇA
+        // SEGURANÇA RB
         // =====================================
 
         if (rb != null)
@@ -97,7 +141,107 @@ public class WalkerVoador : MonoBehaviour, IDamageable
                 RigidbodyType2D.Dynamic;
         }
 
-        Debug.Log("🦇 WalkerVoador iniciado");
+        Debug.Log(
+            $"[WalkerVoador] Iniciado na posição: "
+            + $"{transform.position} | Direção inicial: {direcao}"
+        );
+    }
+
+    // =====================================
+    // START
+    // =====================================
+
+    private void Start()
+    {
+        ValidarVisibilidade();
+    }
+
+    // =====================================
+    // VALIDAÇÃO DE VISIBILIDADE
+    // =====================================
+
+    private void ValidarVisibilidade()
+    {
+        if (spriteRenderer == null)
+        {
+            Debug.LogWarning(
+                $"[WalkerVoador] ⚠️ SpriteRenderer NÃO ENCONTRADO! " +
+                $"O inimigo está INVISÍVEL na posição {transform.position}. " +
+                $"Verifique se há um SpriteRenderer na hierarquia de filhos."
+            );
+            return;
+        }
+
+        // =====================================
+        // VERIFICA OFFSET DO VISUAL
+        // =====================================
+
+        Vector3 offsetLocal =
+            visualTransform.localPosition;
+
+        float distanciaVisual =
+            Vector3.Distance(
+                transform.position,
+                visualTransform.position
+            );
+
+        if (
+            distanciaVisual >
+            distanciaMaxVisual
+        )
+        {
+            Debug.LogWarning(
+                $"[WalkerVoador] ⚠️ PROBLEMA CRÍTICO DE VISIBILIDADE!\n" +
+                $"  Posição do WalkerVoador: {transform.position}\n" +
+                $"  Posição do Visual (sprite): {visualTransform.position}\n" +
+                $"  Offset local: {offsetLocal}\n" +
+                $"  Distância entre os dois: {distanciaVisual:F2} unidades\n" +
+                $"  → O sprite está RENDERIZADO LONGE do collider!\n" +
+                $"  → Isso faz o inimigo parecer INVISÍVEL.\n" +
+                $"  → O player colide com o collider aqui: {transform.position}\n" +
+                $"  → Mas o sprite é desenhado aqui: {visualTransform.position}\n" +
+                $"  → Corrigindo posição do visual..."
+            );
+
+            if (corrigirPosicaoVisual)
+            {
+                visualTransform.localPosition =
+                    Vector3.zero;
+
+                Debug.Log(
+                    $"[WalkerVoador] ✅ Posição visual corrigida " +
+                    $"para (0, 0, 0) relativo ao pai."
+                );
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"  Ative 'corrigirPosicaoVisual' para corrigir " +
+                    $"automaticamente na próxima inicialização."
+                );
+            }
+        }
+
+        // =====================================
+        // DEBUG COMPLETO DE RENDERIZAÇÃO
+        // =====================================
+
+        if (debugInvisibilidade)
+        {
+            Debug.Log(
+                $"[WalkerVoador] Status de visibilidade:\n" +
+                $"  Sprite: {spriteRenderer.sprite?.name ?? "NULL"}\n" +
+                $"  Cor: {spriteRenderer.color}\n" +
+                $"  Sorting Layer: {spriteRenderer.sortingLayerName}\n" +
+                $"  Sorting Order: {spriteRenderer.sortingOrder}\n" +
+                $"  FlipX: {spriteRenderer.flipX}\n" +
+                $"  Visual pos (local): {offsetLocal}\n" +
+                $"  Visual pos (world): {visualTransform.position}\n" +
+                $"  Distance to parent: {distanciaVisual:F2}\n" +
+                $"  Collider bounds: {col?.bounds}\n" +
+                $"  Parent pos (world): {transform.position}"
+            );
+        }
     }
 
     // =====================================
@@ -116,7 +260,7 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     // MOVIMENTO
     // =====================================
 
-    void Mover()
+    private void Mover()
     {
         if (
             rb == null
@@ -131,7 +275,7 @@ public class WalkerVoador : MonoBehaviour, IDamageable
             Vector2.right * direcao;
 
         // =====================================
-        // RAYCAST
+        // DETECÇÃO DE PAREDE (LAYER + TAG)
         // =====================================
 
         RaycastHit2D hit =
@@ -141,6 +285,28 @@ public class WalkerVoador : MonoBehaviour, IDamageable
                 distanciaParede,
                 paredeLayer
             );
+
+        // Se a LayerMask não bate, tenta por tag
+        if (
+            hit.collider == null
+            && !string.IsNullOrEmpty(wallTag)
+        )
+        {
+            RaycastHit2D tagHit =
+                Physics2D.Raycast(
+                    origem,
+                    direcaoRay,
+                    distanciaParede
+                );
+
+            if (
+                tagHit.collider != null
+                && tagHit.collider.CompareTag(wallTag)
+            )
+            {
+                hit = tagHit;
+            }
+        }
 
         // =====================================
         // DEBUG
@@ -159,13 +325,17 @@ public class WalkerVoador : MonoBehaviour, IDamageable
         }
 
         // =====================================
-        // PAREDE
+        // PAREDE ENCONTRADA
         // =====================================
 
         if (hit.collider != null)
         {
             Debug.Log(
-                "🧱 Parede detectada"
+                $"[WalkerVoador] 🧱 Parede detectada " +
+                $"(layer={hit.collider.gameObject.layer}, " +
+                $"tag={hit.collider.tag}, " +
+                $"obj={hit.collider.name}) " +
+                $"na posição {transform.position}"
             );
 
             Virar();
@@ -188,27 +358,21 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     // VIRAR
     // =====================================
 
-    void Virar()
+    private void Virar()
     {
         direcao *= -1;
 
         Debug.Log(
-            "🔄 Virou direção: "
-            + direcao
+            $"[WalkerVoador] 🔄 Virou direção: "
+            + $"{direcao} " +
+            $"| Posição: {transform.position}"
         );
 
-        if (visual == null)
+        if (spriteRenderer == null)
             return;
 
-        Vector3 escala =
-            visual.localScale;
-
-        escala.x =
-            Mathf.Abs(escala.x)
-            * direcao;
-
-        visual.localScale =
-            escala;
+        spriteRenderer.flipX =
+            direcao < 0;
     }
 
     // =====================================
@@ -241,10 +405,24 @@ public class WalkerVoador : MonoBehaviour, IDamageable
         if (player == null)
         {
             Debug.LogWarning(
-                "❌ PlayerController não encontrado"
+                $"[WalkerVoador] ❌ PlayerController não encontrado " +
+                $"no objeto {other.gameObject.name}. " +
+                $"Tentando GetComponentInParent..."
             );
 
-            return;
+            player =
+                other.gameObject
+                .GetComponentInParent<PlayerController>();
+
+            if (player == null)
+            {
+                Debug.LogWarning(
+                    $"[WalkerVoador] ❌ PlayerController " +
+                    $"realmente não encontrado. " +
+                    $"Posição do WalkerVoador: {transform.position}"
+                );
+                return;
+            }
         }
 
         player.TakeDamage(
@@ -255,7 +433,9 @@ public class WalkerVoador : MonoBehaviour, IDamageable
         ultimoDano = Time.time;
 
         Debug.Log(
-            "💥 WalkerVoador causou dano"
+            $"[WalkerVoador] 💥 CAUSEI DANO ao player! " +
+            $"(dano={dano}, posição={transform.position}, " +
+            $"velocidade={rb.linearVelocity})"
         );
     }
 
@@ -272,7 +452,8 @@ public class WalkerVoador : MonoBehaviour, IDamageable
             return;
 
         Debug.Log(
-            "💥 WalkerVoador recebeu dano"
+            $"[WalkerVoador] 💥 Recebeu {amount} de dano " +
+            $"de {source.name} | Vida: {vida - amount}"
         );
 
         // =====================================
@@ -290,11 +471,6 @@ public class WalkerVoador : MonoBehaviour, IDamageable
 
         vida -= amount;
 
-        Debug.Log(
-            "🦇 Vida restante: "
-            + vida
-        );
-
         if (vida <= 0)
         {
             Morrer();
@@ -305,7 +481,7 @@ public class WalkerVoador : MonoBehaviour, IDamageable
     // MORRER
     // =====================================
 
-    void Morrer()
+    private void Morrer()
     {
         if (morto)
             return;
@@ -313,15 +489,15 @@ public class WalkerVoador : MonoBehaviour, IDamageable
         morto = true;
 
         Debug.Log(
-            "☠️ WalkerVoador morreu"
+            $"[WalkerVoador] ☠️ Morreu na posição " +
+            $"{transform.position}"
         );
 
-        rb.linearVelocity = Vector2.zero;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
 
         if (col != null)
-        {
             col.enabled = false;
-        }
 
         Destroy(gameObject, 0.05f);
     }
@@ -332,17 +508,115 @@ public class WalkerVoador : MonoBehaviour, IDamageable
 
     private void OnDrawGizmosSelected()
     {
+        // =====================================
+        // RAIZ DO ENEMY
+        // =====================================
+
+        if (col != null)
+        {
+            Gizmos.color = Color.cyan;
+
+            Gizmos.DrawWireCube(
+                col.bounds.center,
+                col.bounds.size
+            );
+
+            Gizmos.color = new Color(
+                1f, 0f, 1f, 0.1f
+            );
+
+            Gizmos.DrawCube(
+                col.bounds.center,
+                col.bounds.size
+            );
+        }
+
+        // =====================================
+        // WALL CHECK
+        // =====================================
+
         if (wallCheck == null)
             return;
+
+        Vector2 origem =
+            wallCheck.position;
+
+        Vector2 direcaoRay =
+            Vector2.right * direcao;
 
         Gizmos.color = Color.red;
 
         Gizmos.DrawLine(
-            wallCheck.position,
-            wallCheck.position
-            + Vector3.right
-            * direcao
+            origem,
+            origem
+            + direcaoRay
             * distanciaParede
         );
+
+        Gizmos.color = Color.yellow;
+
+        Gizmos.DrawSphere(
+            origem,
+            0.05f
+        );
+
+        // =====================================
+        // VISUAL (SPRITE)
+        // =====================================
+
+        if (visualTransform != null)
+        {
+            Gizmos.color = Color.magenta;
+
+            Gizmos.DrawWireSphere(
+                visualTransform.position,
+                0.1f
+            );
+
+            float distancia =
+                Vector3.Distance(
+                    transform.position,
+                    visualTransform.position
+                );
+
+            if (distancia > 0.01f)
+            {
+                Gizmos.color = Color.magenta;
+
+                Gizmos.DrawLine(
+                    transform.position,
+                    visualTransform.position
+                );
+            }
+        }
+
+        // =====================================
+        // ALERTA VISUAL
+        // =====================================
+
+        if (
+            visualTransform != null
+            && col != null
+        )
+        {
+            float distancia =
+                Vector3.Distance(
+                    transform.position,
+                    visualTransform.position
+                );
+
+            if (
+                distancia >
+                distanciaMaxVisual
+            )
+            {
+#if UNITY_EDITOR
+                UnityEditor.Handles.Label(
+                    transform.position,
+                    "⚠️ SPRITE DESALINHADO!"
+                );
+#endif
+            }
+        }
     }
 }

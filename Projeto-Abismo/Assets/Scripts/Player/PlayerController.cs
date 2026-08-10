@@ -326,10 +326,27 @@ public class PlayerController : MonoBehaviour, IDamageable
     // VIDA DO PLAYER
     public void TakeDamage(int damage, GameObject source)
     {
+        // Debug: always log source of damage for investigation
+        string sourceName = source != null ? source.name : "NULL";
+        string sourceTag = source != null ? source.tag : "NULL";
+        string sourceLayer = "NULL";
+        Vector3 sourcePos = Vector3.zero;
+        if (source != null)
+        {
+            sourceLayer = LayerMask.LayerToName(source.layer);
+            sourcePos = source.transform.position;
+        }
+
+        string stack = System.Environment.StackTrace;
+
         if (isInvincible)
+        {
+            Debug.LogWarning($"[PLAYER DAMAGE IGNORED] Fonte: {sourceName} | Tag: {sourceTag} | Layer: {sourceLayer} | Pos: {sourcePos} | Dano: {damage} -- Player is invincible.\nStack:\n{stack}");
             return;
+        }
 
         Debug.Log("PLAYER TOMOU DANO");
+        Debug.Log($"[PLAYER DAMAGE] Fonte: {sourceName} | Tag: {sourceTag} | Layer: {sourceLayer} | Pos: {sourcePos} | Dano: {damage}\nStack:\n{stack}");
 
         currentLife -= damage;
 
