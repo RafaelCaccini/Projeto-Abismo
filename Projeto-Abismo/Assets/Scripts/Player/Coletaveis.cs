@@ -1,95 +1,225 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
-// Manager simples de coletáveis
-public class Coletaveis : MonoBehaviour
+public class CollectibleSystem : MonoBehaviour
 {
-    public static Coletaveis Instance { get; private set; }
-
-    // estado público apenas leitura
-    public int TotalCount { get; private set; }
-    public int CollectedCount { get; private set; }
-
-    private void Awake()
+    public enum Tipo
     {
-        if (Instance == null) Instance = this;
-        else if (Instance != this) Destroy(gameObject);
+        Coletavel,
+        Porta
     }
+
+    [Header("Tipo do objeto")]
+    [SerializeField] private Tipo tipo = Tipo.Coletavel;
+
+    // =====================================================
+    // COLETÁVEL
+    // =====================================================
+
+    [Header("Configuração do Coletável")]
+    [SerializeField] private bool destruirAoColetar = true;
+
+    // =====================================================
+    // PORTA
+    // =====================================================
+
+    [Header("Configuração da Porta")]
+    [SerializeField] private Collider2D colliderPorta;
+    [SerializeField] private SpriteRenderer spritePorta;
+    [SerializeField] private bool portaDestravaAutomaticamente = true;
+
+    // =====================================================
+    // UI
+    // =====================================================
+
+    [Header("Contador")]
+    [SerializeField] private TMP_Text textoContador;
+
+    // =====================================================
+    // CONTROLE GLOBAL DA CENA
+    // =====================================================
+
+    private static int totalColetaveis;
+    private static int coletados;
+
+    private static bool cenaInicializada;
+
+    // =====================================================
+    // START
+    // =====================================================
 
     private void Start()
     {
-        // conta todos os Coletavel presentes na cena
-        TotalCount = FindObjectsByType<Coletavel>(FindObjectsSortMode.None).Length;
-        CollectedCount = 0;
+        if (!cenaInicializada)
+        {
+            InicializarCena();
+        }
 
-        Debug.Log($"[Coletaveis] Total na cena: {TotalCount}");
+        if (tipo == Tipo.Porta)
+        {
+            ConfigurarPorta();
+        }
+
+        AtualizarContador();
     }
 
-    // chamado por cada Coletavel quando coletado
-    public void RegisterCollect()
+    // =====================================================
+    // INICIALIZAR CENA
+    // =====================================================
+
+    private void InicializarCena()
     {
-        CollectedCount++;
-        Debug.Log($"[Coletaveis] Coletado: {CollectedCount}/{TotalCount}");
+        cenaInicializada = true;
 
-        if (TotalCount > 0 && CollectedCount >= TotalCount)
+        coletados = 0;
+
+        CollectibleSystem[] objetos =
+            FindObjectsByType<CollectibleSystem>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            );
+
+        totalColetaveis = 0;
+
+        foreach (CollectibleSystem objeto in objetos)
         {
-            Debug.Log("[Coletaveis] Todos coletados!");
-            // TODO: notificar UI / abrir portas / tocar som
+            if (objeto.tipo == Tipo.Coletavel)
+            {
+                totalColetaveis++;
+            }
         }
+
+        Debug.Log(
+            $"[Coletáveis] Cena: {SceneManager.GetActiveScene().name} | " +
+            $"Total: {totalColetaveis}"
+        );
     }
-}
 
-// Componente simples para anexar ao pickup
-[RequireComponent(typeof(Collider2D))]
-public class Coletavel : MonoBehaviour
-{
-    [SerializeField] private string playerTag = "Player";
-    [SerializeField] private bool destroyOnCollect = true;
-    [SerializeField] private bool debugLogs = true;
-
-    private void Awake()
-    {
-        var col = GetComponent<Collider2D>();
-        if (col == null)
-        {
-            Debug.LogError($"[Coletavel] {name} precisa de Collider2D.");
-            enabled = false;
-            return;
-        }
-
-        if (!col.isTrigger)
-        {
-            col.isTrigger = true;
-            if (debugLogs) Debug.LogWarning($"[Coletavel] {name}: Collider2D.isTrigger ativado automaticamente.");
-        }
-    }
+    // =====================================================
+    // TRIGGER DO COLETÁVEL
+    // =====================================================
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // debug: registre o que colidiu para diagnosticar problemas comuns
-        if (debugLogs)
-        {
-            string attachedRb = other.attachedRigidbody != null ? other.attachedRigidbody.gameObject.name : "null";
-            Debug.Log($"[Coletavel] OnTriggerEnter2D other={other.name} tag={other.tag} attachedRigidbody={attachedRb}");
-        }
-
-        // aceita tag Player ou presença de PlayerController no pai/rigidbody
-        var pc = other.GetComponentInParent<PlayerController>();
-        if (pc == null && other.attachedRigidbody != null)
-            pc = other.attachedRigidbody.GetComponentInParent<PlayerController>();
-
-        if (!other.CompareTag(playerTag) && pc == null)
-        {
-            if (debugLogs) Debug.Log($"[Coletavel] Ignorado: não é player (tag='{playerTag}') nem possui PlayerController.");
+        if (tipo != Tipo.Coletavel)
             return;
+
+        if (!other.CompareTag("Player"))
+            return;
+
+        Coletar();
+    }
+
+    // =====================================================
+    // COLETAR
+    // =====================================================
+
+    private void Coletar()
+    {
+        coletados++;
+
+        Debug.Log(
+            $"[Coletável] Coletado! " +
+            $"{coletados}/{totalColetaveis}"
+        );
+
+        AtualizarContador();
+
+        if (destruirAoColetar)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    // =====================================================
+    // PORTA
+    // =====================================================
+
+    private void ConfigurarPorta()
+    {
+        if (colliderPorta == null)
+        {
+            colliderPorta =
+                GetComponent<Collider2D>();
         }
 
-        if (Coletaveis.Instance != null)
-            Coletaveis.Instance.RegisterCollect();
-        else if (debugLogs)
-            Debug.LogWarning("[Coletavel] Manager Coletaveis.Instance não encontrado.");
+        VerificarPorta();
+    }
 
-        // efeito simples: destruir / desativar imediatamente
-        if (destroyOnCollect) Destroy(gameObject);
-        else gameObject.SetActive(false);
+    // =====================================================
+    // VERIFICAR PORTA
+    // =====================================================
+
+    private void VerificarPorta()
+    {
+        if (tipo != Tipo.Porta)
+            return;
+
+        bool liberada =
+            coletados >= totalColetaveis;
+
+        if (colliderPorta != null)
+        {
+            colliderPorta.enabled = !liberada;
+        }
+
+        if (liberada)
+        {
+            if (colliderPorta != null)
+                colliderPorta.enabled = false;
+
+            if (spritePorta != null)
+                spritePorta.enabled = false;
+
+            Debug.Log(
+                "[Coletáveis] Todos os coletáveis foram encontrados. Porta liberada!"
+            );
+        }
+    }
+
+    // =====================================================
+    // ATUALIZAR
+    // =====================================================
+
+    private void Update()
+    {
+        if (tipo == Tipo.Porta)
+        {
+            VerificarPorta();
+        }
+
+        AtualizarContador();
+    }
+
+    // =====================================================
+    // CONTADOR UI
+    // =====================================================
+
+    private void AtualizarContador()
+    {
+        if (textoContador == null)
+            return;
+
+        textoContador.text =
+            $"{coletados}/{totalColetaveis}";
+    }
+
+    // =====================================================
+    // RESETAR AO TROCAR DE CENA
+    // =====================================================
+
+    private void OnDestroy()
+    {
+        if (gameObject.scene.isLoaded)
+            return;
+
+        cenaInicializada = false;
+        coletados = 0;
+        totalColetaveis = 0;
     }
 }

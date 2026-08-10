@@ -14,31 +14,31 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/IntroVideo.unity
     guid: 56f98eaeb7edd4a4d984c6642eb09b7a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fase 1/Parte1.unity
     guid: 46066c69516db4a4a97272c224eeec12
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fase 1/Parte2.unity
     guid: 3a2d742fa283f354aab111baa145a74d
-  - enabled: 1
-    path: Assets/Scenes/Fase 1/Parte3.unity
-    guid: df5081da2ca4d63439993186471d8c27
-  - enabled: 1
-    path: Assets/Scenes/Fase 1/Parte3.unity
-    guid: df5081da2ca4d63439993186471d8c27
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fase 1/Parte4.unity
-    guid: 904d78ee797e84f4dbda10873c5b16ef
-  - enabled: 1
+    guid: df5081da2ca4d63439993186471d8c27
+  - enabled: 0
+    path: Assets/Scenes/Fase 1/Parte4.unity
+    guid: df5081da2ca4d63439993186471d8c27
+  - enabled: 0
+    path: Assets/Scenes/Fase 1/Parte4.unity
+    guid: df5081da2ca4d63439993186471d8c27
+  - enabled: 0
     path: Assets/Scenes/Fase 2/Parte2.1.unity
     guid: 61fd31530467d2c4eb12ffa8bd4d8a57
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fase 2/Parte2.2.unity
     guid: 020fc40ee716cb5409f85a858763521a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fase 2/Parte2.3.unity
     guid: b1f2658ffea10e649b32cf0d898e99a0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fase 2/Parte2.4.unity
     guid: 41e1b7c253149b94d905a2ef380a0e7c
   - enabled: 0
@@ -47,6 +47,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FasesJuntas1/Fase1.unity
     guid: 8f2180b29a573b24dbfa1e447ab99558
+  - enabled: 1
+    path: Assets/Scenes/BossFase1.unity
+    guid: abc728aecff4416499b25cbd9fba58c1
   - enabled: 1
     path: Assets/Scenes/FasesJuntas1/Fase2.unity
     guid: 61e3f8f0c0c5c4b438554fb3b5127eee

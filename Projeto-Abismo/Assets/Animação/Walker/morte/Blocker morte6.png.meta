@@ -1,0 +1,676 @@
+fileFormatVersion: 2
+guid: 1657394833d0a7d4b92b4b65c4fa3d39
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2767666436269986644
+    second: Blocker morte6_0
+  - first:
+      213: 2819178407332494383
+    second: Blocker morte6_1
+  - first:
+      213: 471228235323440323
+    second: Blocker morte6_2
+  - first:
+      213: 15449005648392701
+    second: Blocker morte6_3
+  - first:
+      213: 7041907907302335742
+    second: Blocker morte6_4
+  - first:
+      213: 9117312286403849579
+    second: Blocker morte6_5
+  - first:
+      213: -6097396349060402271
+    second: Blocker morte6_6
+  - first:
+      213: -991967970050944402
+    second: Blocker morte6_7
+  - first:
+      213: -322954252920465706
+    second: Blocker morte6_8
+  - first:
+      213: -3276419751932005414
+    second: Blocker morte6_9
+  - first:
+      213: -2452502036531423580
+    second: Blocker morte6_10
+  - first:
+      213: -3301275348903721200
+    second: Blocker morte6_11
+  - first:
+      213: 6913756648957972680
+    second: Blocker morte6_12
+  - first:
+      213: -1065541627962756611
+    second: Blocker morte6_13
+  - first:
+      213: -5463371072967368696
+    second: Blocker morte6_14
+  - first:
+      213: -2252294204122725985
+    second: Blocker morte6_15
+  - first:
+      213: -4380803610476637629
+    second: Blocker morte6_16
+  - first:
+      213: 5618246855134830748
+    second: Blocker morte6_17
+  - first:
+      213: 647433200933718927
+    second: Blocker morte6_18
+  - first:
+      213: -428633959740019076
+    second: Blocker morte6_19
+  - first:
+      213: -5347662251222664964
+    second: Blocker morte6_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Blocker morte6_0
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 721
+        width: 13
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cac2b593a064799d0800000000000000
+      internalID: -2767666436269986644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_1
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 689
+        width: 25
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2c318723dbbf1720800000000000000
+      internalID: 2819178407332494383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_2
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 680
+        width: 35
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cc769655932a8600800000000000000
+      internalID: 471228235323440323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_3
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 669
+        width: 18
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df13ecde9c2e63000800000000000000
+      internalID: 15449005648392701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_4
+      rect:
+        serializedVersion: 2
+        x: 525
+        y: 594
+        width: 85
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef425cb9ee1e9b160800000000000000
+      internalID: 7041907907302335742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_5
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 695
+        width: 20
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6de7690833378e70800000000000000
+      internalID: 9117312286403849579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_6
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 287
+        width: 615
+        height: 394
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a3bd7f6352b16ba0800000000000000
+      internalID: -6097396349060402271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_7
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 675
+        width: 8
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e625c8c0362db32f0800000000000000
+      internalID: -991967970050944402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_8
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 671
+        width: 26
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d659fb61d2a48bf0800000000000000
+      internalID: -322954252920465706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_9
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 589
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad3f4074891d782d0800000000000000
+      internalID: -3276419751932005414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_10
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 288
+        width: 132
+        height: 269
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a65f954466f6fdd0800000000000000
+      internalID: -2452502036531423580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_11
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 540
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01707d2af838f22d0800000000000000
+      internalID: -3301275348903721200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_12
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 444
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c092a4aa0992ff50800000000000000
+      internalID: 6913756648957972680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_13
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 438
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df173ebe88f6631f0800000000000000
+      internalID: -1065541627962756611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_14
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 427
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 800a2af84f43e24b0800000000000000
+      internalID: -5463371072967368696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_15
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 433
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f910891ca5e3eb0e0800000000000000
+      internalID: -2252294204122725985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_16
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 402
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3429ac6a3524433c0800000000000000
+      internalID: -4380803610476637629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_17
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 405
+        width: 18
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9064cc7fb508fd40800000000000000
+      internalID: 5618246855134830748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_18
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 315
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8bc275e0152cf800800000000000000
+      internalID: 647433200933718927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_19
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 306
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7ee6034faf2d0af0800000000000000
+      internalID: -428633959740019076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blocker morte6_20
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 296
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf87b11048949c5b0800000000000000
+      internalID: -5347662251222664964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Blocker morte6_0: -2767666436269986644
+      Blocker morte6_1: 2819178407332494383
+      Blocker morte6_10: -2452502036531423580
+      Blocker morte6_11: -3301275348903721200
+      Blocker morte6_12: 6913756648957972680
+      Blocker morte6_13: -1065541627962756611
+      Blocker morte6_14: -5463371072967368696
+      Blocker morte6_15: -2252294204122725985
+      Blocker morte6_16: -4380803610476637629
+      Blocker morte6_17: 5618246855134830748
+      Blocker morte6_18: 647433200933718927
+      Blocker morte6_19: -428633959740019076
+      Blocker morte6_2: 471228235323440323
+      Blocker morte6_20: -5347662251222664964
+      Blocker morte6_3: 15449005648392701
+      Blocker morte6_4: 7041907907302335742
+      Blocker morte6_5: 9117312286403849579
+      Blocker morte6_6: -6097396349060402271
+      Blocker morte6_7: -991967970050944402
+      Blocker morte6_8: -322954252920465706
+      Blocker morte6_9: -3276419751932005414
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

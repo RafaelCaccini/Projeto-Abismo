@@ -134,6 +134,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     private Vector3 posicaoInicial;
     private Rigidbody2D rb;
     private Animator animator;
+    private SpriteRenderer spriteRenderer;
     private float tempoUltimoAtaque = 0f;
 
     // Estados de IA
@@ -147,11 +148,14 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     {
         posicaoInicial = transform.position;
         rb = GetComponent<Rigidbody2D>();
-        // Usamos movimento por interpolação (não física) então mantemos gravidade 0 para evitar conflitos
+        // Usamos movimento por interpolação (não física) então mantemos gravidade 0
+        // e tornamos o Rigidbody2D Kinematic para evitar que a física interfira
+        // na posição manual via transform.position (que causava o boss "entrar na terra")
         if (rb != null)
         {
             rb.gravityScale = 0;
             rb.freezeRotation = true;
+            rb.isKinematic = true;
         }
 
         vidaAtual = vidaMaxima;
@@ -168,6 +172,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
 
         // NÃO desativa as paredes aqui — elas serão configuradas quando a luta começar.
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -206,6 +211,21 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
             case Estado.Atacando:
                 GerenciarAtaques();
                 break;
+        }
+    }
+
+    // LateUpdate garante que o boss fique na altura correta (Y = posicaoInicial.y)
+    // quando não está atacando. Atua como proteção contra interferência física
+    // ou qualquer outro fator que possa mover o boss para baixo acidentalmente.
+    void LateUpdate()
+    {
+        if (morto || jogador == null) return;
+        if (estadoAtual == Estado.Atacando) return; // deixa os ataques controlarem o Y
+
+        // Corrige Y se driftou por qualquer motivo
+        if (Mathf.Abs(transform.position.y - posicaoInicial.y) > 0.01f)
+        {
+            transform.position = new Vector3(transform.position.x, posicaoInicial.y, transform.position.z);
         }
     }
 
@@ -268,13 +288,14 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
                                 pontoEsquerda.position.x,
                                 pontoDireita.position.x);
 
-        transform.position = new Vector3(novoX, posicaoInicial.y, 0);
+        transform.position = new Vector3(novoX, posicaoInicial.y, transform.position.z);
 
-        // Virar conforme a direção
-        if (direcao.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
-        else if (direcao.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+        // Virar conforme a direção (usa flipX ao invés de localScale para não
+        // interferir no BoxCollider2D — inverter scale faz o collider "saltar")
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = direcao.x < 0;
+        }
     }
 
     void GerenciarAtaques()
@@ -282,7 +303,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         tempoUltimoAtaque += Time.deltaTime;
 
         // Decide ataque a cada ~3s (ajuste conforme quiser)
-        if (estadoAtual == Estado.Atacando && tempoUltimoAtaque >= 2.8f)
+        if (estadoAtual == Estado.Atacando && tempoUltimoAtaque >= 2.8f && !ocupado)
         {
             tempoUltimoAtaque = 0f;
             estadoAtual = Estado.Perseguindo;
@@ -403,9 +424,9 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
             float arc = 4f * altura * normalized * (1f - normalized); // pico no meio
             transform.position = new Vector3(x, yLinear + arc, start.z);
 
-            // mantém facing adequado
-            if (end.x > start.x) transform.localScale = new Vector3(1, 1, 1);
-            else transform.localScale = new Vector3(-1, 1, 1);
+            // mantém facing adequado (flipX ao invés de localScale)
+            if (spriteRenderer != null)
+                spriteRenderer.flipX = end.x <= start.x;
 
             t += Time.deltaTime;
             yield return null;
@@ -417,7 +438,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     IEnumerator PisaoSpawnSpikes()
     {
         ocupado = true;
-        animator.SetTrigger("Pisao");
+        if (animator != null) animator.SetTrigger("Pisao");
 
         // espera um pouco para sincronizar com animação
         yield return new WaitForSeconds(atrasoAntesPisao);
@@ -497,12 +518,12 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
 
         transform.position = destino;
 
-        // Ajusta facing para mirar no player
-        if (jogador != null)
-            transform.localScale = (jogador.position.x >= transform.position.x) ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
+        // Ajusta facing para mirar no player (flipX ao invés de localScale)
+        if (jogador != null && spriteRenderer != null)
+            spriteRenderer.flipX = jogador.position.x >= transform.position.x;
 
         // Anima atirar
-        animator.SetTrigger("Atirar");
+        if (animator != null) animator.SetTrigger("Atirar");
 
         // Atira X projéteis em direção ao jogador atual
         for (int i = 0; i < quantidadeProjetisAtirar; i++)

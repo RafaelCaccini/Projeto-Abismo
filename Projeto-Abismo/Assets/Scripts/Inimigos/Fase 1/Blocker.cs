@@ -58,6 +58,7 @@ public class Blocker : MonoBehaviour, IDamageable
 
     [Header("LUZ")]
     [SerializeField] private bool precisaDeLuz = true;
+    [SerializeField] private float delayAfterLightOn = 3f; // tempo que espera antes de atacar ao ligar a luz
 
     // =====================================
     // DEBUG
@@ -79,6 +80,9 @@ public class Blocker : MonoBehaviour, IDamageable
     private bool isDead;
 
     private bool luzAtiva;
+    private bool prevLuzAtiva = false;
+    private bool lightJustTurnedOn = false;
+    private float lightOnTimer = 0f;
 
     private bool playerEstavaNoRange;
 
@@ -181,6 +185,21 @@ public class Blocker : MonoBehaviour, IDamageable
                 !precisaDeLuz ||
                 luzAtiva
             );
+
+        // If the light was just turned on, enforce a short delay before allowing attacks
+        if (lightJustTurnedOn)
+        {
+            lightOnTimer -= Time.deltaTime;
+            if (lightOnTimer <= 0f)
+            {
+                lightJustTurnedOn = false;
+            }
+            else
+            {
+                // prevent attacking while delay is active
+                podeAtacar = false;
+            }
+        }
 
         if (podeAtacar)
         {
