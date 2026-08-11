@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 368a3b3bf7f7c404d822ee5ff3e7d75c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - spriteDoFogo: {fileID: -2295756315634780376, guid: 0deee94896c85e845982ac54275ec326, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -155,6 +155,17 @@ public class Blocker : MonoBehaviour, IDamageable
 
         AtualizarLuz();
 
+        // Detecta se a luz acabou de ser ligada
+        if (precisaDeLuz)
+        {
+            if (!prevLuzAtiva && luzAtiva)
+            {
+                lightJustTurnedOn = true;
+                lightOnTimer = delayAfterLightOn;
+            }
+            prevLuzAtiva = luzAtiva;
+        }
+
         AtualizarAnimator();
 
         float distance =
