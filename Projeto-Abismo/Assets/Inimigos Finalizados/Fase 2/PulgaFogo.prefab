@@ -168,9 +168,12 @@ MonoBehaviour:
   forcaPuloX: 15
   forcaPuloY: 15
   tempoEntrePulos: 1
-  iniciarViradoDireita: 1
+  iniciarViradoDireita: 0
   rangeAtivacao: 15
-  vida: 5
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  vida: 3
   dano: 1
   cooldownDano: 1
   debugLogs: 1
