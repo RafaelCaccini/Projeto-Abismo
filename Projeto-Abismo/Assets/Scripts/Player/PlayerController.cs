@@ -150,6 +150,14 @@ public class PlayerController : MonoBehaviour, IDamageable
             return;
         }
 
+        // Previne escalada de parede: se estiver colidindo com uma parede, estiver no ar
+        // e tentar subir, cancela o movimento vertical para não escalar a parede.
+        // (wallLayer é usado como checagem complementar na detecção de colisão)
+        if (isTouchingWall && !isGrounded && rb.linearVelocity.y > 0f)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        }
+
         HandleMovement();
     }
 
