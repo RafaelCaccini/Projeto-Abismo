@@ -17,7 +17,7 @@ public class MenuPrincipalManager : MonoBehaviour
 
     [SerializeField] private string fase5 = "Parte5";          
     
-    [SerializeField] private string fase21 = "Parte2.1";
+    [SerializeField] private string faseTutorial = "TutorialTeste";
     [SerializeField] private string fase22 = "Parte2.2";
     [SerializeField] private string fase23 = "Parte2.3";
     [SerializeField] private string fase24 = "Parte2.4";
@@ -99,10 +99,10 @@ public class MenuPrincipalManager : MonoBehaviour
 
     // FASE 2
 
-    public void IrParaParte21()
+    public void Tutorial()
     {
-        Debug.Log("Indo para Parte2.1");
-        SceneManager.LoadScene(fase21);
+        Debug.Log("Indo para Tutorial");
+        SceneManager.LoadScene(faseTutorial);
     }
 
     public void IrParaParte22()
