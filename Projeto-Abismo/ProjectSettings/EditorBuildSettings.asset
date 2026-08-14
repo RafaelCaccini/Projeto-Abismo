@@ -18,33 +18,6 @@ EditorBuildSettings:
     path: Assets/Scenes/IntroVideo.unity
     guid: 56f98eaeb7edd4a4d984c6642eb09b7a
   - enabled: 0
-    path: Assets/Scenes/Fase 1/Parte1.unity
-    guid: 46066c69516db4a4a97272c224eeec12
-  - enabled: 0
-    path: Assets/Scenes/Fase 1/Parte2.unity
-    guid: 3a2d742fa283f354aab111baa145a74d
-  - enabled: 0
-    path: Assets/Scenes/Fase 1/Parte4.unity
-    guid: df5081da2ca4d63439993186471d8c27
-  - enabled: 0
-    path: Assets/Scenes/Fase 1/Parte4.unity
-    guid: df5081da2ca4d63439993186471d8c27
-  - enabled: 0
-    path: Assets/Scenes/Fase 1/Parte4.unity
-    guid: df5081da2ca4d63439993186471d8c27
-  - enabled: 0
-    path: Assets/Scenes/Fase 2/Parte2.1.unity
-    guid: 61fd31530467d2c4eb12ffa8bd4d8a57
-  - enabled: 0
-    path: Assets/Scenes/Fase 2/Parte2.2.unity
-    guid: 020fc40ee716cb5409f85a858763521a
-  - enabled: 0
-    path: Assets/Scenes/Fase 2/Parte2.3.unity
-    guid: b1f2658ffea10e649b32cf0d898e99a0
-  - enabled: 0
-    path: Assets/Scenes/Fase 2/Parte2.4.unity
-    guid: 41e1b7c253149b94d905a2ef380a0e7c
-  - enabled: 0
     path: Assets/Scenes/FasesJuntas1/teste.unity
     guid: 57cc34f209589714782d777fded4050b
   - enabled: 1
