@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float jumpMaxHeight = 2.2f; // altura máxima alcançável segurando o botão
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private string wallTag = "Wall";
+    [SerializeField] private LayerMask wallLayer = 0;
 
     [Header("Attack")]
     [SerializeField] private float attackOffsetX = 1.6f;
@@ -259,7 +260,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     }
     void HandleAttack()
     {
-        if (Input.GetKeyDown(attackKey) && Time.time >= lastAttackTime + attackCooldown)
+        // Ataque por tecla configurada (padrão: X) ou clique esquerdo do mouse
+        bool attackInput = Input.GetKeyDown(attackKey) || Input.GetMouseButtonDown(0);
+
+        if (attackInput && Time.time >= lastAttackTime + attackCooldown)
         {
             PerformAttack();
             lastAttackTime = Time.time;

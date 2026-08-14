@@ -14,6 +14,14 @@ public class Trap : MonoBehaviour
     [SerializeField] private int damage = 1;
     [SerializeField] private float damageInterval = 1f;
 
+    [Header("Instakill")]
+    [Tooltip("Se true, aplica instakill no player que estiver com a luz ligada")]
+    [SerializeField] private bool killOnLight = true;
+    [Tooltip("Quantidade de dano aplicada como instakill (deve ser >= vida máxima do player)")]
+    [SerializeField] private int killDamage = 9999;
+    [Tooltip("Delay antes de aplicar o instakill (deixa a animação de fechamento tocar)")]
+    [SerializeField] private float killDelay = 0.1f;
+
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Collider2D hurtbox;
@@ -133,8 +141,45 @@ public class Trap : MonoBehaviour
         if (hurtbox != null)
             hurtbox.enabled = true;
 
+        // Instakill para players com luz ligada ao fechar (com delay curto para a animação tocar)
+        if (killOnLight)
+            StartCoroutine(ApplyKillOnLightDelayed());
+
         if (damageRoutine == null)
             damageRoutine = StartCoroutine(DamageRoutine());
+    }
+
+    private IEnumerator ApplyKillOnLightDelayed()
+    {
+        yield return new WaitForSeconds(killDelay);
+
+        ApplyKillOnLight();
+    }
+
+    private void ApplyKillOnLight()
+    {
+        var snapshot = new List<GameObject>(playersInside);
+
+        foreach (var player in snapshot)
+        {
+            if (player == null) continue;
+
+            var pc = player.GetComponent<PlayerController>();
+            if (pc == null || !pc.LuzAtiva) continue;
+
+            IDamageable dmg = null;
+
+            if (!player.TryGetComponent<IDamageable>(out dmg))
+                dmg = player.GetComponentInParent<IDamageable>();
+
+            if (dmg != null)
+            {
+                dmg.TakeDamage(killDamage, gameObject);
+
+                if (debugLogs)
+                    Debug.Log("[Trap] ⚡ INSTAKILL aplicado em " + player.name);
+            }
+        }
     }
 
     private IEnumerator DamageRoutine()
@@ -161,6 +206,15 @@ public class Trap : MonoBehaviour
                 if (debugLogs)
                     Debug.Log("[Trap] Tentando causar dano em: " + player.name);
 
+                // Verifica se o player tem a luz ligada
+                bool playerHasLight = false;
+                var pc = player.GetComponent<PlayerController>();
+                if (pc != null && pc.LuzAtiva)
+                    playerHasLight = true;
+
+                // Se o player tem a luz ligada e killOnLight, aplica instakill
+                int damageToApply = (killOnLight && playerHasLight) ? killDamage : damage;
+
                 IDamageable dmg = null;
 
                 if (!player.TryGetComponent<IDamageable>(out dmg))
@@ -168,10 +222,10 @@ public class Trap : MonoBehaviour
 
                 if (dmg != null)
                 {
-                    dmg.TakeDamage(damage, gameObject);
+                    dmg.TakeDamage(damageToApply, gameObject);
 
                     if (debugLogs)
-                        Debug.Log("[Trap] ✔ DANO aplicado em " + player.name);
+                        Debug.Log("[Trap] ✔ DANO aplicado em " + player.name + " (amount: " + damageToApply + ")");
                 }
                 else
                 {
