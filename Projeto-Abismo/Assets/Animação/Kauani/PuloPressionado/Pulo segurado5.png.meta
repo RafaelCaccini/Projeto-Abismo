@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4b1117a6212c78d40916bd9dcc5afb47
+guid: 27cb54cc06304524d8c4e4a940d29b06
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2017326232366675656
-    second: pouso alto6_0
+      213: 2169199825706128843
+    second: Pulo segurado5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pouso alto6_0
+      name: Pulo segurado5_0
       rect:
         serializedVersion: 2
-        x: 196
-        y: 117
-        width: 500
-        height: 789
+        x: 146
+        y: 126
+        width: 676
+        height: 812
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8c6fa44258bfefb10800000000000000
-      internalID: 2017326232366675656
+      spriteID: bc59d02afbb8a1e10800000000000000
+      internalID: 2169199825706128843
       vertices: []
       indices: 
       edges: []
@@ -139,7 +139,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pouso alto6_0: 2017326232366675656
+      Pulo segurado5_0: 2169199825706128843
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

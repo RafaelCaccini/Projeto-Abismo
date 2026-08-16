@@ -30,6 +30,18 @@ public class CollectibleSystem : MonoBehaviour
     [SerializeField] private bool portaDestravaAutomaticamente = true;
 
     // =====================================================
+    // ANIMAÇÃO DE FLUTUAR
+    // =====================================================
+
+    [Header("Animação de Flutuar")]
+    [SerializeField] private bool ativarFlutuar = true;
+    [SerializeField] private float velocidadeFlutuar = 1.5f;   // quão rápido sobe e desce
+    [SerializeField] private float alturaFlutuar = 0.3f;       // distância que sobe/desce
+    [SerializeField] private float defasagem = 0f;             // offset de fase (útil pra dessincronizar vários coletáveis)
+
+    private Vector3 posicaoInicial;
+
+    // =====================================================
     // UI
     // =====================================================
 
@@ -42,7 +54,6 @@ public class CollectibleSystem : MonoBehaviour
 
     private static int totalColetaveis;
     private static int coletados;
-
     private static bool cenaInicializada;
 
     // =====================================================
@@ -51,6 +62,8 @@ public class CollectibleSystem : MonoBehaviour
 
     private void Start()
     {
+        posicaoInicial = transform.position;
+
         if (!cenaInicializada)
         {
             InicializarCena();
@@ -71,7 +84,6 @@ public class CollectibleSystem : MonoBehaviour
     private void InicializarCena()
     {
         cenaInicializada = true;
-
         coletados = 0;
 
         CollectibleSystem[] objetos =
@@ -85,9 +97,7 @@ public class CollectibleSystem : MonoBehaviour
         foreach (CollectibleSystem objeto in objetos)
         {
             if (objeto.tipo == Tipo.Coletavel)
-            {
                 totalColetaveis++;
-            }
         }
 
         Debug.Log(
@@ -119,21 +129,14 @@ public class CollectibleSystem : MonoBehaviour
     {
         coletados++;
 
-        Debug.Log(
-            $"[Coletável] Coletado! " +
-            $"{coletados}/{totalColetaveis}"
-        );
+        Debug.Log($"[Coletável] Coletado! {coletados}/{totalColetaveis}");
 
         AtualizarContador();
 
         if (destruirAoColetar)
-        {
             Destroy(gameObject);
-        }
         else
-        {
             gameObject.SetActive(false);
-        }
     }
 
     // =====================================================
@@ -143,10 +146,7 @@ public class CollectibleSystem : MonoBehaviour
     private void ConfigurarPorta()
     {
         if (colliderPorta == null)
-        {
-            colliderPorta =
-                GetComponent<Collider2D>();
-        }
+            colliderPorta = GetComponent<Collider2D>();
 
         VerificarPorta();
     }
@@ -160,13 +160,10 @@ public class CollectibleSystem : MonoBehaviour
         if (tipo != Tipo.Porta)
             return;
 
-        bool liberada =
-            coletados >= totalColetaveis;
+        bool liberada = coletados >= totalColetaveis;
 
         if (colliderPorta != null)
-        {
             colliderPorta.enabled = !liberada;
-        }
 
         if (liberada)
         {
@@ -176,9 +173,7 @@ public class CollectibleSystem : MonoBehaviour
             if (spritePorta != null)
                 spritePorta.enabled = false;
 
-            Debug.Log(
-                "[Coletáveis] Todos os coletáveis foram encontrados. Porta liberada!"
-            );
+            Debug.Log("[Coletáveis] Todos os coletáveis foram encontrados. Porta liberada!");
         }
     }
 
@@ -189,11 +184,23 @@ public class CollectibleSystem : MonoBehaviour
     private void Update()
     {
         if (tipo == Tipo.Porta)
-        {
             VerificarPorta();
-        }
 
+        AnimarFlutuar();
         AtualizarContador();
+    }
+
+    // =====================================================
+    // ANIMAÇÃO FLUTUAR
+    // =====================================================
+
+    private void AnimarFlutuar()
+    {
+        if (!ativarFlutuar) return;
+
+        // Seno vai de -1 a 1 suavemente, multiplicado pela altura desejada
+        float offsetY = Mathf.Sin((Time.time + defasagem) * velocidadeFlutuar) * alturaFlutuar;
+        transform.position = new Vector3(posicaoInicial.x, posicaoInicial.y + offsetY, posicaoInicial.z);
     }
 
     // =====================================================
@@ -205,8 +212,7 @@ public class CollectibleSystem : MonoBehaviour
         if (textoContador == null)
             return;
 
-        textoContador.text =
-            $"{coletados}/{totalColetaveis}";
+        textoContador.text = $"{coletados}/{totalColetaveis}";
     }
 
     // =====================================================

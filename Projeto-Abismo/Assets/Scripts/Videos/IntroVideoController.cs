@@ -17,12 +17,13 @@ public class IntroVideoManager : MonoBehaviour
         if (videoPlayer != null)
         {
             videoPlayer.loopPointReached += FinalizarVideo;
+            videoPlayer.Play();
         }
     }
 
     void Update()
     {
-        if (Input.anyKeyDown)
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.JoystickButton0))
         {
             PularVideo();
         }

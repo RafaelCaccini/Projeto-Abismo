@@ -19,6 +19,16 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private string wallTag = "Wall";
     [SerializeField] private LayerMask wallLayer = 0;
 
+    [Header("Pouso por Altura")]
+    [SerializeField] private bool usarPousoPorAltura = true;
+    [SerializeField] private float alturaMinimaPousoAlto = 3f;
+    [SerializeField] private bool debugPouso = false;
+
+    // queda tracking
+    private float fallStartY = 0f;
+    private bool isFallingStarted = false;
+    private Coroutine clearPousoAltoCoroutine = null;
+
     [Header("Attack")]
     [SerializeField] private float attackOffsetX = 1.6f;
     [SerializeField] private float attackOffsetY = 0.4f;
@@ -48,6 +58,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void SetLuz(bool estado)
     {
         LuzAtiva = estado;
+    }
+
+    private IEnumerator ClearPousoAltoCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (anim != null)
+            anim.SetBool("PousoAlto", false);
+        clearPousoAltoCoroutine = null;
     }
 
     private Rigidbody2D rb;
@@ -129,16 +147,47 @@ public class PlayerController : MonoBehaviour, IDamageable
     void Update()
     {
         GetInput();
+
         HandleFlip();
+
         HandleJump();
-        // Charged jump handled separately and only when ability unlocked
-        if (abilitiesAvailable && abilities.Has(SkillType.ChargedJump))
+
+        if (
+            abilitiesAvailable &&
+            abilities != null &&
+            abilities.Has(SkillType.ChargedJump)
+        )
         {
             HandleChargedJump();
         }
+
+        DetectFallStart();
+
         HandleAttack();
+
         HandleDash();
+
         HandleAnimations();
+    }
+
+    // Detecta quando o jogador começa a cair (velocidade vertical negativa) e marca o Y inicial
+    private void DetectFallStart()
+    {
+        if (!usarPousoPorAltura)
+            return;
+
+        // Não iniciar detecção de queda durante dash ou quando já no chão
+        if (isGrounded || isFallingStarted || isDashing)
+            return;
+
+        // Considere que a queda começou quando a velocidade vertical ficar negativa
+        if (rb != null && rb.linearVelocity.y < -0.1f)
+        {
+            isFallingStarted = true;
+            fallStartY = rb.position.y;
+            if (debugPouso)
+                Debug.Log($"[Pouso] Iniciou queda em Y={fallStartY}");
+        }
     }
 
     void FixedUpdate()
@@ -183,31 +232,121 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleJump()
     {
+        // =========================================
+        // INÍCIO DO PULO
+        // =========================================
+
         if (Input.GetButtonDown("Jump") && isGrounded && !isTouchingWall)
         {
-            // initial jump impulse
-            jumpTimeCounter = jumpHoldTime;
+            // Impulso inicial do pulo
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x,
+                jumpForce
+            );
+
             jumpStartY = rb.position.y;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            jumpTimeCounter = jumpHoldTime;
+
             isGrounded = false;
 
-            // enable hold behavior only if ChargedJump ability is available
-            isJumping = abilitiesAvailable && abilities.Has(SkillType.ChargedJump);
+            // Verifica se a habilidade de Pulo Pressionado
+            // está desbloqueada
+            isJumping =
+                abilitiesAvailable &&
+                abilities != null &&
+                abilities.Has(SkillType.ChargedJump);
+
+            // Se não possui a habilidade,
+            // garante que a animação esteja desligada
+            if (anim != null && !isJumping)
+            {
+                anim.SetBool(
+                    "PuloPressionado",
+                    false
+                );
+            }
         }
     }
 
     void HandleChargedJump()
     {
-        // Pulo pressionado separado: mantém lógica de hold baseada em tempo ou altura
-        if (useHeightBasedJump)
+        // =========================================
+        // VERIFICA SE A HABILIDADE EXISTE
+        // =========================================
+
+        bool habilidadeDesbloqueada =
+            abilitiesAvailable &&
+            abilities != null &&
+            abilities.Has(SkillType.ChargedJump);
+
+        // Se não possui a habilidade,
+        // não pode fazer pulo pressionado
+        if (!habilidadeDesbloqueada)
         {
-            // Pulo baseado em altura alvo enquanto segura o botão
-            if (Input.GetButton("Jump") && isJumping)
+            isJumping = false;
+
+            if (anim != null)
+                anim.SetBool("PuloPressionado", false);
+
+            return;
+        }
+
+        // =========================================
+        // NÃO ESTÁ EXECUTANDO PULO PRESSIONADO
+        // =========================================
+
+        if (!isJumping)
+        {
+            if (anim != null)
+                anim.SetBool("PuloPressionado", false);
+
+            return;
+        }
+
+        bool puloPressionadoAtivo = false;
+
+        // =========================================
+        // SOLTOU O BOTÃO
+        // =========================================
+
+        if (Input.GetButtonUp("Jump"))
+        {
+            isJumping = false;
+
+            if (anim != null)
+                anim.SetBool("PuloPressionado", false);
+
+            return;
+        }
+
+        // =========================================
+        // SEGURANDO O BOTÃO
+        // =========================================
+
+        if (Input.GetButton("Jump"))
+        {
+            // -----------------------------------------
+            // SISTEMA BASEADO EM ALTURA
+            // -----------------------------------------
+
+            if (useHeightBasedJump)
             {
-                float currentHeight = rb.position.y - jumpStartY;
-                if (currentHeight < jumpMaxHeight)
+                float alturaAtual =
+                    rb.position.y - jumpStartY;
+
+                if (
+                    alturaAtual < jumpMaxHeight &&
+                    jumpTimeCounter > 0f
+                )
                 {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                    rb.linearVelocity = new Vector2(
+                        rb.linearVelocity.x,
+                        jumpForce
+                    );
+
+                    jumpTimeCounter -= Time.deltaTime;
+
+                    puloPressionadoAtivo = true;
                 }
                 else
                 {
@@ -215,31 +354,40 @@ public class PlayerController : MonoBehaviour, IDamageable
                 }
             }
 
-            if (Input.GetButtonUp("Jump"))
-            {
-                isJumping = false;
-            }
-        }
-        else
-        {
-            // Comportamento clássico baseado em tempo de hold
-            if (Input.GetButton("Jump") && isJumping)
+            // -----------------------------------------
+            // SISTEMA BASEADO EM TEMPO
+            // -----------------------------------------
+
+            else
             {
                 if (jumpTimeCounter > 0f)
                 {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                    rb.linearVelocity = new Vector2(
+                        rb.linearVelocity.x,
+                        jumpForce
+                    );
+
                     jumpTimeCounter -= Time.deltaTime;
+
+                    puloPressionadoAtivo = true;
                 }
                 else
                 {
                     isJumping = false;
                 }
             }
+        }
 
-            if (Input.GetButtonUp("Jump"))
-            {
-                isJumping = false;
-            }
+        // =========================================
+        // ANIMAÇÃO
+        // =========================================
+
+        if (anim != null)
+        {
+            anim.SetBool(
+                "PuloPressionado",
+                puloPressionadoAtivo
+            );
         }
     }
 
@@ -481,6 +629,32 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             isGrounded = true;
             isJumping = false;
+            if (anim != null)
+                anim.SetBool("PuloPressionado", false);
+
+            // Se estávamos em uma queda, calcule a altura e decida tipo de pouso
+            if (usarPousoPorAltura && isFallingStarted)
+            {
+                float landingY = rb != null ? rb.position.y : transform.position.y;
+                float fallDistance = fallStartY - landingY;
+                bool pousoAlto = fallDistance >= alturaMinimaPousoAlto;
+
+                if (anim != null)
+                {
+                    anim.SetBool("PousoAlto", pousoAlto);
+                    // Limpa o bool após breve tempo para não interferir no próximo pouso
+                    if (clearPousoAltoCoroutine != null)
+                        StopCoroutine(clearPousoAltoCoroutine);
+                    clearPousoAltoCoroutine = StartCoroutine(ClearPousoAltoCoroutine(0.25f));
+                }
+
+                if (debugPouso)
+                    Debug.Log($"[Pouso] Altura da queda: {fallDistance} | Tipo: {(pousoAlto ? "Alto" : "Normal")}");
+
+                // reset
+                isFallingStarted = false;
+                fallStartY = 0f;
+            }
         }
 
         if (collision.gameObject.CompareTag(wallTag))
