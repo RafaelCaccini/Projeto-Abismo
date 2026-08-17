@@ -212,13 +212,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void GetInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        horizontalInput = PlayerInputHandler.Instance != null
+            ? PlayerInputHandler.Instance.Horizontal()
+            : Input.GetAxisRaw("Horizontal");
 
-        // guarda última direção válida
-        if (horizontalInput > 0)
-            lastMoveDirection = 1f;
-        else if (horizontalInput < 0)
-            lastMoveDirection = -1f;
+        if (horizontalInput > 0.1f) lastMoveDirection = 1f;
+        else if (horizontalInput < -0.1f) lastMoveDirection = -1f;
     }
 
     void HandleMovement()
@@ -232,39 +231,19 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleJump()
     {
-        // =========================================
-        // INÍCIO DO PULO
-        // =========================================
+        var input = PlayerInputHandler.Instance;
+        bool pulouDown = input != null ? input.PularDown() : Input.GetButtonDown("Jump");
 
-        if (Input.GetButtonDown("Jump") && isGrounded && !isTouchingWall)
+        if (pulouDown && isGrounded && !isTouchingWall)
         {
-            // Impulso inicial do pulo
-            rb.linearVelocity = new Vector2(
-                rb.linearVelocity.x,
-                jumpForce
-            );
-
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             jumpStartY = rb.position.y;
             jumpTimeCounter = jumpHoldTime;
-
             isGrounded = false;
+            isJumping = abilitiesAvailable && abilities != null && abilities.Has(SkillType.ChargedJump);
 
-            // Verifica se a habilidade de Pulo Pressionado
-            // está desbloqueada
-            isJumping =
-                abilitiesAvailable &&
-                abilities != null &&
-                abilities.Has(SkillType.ChargedJump);
-
-            // Se não possui a habilidade,
-            // garante que a animação esteja desligada
             if (anim != null && !isJumping)
-            {
-                anim.SetBool(
-                    "PuloPressionado",
-                    false
-                );
-            }
+                anim.SetBool("PuloPressionado", false);
         }
     }
 
@@ -416,10 +395,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     }
     void HandleAttack()
     {
-        // Ataque por tecla configurada (padrão: X) ou clique esquerdo do mouse
-        bool attackInput = Input.GetKeyDown(attackKey) || Input.GetMouseButtonDown(0);
+        var input = PlayerInputHandler.Instance;
+        bool atacou = input != null ? input.AtacarDown() : Input.GetKeyDown(attackKey);
 
-        if (attackInput && Time.time >= lastAttackTime + attackCooldown)
+        if (atacou && Time.time >= lastAttackTime + attackCooldown)
         {
             PerformAttack();
             lastAttackTime = Time.time;
@@ -438,28 +417,31 @@ public class PlayerController : MonoBehaviour, IDamageable
         bool attackRight = lastMoveDirection > 0;
         playerAttack.PerformAttack(attackRight, new Vector2(attackOffsetX, attackOffsetY));
     }
+    void HandleLampiao()
+    {
+        var input = PlayerInputHandler.Instance;
+        bool lampiaoInput = input != null ? input.LampiaoDown() : Input.GetKeyDown(KeyCode.L);
+
+        if (lampiaoInput && lampiao != null)
+            lampiao.ToggleLuzExterno();
+    }
 
     void HandleDash()
     {
-        if (Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown && !isDashing)
-        {
-            // Habilita dash apenas se o sistema de habilidades existir e dash estiver desbloqueado
-            if (!abilitiesAvailable || !abilities.Has(SkillType.Dash))
-            {
-                return;
-            }
-            // direção do dash: input horizontal se houver, senão direção que o personagem enfrenta
-            float dir = horizontalInput != 0 ? horizontalInput : lastMoveDirection;
-            dashDirection = new Vector2(dir, 0f);
+        var input = PlayerInputHandler.Instance;
+        bool dashInput = input != null ? input.DashDown() : Input.GetKeyDown(dashKey);
 
+        if (dashInput && Time.time >= lastDashTime + dashCooldown && !isDashing)
+        {
+            if (!abilitiesAvailable || !abilities.Has(SkillType.Dash)) return;
+
+            float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : lastMoveDirection;
+            dashDirection = new Vector2(dir, 0f);
             isDashing = true;
             dashTimeLeft = dashDuration;
             lastDashTime = Time.time;
 
-            // GUARDA velocidade vertical atual e zera componente vertical + gravidade
             storedVerticalVelocity = rb.linearVelocity.y;
-
-            // Não alteramos constraints rigidbody (evita snaps/jitter). Em vez disso, desabilitamos gravidade temporariamente.
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
         }
@@ -467,8 +449,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (isDashing)
         {
             dashTimeLeft -= Time.deltaTime;
-            if (dashTimeLeft <= 0f)
-                EndDash();
+            if (dashTimeLeft <= 0f) EndDash();
         }
     }
 

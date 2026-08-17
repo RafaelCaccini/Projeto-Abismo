@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class Lampiao : MonoBehaviour
 {
@@ -85,6 +86,13 @@ public class Lampiao : MonoBehaviour
     {
         FindPlayer();
 
+        // Snap imediato para a posição do player.
+        // IMPORTANTE: quando a cena recarrega (respawn), o GameManager
+        // já reposicionou o player no checkpoint ANTES de Start() ser chamado,
+        // então este snap garante que o lampião nasça junto ao player no checkpoint
+        // em vez de voltar para a posição original da cena.
+        SnapToPlayer();
+
         // Começa desligado
         if (lightVisual != null)
             lightVisual.SetActive(false);
@@ -106,7 +114,9 @@ public class Lampiao : MonoBehaviour
 
     void Update()
     {
-        HandleLight();
+        // NOTE: entrada do lampião agora é gerenciada pelo PlayerController
+        // via PlayerInputHandler (PlayerController.HandleLampiao -> ToggleLuzExterno).
+        // Isso permite remapeamento de tecla pelo inspector do PlayerInputHandler.
 
         UpdateBaseFollow();
 
@@ -139,40 +149,70 @@ public class Lampiao : MonoBehaviour
         }
     }
 
+    void SnapToPlayer()
+    {
+        if (
+            player == null ||
+            playerController == null
+        )
+            return;
+
+        float dir =
+            playerController.IsFacingRight()
+                ? followOffsetX
+                : -followOffsetX;
+
+        Vector3 snapPos = new Vector3(
+            player.position.x + dir,
+            player.position.y,
+            transform.position.z
+        );
+
+        transform.position = snapPos;
+        basePosition = snapPos;
+    }
+
     // =====================================
     // LIGHT
     // =====================================
 
     void HandleLight()
     {
-        if (Input.GetKeyDown(toggleLightKey))
+        Gamepad gamepad = Gamepad.current;
+
+        bool teclado = Input.GetKeyDown(toggleLightKey);
+        bool controle = gamepad != null && gamepad.buttonNorth.wasPressedThisFrame; // Triângulo PS / Y Xbox
+
+        if (teclado || controle)
         {
             bool estavaAtivo = isActive;
-
             isActive = !isActive;
 
-            // Visual da luz
-            if (lightVisual != null)
-                lightVisual.SetActive(isActive);
+            if (lightVisual != null) lightVisual.SetActive(isActive);
+            if (lightArea != null) lightArea.SetActive(isActive);
+            if (playerController != null) playerController.SetLuz(isActive);
 
-            // Área da luz
-            if (lightArea != null)
-                lightArea.SetActive(isActive);
-
-            // Atualiza player
-            if (playerController != null)
-                playerController.SetLuz(isActive);
-
-            // SOMENTE AO LIGAR
             if (!estavaAtivo && isActive)
-            {
                 PlayLightSound();
-            }
 
-            Debug.Log(
-                "[Lampião] Ligado? " + isActive
-            );
+            Debug.Log("[Lampião] Ligado? " + isActive);
         }
+    }
+
+    // Adiciona esse método público no Lampiao.cs
+    public void ToggleLuzExterno()
+    {
+        bool estavaAtivo = isActive;
+        isActive = !isActive;
+
+        if (lightVisual != null) lightVisual.SetActive(isActive);
+        if (lightArea != null) lightArea.SetActive(isActive);
+        if (playerController != null) playerController.SetLuz(isActive);
+
+        if (!estavaAtivo && isActive)
+            PlayLightSound();
+
+        Debug.Log("[Lampião] Ligado? " + isActive);
     }
 
     // =====================================

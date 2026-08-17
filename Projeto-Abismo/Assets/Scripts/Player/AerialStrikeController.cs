@@ -120,24 +120,14 @@ public class AerialStrikeController : MonoBehaviour
 
     private void ReadInput()
     {
-        // Tecla configurada (ex.: P). Se requerido, exige S segurado.
-        bool keyPressed = Input.GetKeyDown(attackKey) && (!requireSHoldForKeyPogo || Input.GetKey(KeyCode.S));
+        var input = PlayerInputHandler.Instance;
 
-        // Clique do mouse como alternativa (0 = esquerdo, 1 = direito).
-        // A combinação S + ClickEsquerdo é controlada por allowMouseLeftPogo + requireSHoldForMousePogo.
-        bool mouseLeft = allowMouseLeftPogo && Input.GetMouseButtonDown(0) && (!requireSHoldForMousePogo || Input.GetKey(KeyCode.S));
-        bool mouseRight = allowMouseRightPogo && Input.GetMouseButtonDown(1) && (!requireSHoldForMousePogo || Input.GetKey(KeyCode.S));
+        bool pogoDown = input != null
+            ? input.PogoDown()
+            : Input.GetKeyDown(attackKey) && (!requireSHoldForKeyPogo || Input.GetKey(KeyCode.S));
 
-        if ((keyPressed || mouseLeft || mouseRight) && Time.time >= lastStrikeTime + cooldown)
-        {
+        if (pogoDown && Time.time >= lastStrikeTime + cooldown)
             StartAerialStrike();
-        }
-
-        // Mantém suporte ao buffer antigo caso queira usar o attackKey com buffer/down input
-        if (Input.GetKeyDown(attackKey))
-        {
-            lastAttackInputTime = Time.time;
-        }
     }
 
     private void StartAerialStrike()
