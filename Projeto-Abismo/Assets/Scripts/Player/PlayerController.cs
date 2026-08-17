@@ -167,6 +167,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         HandleDash();
 
+        HandleLampiao();
+
         HandleAnimations();
     }
 
