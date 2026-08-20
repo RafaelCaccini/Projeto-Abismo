@@ -398,7 +398,11 @@ public class PlayerController : MonoBehaviour, IDamageable
     void HandleAttack()
     {
         var input = PlayerInputHandler.Instance;
-        bool atacou = input != null ? input.AtacarDown() : Input.GetKeyDown(attackKey);
+        // Quando PlayerInputHandler existe, delega para AtacarDown() (que já inclui mouse).
+        // Fallback: tecla X + clique esquerdo do mouse (fonte única de mouse está no handler).
+        bool atacou = input != null
+            ? input.AtacarDown()
+            : Input.GetKeyDown(attackKey) || Input.GetMouseButtonDown(0);
 
         if (atacou && Time.time >= lastAttackTime + attackCooldown)
         {

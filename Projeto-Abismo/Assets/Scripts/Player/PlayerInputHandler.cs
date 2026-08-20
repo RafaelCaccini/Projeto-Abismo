@@ -20,6 +20,15 @@ public class MapeamentoAcao
     [HideInInspector] public string nomeRawControle = "";
 
     [HideInInspector] public bool aguardandoRemapeamento = false;
+
+    // Clique de mouse (opcional). Quando useMouse=true, AcaoDown verifica
+    // tambÃ©m Input.GetMouseButtonDown(mouseButton).
+    // Isso EVITA que o clique do mouse se perca em refatoraÃ§Ãµes de input:
+    // toda aÃ§Ã£o que precisar de mouse deve habilitar aqui em vez de
+    // checar inline no PlayerController.
+    [Header("Mouse (opcional)")]
+    public bool useMouse = false;
+    public int mouseButton = 0; // 0 = esquerdo, 1 = direito, 2 = meio
 }
 
 public enum GamepadButton
@@ -36,12 +45,14 @@ public class PlayerInputHandler : MonoBehaviour
     // MAPEAMENTOS
     // =============================================
 
-    [Header("Mapeamentos de Ação")]
+    [Header("Mapeamentos de Aï¿½ï¿½o")]
     public MapeamentoAcao pular = new MapeamentoAcao { nomeAcao = "Pular", teclado = KeyCode.Space, botaoControle = GamepadButton.South };
-    public MapeamentoAcao atacar = new MapeamentoAcao { nomeAcao = "Atacar", teclado = KeyCode.X, botaoControle = GamepadButton.West };
+    // ATENÃ‡ÃƒO: useMouse=true mantÃ©m o clique esquerdo do mouse funcionando no ataque.
+    // Nunca remover isso durante refatoraÃ§Ãµes â€” Ã© a "fonte Ãºnica" de input do mouse.
+    public MapeamentoAcao atacar = new MapeamentoAcao { nomeAcao = "Atacar", teclado = KeyCode.X, botaoControle = GamepadButton.West, useMouse = true, mouseButton = 0 };
     public MapeamentoAcao dash = new MapeamentoAcao { nomeAcao = "Dash", teclado = KeyCode.LeftShift, botaoControle = GamepadButton.R1 };
     public MapeamentoAcao pogo = new MapeamentoAcao { nomeAcao = "Pogo", teclado = KeyCode.S, botaoControle = GamepadButton.South };
-    public MapeamentoAcao lampiao = new MapeamentoAcao { nomeAcao = "Lampião", teclado = KeyCode.L, botaoControle = GamepadButton.North };
+    public MapeamentoAcao lampiao = new MapeamentoAcao { nomeAcao = "Lampiï¿½o", teclado = KeyCode.L, botaoControle = GamepadButton.North };
 
     [Header("Controle")]
     [SerializeField] private bool usarControle = true;
@@ -61,6 +72,11 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         }
         Instance = this;
+
+        // FORÃ‡A clique esquerdo do mouse no ataque, mesmo em prefabs/cenas
+        // salvas antes da criaÃ§Ã£o do campo useMouse (valor serializado seria false).
+        atacar.useMouse = true;
+        atacar.mouseButton = 0;
     }
 
     // =============================================
@@ -95,7 +111,7 @@ public class PlayerInputHandler : MonoBehaviour
             if (Mathf.Abs(val) > deadZoneAnalogico) return val;
         }
 
-        // Joystick genérico
+        // Joystick genï¿½rico
         if (Joystick.current != null)
         {
             float stick = Joystick.current.stick.x.ReadValue();
@@ -130,7 +146,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     // =============================================
-    // AÇÕES PÚBLICAS
+    // Aï¿½ï¿½ES Pï¿½BLICAS
     // =============================================
 
     public bool PularDown() => AcaoDown(pular);
@@ -142,12 +158,14 @@ public class PlayerInputHandler : MonoBehaviour
     public bool LampiaoDown() => AcaoDown(lampiao);
 
     // =============================================
-    // HELPERS DE AÇÃO
+    // HELPERS DE Aï¿½ï¿½O
     // =============================================
 
     bool AcaoDown(MapeamentoAcao acao)
     {
         if (Input.GetKeyDown(acao.teclado)) return true;
+        // Clique de mouse: checa aqui (fonte Ãºnica) para nÃ£o perder em refatoraÃ§Ãµes
+        if (acao.useMouse && Input.GetMouseButtonDown(acao.mouseButton)) return true;
         if (usarControle) return BotaoDown(acao);
         return false;
     }
@@ -167,7 +185,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     // =============================================
-    // LEITURA DE BOTÃO — GAMEPAD E JOYSTICK
+    // LEITURA DE BOTï¿½O ï¿½ GAMEPAD E JOYSTICK
     // =============================================
 
     // Converte nosso enum para o nome do controle no Input System
@@ -195,7 +213,7 @@ public class PlayerInputHandler : MonoBehaviour
         };
     }
 
-    // Nomes alternativos para joystick genérico
+    // Nomes alternativos para joystick genï¿½rico
     string EnumParaNomeJoystick(GamepadButton btn)
     {
         return btn switch
@@ -275,10 +293,10 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     // =============================================
-    // DETECÇÃO PARA REMAPEAMENTO
+    // DETECï¿½ï¿½O PARA REMAPEAMENTO
     // =============================================
 
-    // Chamado pelo Editor para detectar botão pressionado agora
+    // Chamado pelo Editor para detectar botï¿½o pressionado agora
     public bool DetectarBotaoPressionadoRuntime(out GamepadButton resultado, out string nomeDetectado)
     {
         resultado = GamepadButton.South;
