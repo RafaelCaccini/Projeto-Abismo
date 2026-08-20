@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Tecla F_0: 4058498793185773753
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

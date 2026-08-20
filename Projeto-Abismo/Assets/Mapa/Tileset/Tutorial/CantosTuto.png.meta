@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 9cc7dceaac32c0e43828a3c1fa117e1e
+guid: 14b36b0fe68dd3d41a51e49e5bfb4c72
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5229200823142364024
-    second: Cantos fase 2 pt2_0
+      213: -5768164683148634128
+    second: CantosTuto_0
   - first:
-      213: 6846079278757299418
-    second: Cantos fase 2 pt2_1
+      213: 7452485651807016720
+    second: CantosTuto_1
   - first:
-      213: 1261074678810574959
-    second: Cantos fase 2 pt2_2
+      213: 6605388462530644191
+    second: CantosTuto_2
   - first:
-      213: 5600373452905207881
-    second: Cantos fase 2 pt2_3
+      213: -3735207419992733029
+    second: CantosTuto_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,7 +109,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cantos fase 2 pt2_0
+      name: CantosTuto_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,36 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 88c4b6d8e852e67b0800000000000000
-      internalID: -5229200823142364024
+      spriteID: 0f7d8fe18cc53ffa0800000000000000
+      internalID: -5768164683148634128
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cantos fase 2 pt2_1
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 1536
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ad4cd7af4d8220f50800000000000000
-      internalID: 6846079278757299418
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cantos fase 2 pt2_2
+      name: CantosTuto_2
       rect:
         serializedVersion: 2
         x: 1536
@@ -168,14 +146,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f608eb92dbc308110800000000000000
-      internalID: 1261074678810574959
+      spriteID: fd84a905fcd0bab50800000000000000
+      internalID: 6605388462530644191
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cantos fase 2 pt2_3
+      name: CantosTuto_6
       rect:
         serializedVersion: 2
         x: 0
@@ -188,38 +166,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 94851fdbbf588bd40800000000000000
-      internalID: 5600373452905207881
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cantos fase 2 pt2_4
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 0
-        width: 768
-        height: 768
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78cf03116c20e0d45945ecc283c1cb8b
-      internalID: -1773335612
+      spriteID: 57aa937e2f446444eb86680600bed7d4
+      internalID: 871162949
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cantos fase 2 pt2_5
+      name: CantosTuto_8
       rect:
         serializedVersion: 2
         x: 1536
@@ -234,8 +190,118 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fb1e5f15993836c49909dc12aef12ff2
-      internalID: 770216853
+      spriteID: 42b65eac67c50f143ba034231746659f
+      internalID: -1817629948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CantosTuto_1
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98aff4fc42ae62c4d9fe3b70b5359ebe
+      internalID: 7452485651807016720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CantosTuto_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8174fb81706d31c4c82fa25d790db8ff
+      internalID: -3735207419992733029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CantosTuto_4
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39e57b1519b98fb4392db11489fdcc87
+      internalID: -1377656266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CantosTuto_5
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5a3fe315365b6f41ae6cd81a32612db
+      internalID: 721719254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CantosTuto_7
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 768
+        height: 768
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41cbe5987b0b9154b9448a5b50066b6b
+      internalID: 447305275
       vertices: []
       indices: 
       edges: []
@@ -244,7 +310,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: da99f54fae826ad4a974d56bb8db691e
+    spriteID: a8673a9e7b00fba43bfae8b099e322b8
     internalID: 0
     vertices: []
     indices: 
@@ -256,12 +322,15 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Cantos fase 2 pt2_0: -5229200823142364024
-      Cantos fase 2 pt2_1: 6846079278757299418
-      Cantos fase 2 pt2_2: 1261074678810574959
-      Cantos fase 2 pt2_3: 5600373452905207881
-      Cantos fase 2 pt2_4: -1773335612
-      Cantos fase 2 pt2_5: 770216853
+      CantosTuto_0: -5768164683148634128
+      CantosTuto_1: 7452485651807016720
+      CantosTuto_2: 6605388462530644191
+      CantosTuto_3: -3735207419992733029
+      CantosTuto_4: -1377656266
+      CantosTuto_5: 721719254
+      CantosTuto_6: 871162949
+      CantosTuto_7: 447305275
+      CantosTuto_8: -1817629948
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
