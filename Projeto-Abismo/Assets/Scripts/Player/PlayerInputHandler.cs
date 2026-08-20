@@ -47,9 +47,10 @@ public class PlayerInputHandler : MonoBehaviour
 
     [Header("Mapeamentos de A��o")]
     public MapeamentoAcao pular = new MapeamentoAcao { nomeAcao = "Pular", teclado = KeyCode.Space, botaoControle = GamepadButton.South };
-    // ATENÇÃO: useMouse=true mantém o clique esquerdo do mouse funcionando no ataque.
+    // ATENÇÃO: teclado=F e useMouse=true mantém ataque funcionando por tecla F + clique.
+    // Editável via inspector. useMouse/mouseButton também editáveis.
     // Nunca remover isso durante refatorações — é a "fonte única" de input do mouse.
-    public MapeamentoAcao atacar = new MapeamentoAcao { nomeAcao = "Atacar", teclado = KeyCode.X, botaoControle = GamepadButton.West, useMouse = true, mouseButton = 0 };
+    public MapeamentoAcao atacar = new MapeamentoAcao { nomeAcao = "Atacar", teclado = KeyCode.F, botaoControle = GamepadButton.West, useMouse = true, mouseButton = 0 };
     public MapeamentoAcao dash = new MapeamentoAcao { nomeAcao = "Dash", teclado = KeyCode.LeftShift, botaoControle = GamepadButton.R1 };
     public MapeamentoAcao pogo = new MapeamentoAcao { nomeAcao = "Pogo", teclado = KeyCode.S, botaoControle = GamepadButton.South };
     public MapeamentoAcao lampiao = new MapeamentoAcao { nomeAcao = "Lampi�o", teclado = KeyCode.L, botaoControle = GamepadButton.North };
@@ -72,11 +73,6 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         }
         Instance = this;
-
-        // FORÇA clique esquerdo do mouse no ataque, mesmo em prefabs/cenas
-        // salvas antes da criação do campo useMouse (valor serializado seria false).
-        atacar.useMouse = true;
-        atacar.mouseButton = 0;
     }
 
     // =============================================

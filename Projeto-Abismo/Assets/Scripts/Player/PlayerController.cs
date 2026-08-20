@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float attackOffsetX = 1.6f;
     [SerializeField] private float attackOffsetY = 0.4f;
     [SerializeField] private float attackCooldown = 0.35f;
-    [SerializeField] private KeyCode attackKey = KeyCode.X;
+    [SerializeField] private KeyCode attackKey = KeyCode.F;
 
     [Header("Dash")]
     [SerializeField] private float dashSpeed = 20f;
