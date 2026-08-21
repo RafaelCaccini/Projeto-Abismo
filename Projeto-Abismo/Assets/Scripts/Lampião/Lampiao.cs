@@ -231,6 +231,73 @@ public class Lampiao : MonoBehaviour
     }
 
     // =====================================
+    // VISUAL: aparecer com fade (usado ao spawnar na cena)
+    // =====================================
+    // duration em segundos
+    public void AparecerComFade(float duration = 1f)
+    {
+        // Caso o GameObject esteja inativo (foi spawnado/desativado), ativar primeiro
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        // garantir referências
+        FindPlayer();
+
+        if (lightVisual == null)
+            return;
+
+        // garante que area da luz esteja desligada por enquanto
+        if (lightArea != null)
+            lightArea.SetActive(false);
+
+        // inicia fade (ativa o objeto visual se estiver desativado)
+        StartCoroutine(FadeInVisualRoutine(duration));
+    }
+
+    private IEnumerator FadeInVisualRoutine(float duration)
+    {
+        // pega todos os SpriteRenderers do visual (inclui filhos)
+        var rends = lightVisual.GetComponentsInChildren<SpriteRenderer>(true);
+        Color[] originals = new Color[rends.Length];
+
+        for (int i = 0; i < rends.Length; i++)
+        {
+            originals[i] = rends[i].color;
+            Color c = originals[i];
+            c.a = 0f;
+            rends[i].color = c;
+            rends[i].gameObject.SetActive(true);
+        }
+
+        lightVisual.SetActive(true);
+
+        float t = 0f;
+        while (t < duration)
+        {
+            float alpha = Mathf.Clamp01(t / duration);
+            for (int i = 0; i < rends.Length; i++)
+            {
+                Color c = originals[i];
+                c.a = alpha * originals[i].a;
+                rends[i].color = c;
+            }
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        // garante valores finais
+        for (int i = 0; i < rends.Length; i++)
+        {
+            rends[i].color = originals[i];
+        }
+
+        // manter visual ativo; não ativa área de luz automaticamente (o jogador deve ligar)
+        // se desejar ativar a lightArea junto com o visual, descomente abaixo:
+        // if (lightArea != null) lightArea.SetActive(true);
+    }
+
+    // =====================================
     // FOLLOW
     // =====================================
 

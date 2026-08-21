@@ -133,10 +133,44 @@ public class CollectibleSystem : MonoBehaviour
 
         AtualizarContador();
 
+        // Se estamos na cena TutorialTeste, tenta ativar o lampião inativo e fazer fade
+        TryShowLampOnTutorial();
+
         if (destruirAoColetar)
             Destroy(gameObject);
         else
             gameObject.SetActive(false);
+    }
+
+    private void TryShowLampOnTutorial()
+    {
+        if (SceneManager.GetActiveScene().name != "TutorialTeste")
+            return;
+
+        // busca Lampiao mesmo se estiver inativo na hierarquia
+        var lamps = FindObjectsByType<Lampiao>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None
+        );
+
+        if (lamps != null && lamps.Length > 0)
+        {
+            Lampiao lamp = lamps[0];
+            if (lamp != null)
+            {
+                // ativa o GameObject (Start() do Lampiao será executado) e pede fade
+                lamp.gameObject.SetActive(true);
+
+                // aguarda um frame para garantir Start() já rodou
+                lamp.StartCoroutine(DelayedShow(lamp));
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator DelayedShow(Lampiao lamp)
+    {
+        yield return null;
+        lamp.AparecerComFade(1f);
     }
 
     // =====================================================

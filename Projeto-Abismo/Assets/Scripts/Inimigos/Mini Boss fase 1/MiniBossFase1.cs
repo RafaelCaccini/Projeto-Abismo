@@ -47,7 +47,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     public int quantidadeProjetisAtirar = 4;
     public float intervaloEntreTiros = 0.25f;
     public float velocidadeProjetil = 8f;
-    public float tempoMoverParaExtremo = 0.35f; // tempo para ir até a extremidade antes de atirar
+    public float tempoMoverParaExtremidade = 0.35f; // tempo para ir até a extremidade antes de atirar
 
     [Header("Contato")]
     public int danoAoTocar = 2;
@@ -144,6 +144,9 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     // controle de dano por contato para não spammar
     private Dictionary<Collider2D, float> ultimoDanoPorCollider = new Dictionary<Collider2D, float>();
 
+    // facing
+    private bool facingRight = true;
+
     void Start()
     {
         posicaoInicial = transform.position;
@@ -155,7 +158,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         {
             rb.gravityScale = 0;
             rb.freezeRotation = true;
-            rb.isKinematic = true;
+            rb.bodyType = RigidbodyType2D.Kinematic;
         }
 
         vidaAtual = vidaMaxima;
@@ -173,6 +176,10 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         // NÃO desativa as paredes aqui — elas serão configuradas quando a luta começar.
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        // define facing inicial baseado no sprite atual (assume escala positiva = right)
+        if (spriteRenderer != null)
+            facingRight = spriteRenderer.flipX ? false : true;
     }
 
     void Update()
@@ -279,23 +286,42 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         }
     }
 
+    // Centraliza flip do sprite: facingRight=true => olhar para a direita.
+    void SetFacingTowards(float targetX)
+    {
+        if (targetX > transform.position.x) facingRight = true;
+        else if (targetX < transform.position.x) facingRight = false;
+        ApplyFacing();
+    }
+
+    void ApplyFacing()
+    {
+        if (spriteRenderer == null) return;
+        // Observação: flipX == true mostra sprite "virado para a esquerda" em muitos setups.
+        spriteRenderer.flipX = !facingRight;
+    }
+
     void MovimentoInteligente()
     {
-        Vector2 direcao = (jogador.position - transform.position).normalized;
+        // evita mover enquanto está ocupado executando um ataque/pulo
+        if (ocupado || pulando) 
+            return;
 
-        // Movimento suave com limites de arena (apenas no eixo X)
-        float novoX = Mathf.Clamp(transform.position.x + direcao.x * velocidadePerseguicao * Time.deltaTime,
+        // move apenas no eixo X em direção ao jogador (mantendo dentro da arena)
+        float dirX = Mathf.Sign(jogador.position.x - transform.position.x);
+        if (Mathf.Abs(jogador.position.x - transform.position.x) < 0.05f)
+            dirX = 0f;
+
+        float novoX = Mathf.Clamp(transform.position.x + dirX * velocidadePerseguicao * Time.deltaTime,
                                 pontoEsquerda.position.x,
                                 pontoDireita.position.x);
 
         transform.position = new Vector3(novoX, posicaoInicial.y, transform.position.z);
 
-        // Virar conforme a direção (usa flipX ao invés de localScale para não
-        // interferir no BoxCollider2D — inverter scale faz o collider "saltar")
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.flipX = direcao.x < 0;
-        }
+        // atualiza facing para olhar na direção do movimento se houver movimento horizontal significativo
+        if (dirX > 0f) facingRight = true;
+        else if (dirX < 0f) facingRight = false;
+        ApplyFacing();
     }
 
     void GerenciarAtaques()
@@ -358,6 +384,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     IEnumerator PularEntrePontos(int repeticoes)
     {
         ocupado = true;
+        pulando = true;
 
         for (int i = 0; i < repeticoes; i++)
         {
@@ -368,11 +395,15 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
                 ? pontoDireita.position.x
                 : pontoEsquerda.position.x;
 
+            // garante facing para o destino do pulo
+            SetFacingTowards(targetX);
+
             yield return JumpArc(targetX, alturaPulo, tempoPulo);
 
             yield return new WaitForSeconds(0.15f);
         }
 
+        pulando = false;
         ocupado = false;
         estadoAtual = Estado.Perseguindo;
     }
@@ -399,6 +430,8 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
                 ? pontoDireita.position.x
                 : pontoEsquerda.position.x;
 
+            SetFacingTowards(targetX);
+
             yield return JumpArc(targetX, alturaVertical * 1.0f, duracaoPulo * 1.05f);
             yield return new WaitForSeconds(intervaloEntrePulos);
         }
@@ -424,9 +457,8 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
             float arc = 4f * altura * normalized * (1f - normalized); // pico no meio
             transform.position = new Vector3(x, yLinear + arc, start.z);
 
-            // mantém facing adequado (flipX ao invés de localScale)
-            if (spriteRenderer != null)
-                spriteRenderer.flipX = end.x <= start.x;
+            // mantém facing adequado para o alvo do salto
+            SetFacingTowards(end.x);
 
             t += Time.deltaTime;
             yield return null;
@@ -509,18 +541,20 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         Vector3 inicio = transform.position;
         Vector3 destino = new Vector3(alvoExtremo.position.x, posicaoInicial.y, transform.position.z);
         float t = 0f;
-        while (t < tempoMoverParaExtremo)
+        while (t < tempoMoverParaExtremidade)
         {
-            transform.position = Vector3.Lerp(inicio, destino, t / tempoMoverParaExtremo);
+            transform.position = Vector3.Lerp(inicio, destino, t / tempoMoverParaExtremidade);
             t += Time.deltaTime;
             yield return null;
         }
 
         transform.position = destino;
 
-        // Ajusta facing para mirar no player (flipX ao invés de localScale)
-        if (jogador != null && spriteRenderer != null)
-            spriteRenderer.flipX = jogador.position.x >= transform.position.x;
+        // Ajusta facing para mirar no player (garante que olhe para o jogador)
+        if (jogador != null)
+            SetFacingTowards(jogador.position.x);
+
+        ApplyFacing();
 
         // Anima atirar
         if (animator != null) animator.SetTrigger("Atirar");

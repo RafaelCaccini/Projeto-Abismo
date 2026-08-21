@@ -475,7 +475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 1940806101}
-  nomeCena: Fase1
+  nomeCena: TutorialTeste
 --- !u!1 &1189935426
 GameObject:
   m_ObjectHideFlags: 0
