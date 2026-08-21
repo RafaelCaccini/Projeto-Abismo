@@ -112,6 +112,9 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
     // Melee state
     private float meleeTimer = 0f;
 
+    // CONTACT DAMAGE (adicionado)
+    private float lastContactDamageTime = 0f; // controla cooldown de dano por contato
+
     // Hitbox children
     private GameObject hitboxMeleeObj;
     private GameObject hitboxDashObj;
@@ -309,15 +312,32 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
 
         Vector2 boxCenter = rb.position + RotateOffsetByFacing(meleeHitboxOffset);
 
-        // check player via OverlapBox
+        // Debug: visualizar onde está checando
+        if (debugLogs)
+            Debug.Log($"[EnemyDashAttack] Melee OverlapBox em: {boxCenter}, tamanho: {meleeHitboxSize}");
+
+        // check player via OverlapBox usando LayerMask
         Collider2D hit = Physics2D.OverlapBox(boxCenter, meleeHitboxSize, 0f, playerLayer);
+        
+        // Se não encontrou na layer, tenta buscar por tag
         if (hit == null)
         {
-            // fallback to tag-based check (if layer not configured)
-            Collider2D hitByTag = Physics2D.OverlapBox(boxCenter, meleeHitboxSize, 0f);
-            if (hitByTag != null && !hitByTag.CompareTag("Player"))
-                hitByTag = null;
-            hit = hitByTag;
+            Collider2D[] allHits = Physics2D.OverlapBoxAll(boxCenter, meleeHitboxSize, 0f);
+            foreach (Collider2D c in allHits)
+            {
+                if (c != null && c.CompareTag("Player"))
+                {
+                    hit = c;
+                    if (debugLogs)
+                        Debug.Log($"[EnemyDashAttack] Hit encontrado por tag: {c.name}");
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (debugLogs)
+                Debug.Log($"[EnemyDashAttack] Hit encontrado por layer: {hit.name}");
         }
 
         if (hit != null)
@@ -548,5 +568,49 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
                 return true;
         }
         return false;
+    }
+
+    // =====================================
+    // DAMAGE ON CONTACT (adicionado)
+    // =====================================
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        if (isDead) return;
+
+        // durante dash o hitbox de dash já cuida do dano
+        if (isDashing) return;
+
+        if (!other.gameObject.CompareTag("Player")) return;
+
+        // usa cooldown separado para evitar spam de dano por contato
+        if (Time.time < lastContactDamageTime + meleeCooldown) return;
+
+        // tenta obter PlayerController no próprio collider ou em um ancestor
+        var pc = other.gameObject.GetComponent<PlayerController>() ?? other.gameObject.GetComponentInParent<PlayerController>();
+        if (pc == null) return;
+
+        pc.TakeDamage(meleeDamage, gameObject);
+        lastContactDamageTime = Time.time;
+
+        if (debugLogs)
+            Debug.Log("[EnemyDashAttack] Contact melee hit player: " + meleeDamage);
+    }
+
+    // fallback para triggers (caso o jogador tenha trigger collider)
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (isDead) return;
+        if (isDashing) return;
+        if (!other.CompareTag("Player")) return;
+        if (Time.time < lastContactDamageTime + meleeCooldown) return;
+
+        var pc = other.GetComponent<PlayerController>() ?? other.GetComponentInParent<PlayerController>();
+        if (pc == null) return;
+
+        pc.TakeDamage(meleeDamage, gameObject);
+        lastContactDamageTime = Time.time;
+
+        if (debugLogs)
+            Debug.Log("[EnemyDashAttack] Contact melee hit (trigger) player: " + meleeDamage);
     }
 }
