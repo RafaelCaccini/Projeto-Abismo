@@ -1,46 +1,34 @@
 fileFormatVersion: 2
-guid: c79bc080d82d48c4e9aa5ef937c104db
+guid: ea61fa96078611e439efd95ff16c5e0c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4262119583872645087
-    second: PASSAROA_0
+      213: 2759490725701087219
+    second: Pulga morte 6_0
   - first:
-      213: -4807470042722438280
-    second: PASSAROA_1
+      213: 8570319154809073045
+    second: Pulga morte 6_1
   - first:
-      213: -6235277925634307798
-    second: PASSAROA_2
+      213: 4945111958288931724
+    second: Pulga morte 6_2
   - first:
-      213: 5662883247634772282
-    second: PASSAROA_3
+      213: 1046975638251152248
+    second: Pulga morte 6_3
   - first:
-      213: -5049809985675259690
-    second: PASSAROA_4
+      213: 5513691104130322870
+    second: Pulga morte 6_4
   - first:
-      213: -8730781011744795732
-    second: PASSAROA_5
+      213: -9180508738846448894
+    second: Pulga morte 6_5
   - first:
-      213: 817418446511372952
-    second: PASSAROA_6
+      213: -591625732662727585
+    second: Pulga morte 6_6
   - first:
-      213: 3349036846657498595
-    second: PASSAROA_7
+      213: 1739777313412741807
+    second: Pulga morte 6_7
   - first:
-      213: 174884885901409484
-    second: PASSAROA_8
-  - first:
-      213: -2045122224839117713
-    second: PASSAROA_9
-  - first:
-      213: -3610964800711397402
-    second: PASSAROA_10
-  - first:
-      213: 3971444903071333842
-    second: PASSAROA_11
-  - first:
-      213: -36804183670552643
-    second: PASSAROA_12
+      213: 2393497291878547105
+    second: Pulga morte 6_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -73,7 +61,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -82,7 +70,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -111,7 +99,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -149,13 +137,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PASSAROA_0
+      name: Pulga morte 6_0
       rect:
         serializedVersion: 2
-        x: 669
-        y: 2455
-        width: 35
-        height: 25
+        x: 374
+        y: 344
+        width: 33
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -164,20 +152,130 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fd7f6fa0e27162b30800000000000000
-      internalID: 4262119583872645087
+      spriteID: 3ffe562d13eab4620800000000000000
+      internalID: 2759490725701087219
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PASSAROA_1
+      name: Pulga morte 6_1
       rect:
         serializedVersion: 2
-        x: 2177
-        y: 2471
+        x: 96
+        y: 329
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59dee122dd3efe670800000000000000
+      internalID: 8570319154809073045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pulga morte 6_2
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 300
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8b1950302190a440800000000000000
+      internalID: 4945111958288931724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pulga morte 6_3
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 271
+        width: 66
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 873a27ebbca978e00800000000000000
+      internalID: 1046975638251152248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pulga morte 6_4
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 213
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b15beea8d0948c40800000000000000
+      internalID: 5513691104130322870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pulga morte 6_5
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 154
+        width: 26
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20320b341f7489080800000000000000
+      internalID: -9180508738846448894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pulga morte 6_6
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 103
         width: 23
-        height: 9
+        height: 45
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -186,20 +284,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 873723b977f684db0800000000000000
-      internalID: -4807470042722438280
+      spriteID: f5c68acd78f1ac7f0800000000000000
+      internalID: -591625732662727585
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PASSAROA_2
+      name: Pulga morte 6_7
       rect:
         serializedVersion: 2
-        x: 251
-        y: 29
-        width: 2757
-        height: 2425
+        x: 390
+        y: 98
+        width: 15
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +306,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a298bb633c7d779a0800000000000000
-      internalID: -6235277925634307798
+      spriteID: faaff32bf3ee42810800000000000000
+      internalID: 1739777313412741807
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PASSAROA_3
+      name: Pulga morte 6_8
       rect:
         serializedVersion: 2
-        x: 3238
-        y: 2397
-        width: 42
-        height: 34
+        x: 341
+        y: 50
+        width: 57
+        height: 38
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -230,206 +328,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a31f7cb7f4a969e40800000000000000
-      internalID: 5662883247634772282
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_4
-      rect:
-        serializedVersion: 2
-        x: 3279
-        y: 2396
-        width: 229
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6d01b94b2987be9b0800000000000000
-      internalID: -5049809985675259690
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_5
-      rect:
-        serializedVersion: 2
-        x: 166
-        y: 1872
-        width: 35
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ca3d93f6de806d680800000000000000
-      internalID: -8730781011744795732
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 1187
-        width: 150
-        height: 182
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 89a79290fbd085b00800000000000000
-      internalID: 817418446511372952
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_7
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 707
-        width: 122
-        height: 279
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3ede6b0a44b2a7e20800000000000000
-      internalID: 3349036846657498595
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_8
-      rect:
-        serializedVersion: 2
-        x: 144
-        y: 493
-        width: 158
-        height: 177
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cccfcbc80e05d6200800000000000000
-      internalID: 174884885901409484
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_9
-      rect:
-        serializedVersion: 2
-        x: 3400
-        y: 633
-        width: 65
-        height: 71
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f64353a0c244e93e0800000000000000
-      internalID: -2045122224839117713
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_10
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 468
-        width: 122
-        height: 129
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6ef682d35a643edc0800000000000000
-      internalID: -3610964800711397402
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_11
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 417
-        width: 44
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2dd3a9409186d1730800000000000000
-      internalID: 3971444903071333842
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PASSAROA_12
-      rect:
-        serializedVersion: 2
-        x: 103
-        y: 255
-        width: 56
-        height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: db7811a3ace3d7ff0800000000000000
-      internalID: -36804183670552643
+      spriteID: 1aeb74d0b19673120800000000000000
+      internalID: 2393497291878547105
       vertices: []
       indices: 
       edges: []
@@ -438,7 +338,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -448,19 +348,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PASSAROA_0: 4262119583872645087
-      PASSAROA_1: -4807470042722438280
-      PASSAROA_10: -3610964800711397402
-      PASSAROA_11: 3971444903071333842
-      PASSAROA_12: -36804183670552643
-      PASSAROA_2: -6235277925634307798
-      PASSAROA_3: 5662883247634772282
-      PASSAROA_4: -5049809985675259690
-      PASSAROA_5: -8730781011744795732
-      PASSAROA_6: 817418446511372952
-      PASSAROA_7: 3349036846657498595
-      PASSAROA_8: 174884885901409484
-      PASSAROA_9: -2045122224839117713
+      Pulga morte 6_0: 2759490725701087219
+      Pulga morte 6_1: 8570319154809073045
+      Pulga morte 6_2: 4945111958288931724
+      Pulga morte 6_3: 1046975638251152248
+      Pulga morte 6_4: 5513691104130322870
+      Pulga morte 6_5: -9180508738846448894
+      Pulga morte 6_6: -591625732662727585
+      Pulga morte 6_7: 1739777313412741807
+      Pulga morte 6_8: 2393497291878547105
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

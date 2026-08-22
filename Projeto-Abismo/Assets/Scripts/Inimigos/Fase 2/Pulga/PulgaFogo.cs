@@ -45,6 +45,14 @@ public class PulgaFogo : MonoBehaviour, IDamageable
     [SerializeField] private int vida = 3;
 
     // =====================================
+    // MORTE
+    // =====================================
+
+    [Header("Morte")]
+    [SerializeField] private float duracaoAnimacaoMorte = 1f;
+    [SerializeField] private string triggerMorte = "Morrer";
+
+    // =====================================
     // DANO
     // =====================================
 
@@ -79,7 +87,22 @@ public class PulgaFogo : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
 
         col = GetComponent<Collider2D>();
-        animator = GetComponent<Animator>();
+
+        animator = GetComponentInChildren<Animator>();
+
+        if (rb == null)
+        {
+            Debug.LogError(
+                "[PulgaFogo] Rigidbody2D não encontrado!"
+            );
+        }
+
+        if (animator == null)
+        {
+            Debug.LogError(
+                "[PulgaFogo] Animator não encontrado!"
+            );
+        }
     }
 
     // =====================================
@@ -386,27 +409,44 @@ public class PulgaFogo : MonoBehaviour, IDamageable
 
         morto = true;
 
+        // Para todas as rotinas, principalmente os pulos
         StopAllCoroutines();
 
-        rb.linearVelocity =
-            Vector2.zero;
+        // Para completamente o movimento
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
 
-        foreach (
-            Collider2D c
-            in GetComponents<Collider2D>()
-        )
+        // Desativa todos os colliders, inclusive filhos
+        Collider2D[] colliders =
+            GetComponentsInChildren<Collider2D>();
+
+        foreach (Collider2D c in colliders)
         {
             c.enabled = false;
+        }
+
+        // Dispara animação de morte
+        if (animator != null)
+        {
+            animator.ResetTrigger(triggerMorte);
+            animator.SetTrigger(triggerMorte);
         }
 
         if (debugLogs)
         {
             Debug.Log(
-                "☠️ Pulga morreu"
+                "☠️ Pulga morreu - iniciando animação de morte"
             );
         }
 
-        Destroy(gameObject, 0.1f);
+        // Espera a animação terminar
+        StartCoroutine(
+            FinalizarMorte()
+        );
     }
 
     // =====================================
@@ -437,5 +477,20 @@ public class PulgaFogo : MonoBehaviour, IDamageable
                 Vector2.down * 0.2f
             );
         }
+    }
+    IEnumerator FinalizarMorte()
+    {
+        yield return new WaitForSeconds(
+            duracaoAnimacaoMorte
+        );
+
+        if (debugLogs)
+        {
+            Debug.Log(
+                "☠️ Animação de morte terminou - destruindo Pulga"
+            );
+        }
+
+        Destroy(gameObject);
     }
 }

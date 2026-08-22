@@ -17,7 +17,11 @@ public class Spike : MonoBehaviour
 
     void TentarDarDano(GameObject alvo)
     {
-        IDamageable dmg = alvo.GetComponent<IDamageable>();
+        IDamageable dmg;
+
+        // Tenta obter a interface no próprio objeto; se não existir, tenta nos pais
+        if (!alvo.TryGetComponent<IDamageable>(out dmg))
+            dmg = alvo.GetComponentInParent<IDamageable>();
 
         if (dmg != null)
         {

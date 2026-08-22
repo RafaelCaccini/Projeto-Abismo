@@ -1,0 +1,546 @@
+fileFormatVersion: 2
+guid: f64927c9c93f5e34cb230f910c17e2f9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3577919669281487052
+    second: "P\xE1ssaro morte 3_0"
+  - first:
+      213: -6023998761507715430
+    second: "P\xE1ssaro morte 3_1"
+  - first:
+      213: 5897979745494883220
+    second: "P\xE1ssaro morte 3_2"
+  - first:
+      213: -5012035171458755726
+    second: "P\xE1ssaro morte 3_3"
+  - first:
+      213: -2596246830600703933
+    second: "P\xE1ssaro morte 3_4"
+  - first:
+      213: -3517880441521175914
+    second: "P\xE1ssaro morte 3_5"
+  - first:
+      213: -1876540064707991163
+    second: "P\xE1ssaro morte 3_6"
+  - first:
+      213: -2796721416283848294
+    second: "P\xE1ssaro morte 3_7"
+  - first:
+      213: -6055713014765828714
+    second: "P\xE1ssaro morte 3_8"
+  - first:
+      213: 9063382260723261013
+    second: "P\xE1ssaro morte 3_9"
+  - first:
+      213: -4885045026320231844
+    second: "P\xE1ssaro morte 3_10"
+  - first:
+      213: -4502499044562787549
+    second: "P\xE1ssaro morte 3_11"
+  - first:
+      213: -7255245214851410254
+    second: "P\xE1ssaro morte 3_12"
+  - first:
+      213: 4589510421177492162
+    second: "P\xE1ssaro morte 3_13"
+  - first:
+      213: -2136872741629201168
+    second: "P\xE1ssaro morte 3_14"
+  - first:
+      213: 8012373460403951943
+    second: "P\xE1ssaro morte 3_15"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.5, y: 0.01}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_0"
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 502
+        width: 52
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc8f76a8bf257a130800000000000000
+      internalID: 3577919669281487052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_1"
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 481
+        width: 116
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9680fcfa05766ca0800000000000000
+      internalID: -6023998761507715430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_2"
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 468
+        width: 55
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49bdba66455d9d150800000000000000
+      internalID: 5897979745494883220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_3"
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 375
+        width: 27
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 273df63019ca17ab0800000000000000
+      internalID: -5012035171458755726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_4"
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 297
+        width: 126
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 340bfc8534748fbd0800000000000000
+      internalID: -2596246830600703933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_5"
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 434
+        width: 25
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69206d0806afd2fc0800000000000000
+      internalID: -3517880441521175914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_6"
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 437
+        width: 35
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 589aa44e0c035f5e0800000000000000
+      internalID: -1876540064707991163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_7"
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 400
+        width: 20
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a918ca680bc0039d0800000000000000
+      internalID: -2796721416283848294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_8"
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 326
+        width: 57
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6954c2df819c5fba0800000000000000
+      internalID: -6055713014765828714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_9"
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 348
+        width: 58
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55e9cf1752a97cd70800000000000000
+      internalID: 9063382260723261013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_10"
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 292
+        width: 36
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c52d46e3e65d43cb0800000000000000
+      internalID: -4885045026320231844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_11"
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 279
+        width: 32
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 323ac4769f8e381c0800000000000000
+      internalID: -4502499044562787549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_12"
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 294
+        width: 28
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b6dd62cae0305b90800000000000000
+      internalID: -7255245214851410254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_13"
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 271
+        width: 31
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c2ec3b696731bf30800000000000000
+      internalID: 4589510421177492162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_14"
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 216
+        width: 29
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f4f9f8209d4852e0800000000000000
+      internalID: -2136872741629201168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "P\xE1ssaro morte 3_15"
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 240
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 749152bf53ba13f60800000000000000
+      internalID: 8012373460403951943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "P\xE1ssaro morte 3_0": 3577919669281487052
+      "P\xE1ssaro morte 3_1": -6023998761507715430
+      "P\xE1ssaro morte 3_10": -4885045026320231844
+      "P\xE1ssaro morte 3_11": -4502499044562787549
+      "P\xE1ssaro morte 3_12": -7255245214851410254
+      "P\xE1ssaro morte 3_13": 4589510421177492162
+      "P\xE1ssaro morte 3_14": -2136872741629201168
+      "P\xE1ssaro morte 3_15": 8012373460403951943
+      "P\xE1ssaro morte 3_2": 5897979745494883220
+      "P\xE1ssaro morte 3_3": -5012035171458755726
+      "P\xE1ssaro morte 3_4": -2596246830600703933
+      "P\xE1ssaro morte 3_5": -3517880441521175914
+      "P\xE1ssaro morte 3_6": -1876540064707991163
+      "P\xE1ssaro morte 3_7": -2796721416283848294
+      "P\xE1ssaro morte 3_8": -6055713014765828714
+      "P\xE1ssaro morte 3_9": 9063382260723261013
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -48,6 +48,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float invincibilityTime = 0.3f;
     private bool isInvincible;
 
+    [Header("Death Animation")]
+    [SerializeField] private float deathAnimationDuration = 1.5f; // tempo de espera após disparar a animação de morte no Animator
+    private bool isDead = false; // trava todas as ações e animações após a morte
+
     [SerializeField] private Lampiao lampiao;
     public Lampiao Lampiao => lampiao;
     public int CurrentLife => currentLife;
@@ -194,6 +198,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void FixedUpdate()
     {
+        if (isDead)
+            return;
+
         if (isDashing)
         {
             // Movimento 100% travado na vertical durante dash (não altera constraints físicas)
@@ -224,6 +231,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleMovement()
     {
+        if (isDead)
+            return;
+
         float targetSpeed = horizontalInput * maxSpeed;
         float accelRate = Mathf.Abs(targetSpeed) > 0.01f ? acceleration : deceleration;
 
@@ -233,6 +243,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleJump()
     {
+        if (isDead)
+            return;
+
         var input = PlayerInputHandler.Instance;
         bool pulouDown = input != null ? input.PularDown() : Input.GetButtonDown("Jump");
 
@@ -251,6 +264,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleChargedJump()
     {
+        if (isDead)
+            return;
+
         // =========================================
         // VERIFICA SE A HABILIDADE EXISTE
         // =========================================
@@ -397,6 +413,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     }
     void HandleAttack()
     {
+        if (isDead)
+            return;
+
         var input = PlayerInputHandler.Instance;
         // Quando PlayerInputHandler existe, delega para AtacarDown() (que já inclui mouse).
         // Fallback: tecla X + clique esquerdo do mouse (fonte única de mouse está no handler).
@@ -434,6 +453,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleDash()
     {
+        if (isDead)
+            return;
+
         var input = PlayerInputHandler.Instance;
         bool dashInput = input != null ? input.DashDown() : Input.GetKeyDown(dashKey);
 
@@ -473,6 +495,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     // VIDA DO PLAYER
     public void TakeDamage(int damage, GameObject source)
     {
+        // Depois que a Player morre, ignora novos danos completamente
+        if (isDead)
+            return;
+
         // Debug: always log source of damage for investigation
         string sourceName = source != null ? source.name : "NULL";
         string sourceTag = source != null ? source.tag : "NULL";
@@ -510,6 +536,10 @@ public class PlayerController : MonoBehaviour, IDamageable
             return;
         }
 
+        // Player sobreviveu — dispara animação de dano antes da invencibilidade
+        if (anim != null)
+            anim.SetTrigger("Dano");
+
         StartCoroutine(InvincibilityCoroutine());
     }
 
@@ -523,6 +553,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleAnimations()
     {
+        if (isDead)
+            return;
+
         if (anim == null)
             return;
 
@@ -579,27 +612,60 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.Log("Player morreu");
 
-        // trava movimento
+        StartCoroutine(DeathCoroutine());
+    }
+
+    /// <summary>
+    /// Processo de morte: toca a animação Morrendo, espera seu tempo,
+    /// então desativa física, colisão e mostra a tela de morte.
+    /// Protegido contra múltiplas chamadas simultâneas.
+    /// </summary>
+    private IEnumerator DeathCoroutine()
+    {
+        // Garante que a morte não seja iniciada duas vezes
+        if (isDead)
+            yield break;
+
+        isDead = true;
+
+        // Trava movimento — zero velocidade
         rb.linearVelocity = Vector2.zero;
 
-        // desativa física
-        rb.simulated = false;
+        // Se morreu durante o dash, restaura gravidade sem chamar EndDash
+        // (EndDash restauraria storedVerticalVelocity, permitindo movimento pós-morte)
+        if (isDashing)
+        {
+            isDashing = false;
+            rb.gravityScale = originalGravityScale;
+        }
 
-        // desativa colisão
-        Collider2D col = GetComponent<Collider2D>();
-
-        if (col != null)
-            col.enabled = false;
-
-        // desliga animações
+        // Desliga parâmetros de animação conflitantes
         if (anim != null)
         {
             anim.SetBool("IsRun", false);
             anim.SetBool("IsJump", false);
             anim.SetBool("IsFalling", false);
+            anim.SetBool("IsGrounded", false);
+            anim.SetBool("PuloPressionado", false);
+            anim.SetBool("PousoAlto", false);
         }
 
-        // mostra tela
+        // Dispara animação de morte (prioridade máxima via Any State)
+        if (anim != null)
+            anim.SetTrigger("Morrendo");
+
+        // Espera a duração configurada no Inspector para a animação tocar
+        yield return new WaitForSeconds(deathAnimationDuration);
+
+        // Desativa física
+        rb.simulated = false;
+
+        // Desativa colisão
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
+
+        // Mostra tela de morte
         if (DeathScreen.instance != null)
         {
             DeathScreen.instance.MostrarTelaMorte();

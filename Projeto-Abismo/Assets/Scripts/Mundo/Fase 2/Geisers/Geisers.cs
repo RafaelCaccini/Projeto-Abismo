@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 // Geiser: periodicamente ativa uma área de fogo horizontal que pode causar dano ao jogador.
-public class Geisers : MonoBehaviour
+public class GeiserFogo : MonoBehaviour
 {
     [Header("Temporização")]
     [Tooltip("Tempo que o fogo permanece ligado (segundos)")]
@@ -73,6 +73,18 @@ public class Geisers : MonoBehaviour
         if (cycleCoroutine != null) return;
         cycleCoroutine = StartCoroutine(CycleRoutine());
         if (debugLogs) Debug.Log("[Geisers] StartCycle chamado");
+    }
+
+    // Ativa o geiser imediatamente (API amigável para outros scripts)
+    public void Ativar()
+    {
+        Activate(true);
+    }
+
+    // Desativa o geiser imediatamente
+    public void Desativar()
+    {
+        Activate(false);
     }
 
     public void StopCycle()

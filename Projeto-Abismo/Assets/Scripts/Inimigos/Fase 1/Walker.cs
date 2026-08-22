@@ -29,6 +29,21 @@ public class Walker : MonoBehaviour, IDamageable
     [SerializeField] private float damageCooldown = 1f;
 
     // =====================================
+    // SOUNDS
+    // =====================================
+
+    [Header("Sounds")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip somAndar;
+
+    [Tooltip("Distância em que o som toca no volume máximo")]
+    [SerializeField] private float raioVolumeMaximo = 3f;
+
+    [Tooltip("Distância a partir da qual o som não é mais ouvido")]
+    [SerializeField] private float raioAudicao = 8f;
+
+    private Transform playerTransform;
+    // =====================================
     // LIGHT DETECTION
     // =====================================
 
@@ -106,26 +121,66 @@ public class Walker : MonoBehaviour, IDamageable
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
         sr = GetComponent<SpriteRenderer>();
-
         col = GetComponent<Collider2D>();
 
         if (animator == null)
             animator = GetComponent<Animator>();
 
-        rb.bodyType =
-            RigidbodyType2D.Dynamic;
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
 
+        rb.bodyType = RigidbodyType2D.Dynamic;
         rb.gravityScale = 3f;
-
         rb.freezeRotation = true;
 
         if (lampScript == null)
         {
-            lampScript =
-                FindFirstObjectByType<Lampiao>();
+            lampScript = FindFirstObjectByType<Lampiao>();
         }
+
+        // configura o audio source pra ser controlado manualmente (ignora Spatial Blend 3D)
+        if (audioSource != null)
+        {
+            audioSource.spatialBlend = 0f; // volume controlado por script, não pelo Unity
+            audioSource.loop = true;
+            audioSource.clip = somAndar;
+            audioSource.volume = 0f;
+            audioSource.Play();
+        }
+
+        // acha o player pra calcular distância manualmente
+        var playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            playerTransform = playerObj.transform;
+    }
+
+    private void UpdateSomAndar()
+    {
+        if (audioSource == null || playerTransform == null)
+            return;
+
+        // distância 2D real, ignorando o eixo Z (câmera/parallax não interfere)
+        float dist = Vector2.Distance(transform.position, playerTransform.position);
+
+        float volume;
+
+        if (dist <= raioVolumeMaximo)
+        {
+            volume = 1f;
+        }
+        else if (dist >= raioAudicao)
+        {
+            volume = 0f;
+        }
+        else
+        {
+            // interpola suavemente entre os dois raios
+            float t = (dist - raioVolumeMaximo) / (raioAudicao - raioVolumeMaximo);
+            volume = Mathf.Lerp(1f, 0f, t);
+        }
+
+        audioSource.volume = volume;
     }
 
     // =====================================
@@ -140,6 +195,7 @@ public class Walker : MonoBehaviour, IDamageable
         HandleFleeTimer();
         DetectLamp();
         UpdateAnimations();
+        UpdateSomAndar();
     }
 
     // =====================================
@@ -453,16 +509,11 @@ public class Walker : MonoBehaviour, IDamageable
     // DAMAGE WALKER
     // =====================================
 
-    public void TakeDamage(
-        int damageAmount,
-        GameObject source
-    )
+    public void TakeDamage(int damageAmount, GameObject source)
     {
         life -= damageAmount;
 
-        Debug.Log(
-            $"Walker tomou {damageAmount} de {source.name} | Vida: {life}"
-        );
+        Debug.Log($"Walker tomou {damageAmount} de {source.name} | Vida: {life}");
 
         if (life <= 0)
         {
@@ -483,21 +534,21 @@ public class Walker : MonoBehaviour, IDamageable
 
         Debug.Log("Walker morreu");
 
-        // stop movement and interactions
         if (col != null)
             col.enabled = false;
 
         rb.linearVelocity = Vector2.zero;
         rb.bodyType = RigidbodyType2D.Kinematic;
 
-        // ensure Running flag off
         if (animator != null)
             animator.SetBool("Running", false);
 
-        // play death state directly (avoid transitions back)
+        // para o som de movimento
+        if (audioSource != null)
+            audioSource.Stop();
+
         if (animator != null)
         {
-            // try to play the death state by name, fallback to trigger
             try
             {
                 animator.Play("Morrendo", 0, 0f);
@@ -510,6 +561,15 @@ public class Walker : MonoBehaviour, IDamageable
         {
             Destroy(gameObject, 1f);
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, raioVolumeMaximo);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, raioAudicao);
     }
 
     private IEnumerator HandleDeathAndDestroy()
