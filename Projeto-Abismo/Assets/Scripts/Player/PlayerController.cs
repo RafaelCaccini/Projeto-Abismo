@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float lastMoveDirection = 1f;
     public bool LuzAtiva { get; private set; }
 
+
     public void SetLuz(bool estado)
     {
         LuzAtiva = estado;
@@ -101,6 +102,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Vector2 dashDirection;
     private float originalGravityScale;
     private float storedVerticalVelocity; // guarda velocity.y antes do dash
+
 
     private void Awake()
     {
@@ -174,7 +176,13 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleLampiao();
 
         HandleAnimations();
+
+        // Aplica modos do Lampião baseado nas habilidades do jogador.
+        // Executa uma vez quando as habilidades estiverem disponíveis,
+
     }
+
+
 
     // Detecta quando o jogador começa a cair (velocidade vertical negativa) e marca o Y inicial
     private void DetectFallStart()
@@ -445,10 +453,24 @@ public class PlayerController : MonoBehaviour, IDamageable
     void HandleLampiao()
     {
         var input = PlayerInputHandler.Instance;
-        bool lampiaoInput = input != null ? input.LampiaoDown() : Input.GetKeyDown(KeyCode.L);
+
+        bool lampiaoInput = (input != null ? input.LampiaoDown() : false) || (lampiao != null && Input.GetKeyDown(lampiao.ToggleLightKey));
 
         if (lampiaoInput && lampiao != null)
             lampiao.ToggleLuzExterno();
+
+        if (lampiao != null && lampiao.IsLightOn)
+        {
+            if (Input.GetKeyDown(lampiao.AlternarModoKey))
+            {
+                lampiao.AlternarModo();
+            }
+
+            if (Input.GetKeyDown(lampiao.ParalisarKey))
+            {
+                lampiao.AtivarParalisar();
+            }
+        }
     }
 
     void HandleDash()

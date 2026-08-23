@@ -53,7 +53,13 @@ public class PlayerInputHandler : MonoBehaviour
     public MapeamentoAcao atacar = new MapeamentoAcao { nomeAcao = "Atacar", teclado = KeyCode.F, botaoControle = GamepadButton.West, useMouse = true, mouseButton = 0 };
     public MapeamentoAcao dash = new MapeamentoAcao { nomeAcao = "Dash", teclado = KeyCode.LeftShift, botaoControle = GamepadButton.R1 };
     public MapeamentoAcao pogo = new MapeamentoAcao { nomeAcao = "Pogo", teclado = KeyCode.S, botaoControle = GamepadButton.South };
-    public MapeamentoAcao lampiao = new MapeamentoAcao { nomeAcao = "Lampi�o", teclado = KeyCode.L, botaoControle = GamepadButton.North };
+    public MapeamentoAcao lampiao = new MapeamentoAcao { nomeAcao = "Lâmpiao", teclado = KeyCode.L, botaoControle = GamepadButton.North };
+
+    // Modos do Lampião: alternar entre Normal/Afastar/Atrair
+    public MapeamentoAcao alternarModo = new MapeamentoAcao { nomeAcao = "Alternar", teclado = KeyCode.Tab, botaoControle = GamepadButton.East };
+
+    // Modo Paralisar: ativa/desativa paralisação de inimigos
+    public MapeamentoAcao paralisar = new MapeamentoAcao { nomeAcao = "Paralisar", teclado = KeyCode.Q, botaoControle = GamepadButton.L2 };
 
     [Header("Controle")]
     [SerializeField] private bool usarControle = true;
@@ -152,6 +158,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool DashDown() => AcaoDown(dash);
     public bool PogoDown() => AcaoDown(pogo);
     public bool LampiaoDown() => AcaoDown(lampiao);
+    public bool AlternarModoDown() => AcaoDown(alternarModo);
+    public bool ParalisarDown() => AcaoDown(paralisar);
 
     // =============================================
     // HELPERS DE A��O

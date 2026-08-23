@@ -20,5 +20,28 @@ public enum SkillType
     /// <summary>
     /// Dash - esquiva/carga rápida em uma direção (Fase 3).
     /// </summary>
-    Dash
+    Dash,
+
+    // =====================================
+    // MODOS DO LAMPIÃO
+    // =====================================
+    // Estas habilidades controlam quais modos do Lampião
+    // estão desbloqueados em cada fase. Integrado com o
+    // sistema existente de PlayerAbilities / ScenePlayerAbilities.
+    // =====================================
+
+    /// <summary>
+    /// Modo Afastar inimigos - o Lampião afasta inimigos próximos (Fase 2).
+    /// </summary>
+    LampiaoAfastar,
+
+    /// <summary>
+    /// Modo Atrair inimigos - o Lampião puxa inimigos próximos (Fase 3).
+    /// </summary>
+    LampiaoAtrair,
+
+    /// <summary>
+    /// Modo Paralisar inimigos - o Lampião paralisa inimigos próximos (Fase 4).
+    /// </summary>
+    LampiaoParalisar
 }
