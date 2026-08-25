@@ -110,6 +110,9 @@ public class Lampiao : MonoBehaviour
     [Tooltip("Duração da paralisação em segundos.")]
     [SerializeField] private float stunDuration = 3f;
 
+    [Tooltip("Tempo de recarga (cooldown) da habilidade em segundos.")]
+    [SerializeField] private float paralisarCooldown = 8f;
+
 
     // =====================================
     // ÁUDIO
@@ -173,6 +176,8 @@ public class Lampiao : MonoBehaviour
 
     private bool isParalisarActive = false;
 
+    // --- Controle de Cooldown ---
+    private float nextParalisarTime = 0f;
 
 
     // Salva as cores originais dos SpriteRenderers do lightVisual
@@ -180,10 +185,8 @@ public class Lampiao : MonoBehaviour
     private Dictionary<SpriteRenderer, Color> originalColors = new Dictionary<SpriteRenderer, Color>();
 
 
-
     // Dados para restauração de inimigos paralisados genericamente
     private Coroutine paralisarRoutine;
-    private Coroutine stunRoutine;
 
     // =====================================
     // START
@@ -194,10 +197,6 @@ public class Lampiao : MonoBehaviour
         FindPlayer();
 
         // Snap imediato para a posição do player.
-        // IMPORTANTE: quando a cena recarrega (respawn), o GameManager
-        // já reposicionou o player no checkpoint ANTES de Start() ser chamado,
-        // então este snap garante que o lampião nasça junto ao player no checkpoint
-        // em vez de voltar para a posição original da cena.
         SnapToPlayer();
 
         // Começa desligado
@@ -224,10 +223,6 @@ public class Lampiao : MonoBehaviour
 
     void Update()
     {
-        // NOTE: entrada do lampião agora é gerenciada pelo PlayerController
-        // via PlayerInputHandler (PlayerController.HandleLampiao -> ToggleLuzExterno).
-        // Isso permite remapeamento de tecla pelo inspector do PlayerInputHandler.
-
         UpdateBaseFollow();
 
         if (!isAdvancing)
@@ -241,19 +236,17 @@ public class Lampiao : MonoBehaviour
 
         // Entrada local (teclado configurável no Inspector) —
         // Apenas quando não existe PlayerInputHandler global.
-        // Quando PlayerInputHandler existe, o PlayerController já delega
-        // o controle do lampião (evita duplicação de entrada).
         if (PlayerInputHandler.Instance == null)
         {
             HandleLight();
 
-            // Alternar modos (ignora modos desabilitados internamente)
+            // Alternar modos
             if (isActive && Input.GetKeyDown(alternarModoKey))
             {
                 AlternarModo();
             }
 
-            // Paralisar (só se o modo estiver disponível)
+            // Paralisar
             if (isActive && Input.GetKeyDown(paralisarKey))
             {
                 AtivarParalisar();
@@ -269,8 +262,7 @@ public class Lampiao : MonoBehaviour
     {
         if (player == null)
         {
-            PlayerController pc =
-                FindFirstObjectByType<PlayerController>();
+            PlayerController pc = FindFirstObjectByType<PlayerController>();
 
             if (pc != null)
             {
@@ -282,16 +274,10 @@ public class Lampiao : MonoBehaviour
 
     void SnapToPlayer()
     {
-        if (
-            player == null ||
-            playerController == null
-        )
+        if (player == null || playerController == null)
             return;
 
-        float dir =
-            playerController.IsFacingRight()
-                ? followOffsetX
-                : -followOffsetX;
+        float dir = playerController.IsFacingRight() ? followOffsetX : -followOffsetX;
 
         Vector3 snapPos = new Vector3(
             player.position.x + dir,
@@ -312,29 +298,14 @@ public class Lampiao : MonoBehaviour
         Gamepad gamepad = Gamepad.current;
 
         bool teclado = Input.GetKeyDown(toggleLightKey);
-        bool controle = gamepad != null && gamepad.buttonNorth.wasPressedThisFrame; // Triângulo PS / Y Xbox
+        bool controle = gamepad != null && gamepad.buttonNorth.wasPressedThisFrame;
 
         if (teclado || controle)
         {
-            bool estavaAtivo = isActive;
-            isActive = !isActive;
-
-            if (lightVisual != null) lightVisual.SetActive(isActive);
-            if (lightArea != null) lightArea.SetActive(isActive);
-            if (playerController != null) playerController.SetLuz(isActive);
-
-            // Aplica a cor do modo atual ao ligar a luz
-            if (isActive)
-                ApplyModeColor();
-
-            if (!estavaAtivo && isActive)
-                PlayLightSound();
-
-            Debug.Log("[Lâmpiao] Ligado? " + isActive);
+            ToggleLuzExterno();
         }
     }
 
-    // Adiciona esse método público no Lampiao.cs
     public void ToggleLuzExterno()
     {
         bool estavaAtivo = isActive;
@@ -344,7 +315,6 @@ public class Lampiao : MonoBehaviour
         if (lightArea != null) lightArea.SetActive(isActive);
         if (playerController != null) playerController.SetLuz(isActive);
 
-        // Aplica a cor do modo atual ao ligar a luz
         if (isActive)
             ApplyModeColor();
 
@@ -370,42 +340,34 @@ public class Lampiao : MonoBehaviour
 
     void PlayLightSound()
     {
-        if (
-            audioSource == null ||
-            ligarSom == null
-        )
+        if (audioSource == null || ligarSom == null)
             return;
 
         audioSource.PlayOneShot(ligarSom);
     }
 
     // =====================================
-    // VISUAL: aparecer com fade (usado ao spawnar na cena)
+    // VISUAL: FADE
     // =====================================
-    // duration em segundos
+
     public void AparecerComFade(float duration = 1f)
     {
-        // Caso o GameObject esteja inativo (foi spawnado/desativado), ativar primeiro
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
-        // garante referências
         FindPlayer();
 
         if (lightVisual == null)
             return;
 
-        // garante que area da luz esteja desligada por enquanto
         if (lightArea != null)
             lightArea.SetActive(false);
 
-        // inicia fade (ativa o objeto visual se estiver desativado)
         StartCoroutine(FadeInVisualRoutine(duration));
     }
 
     private IEnumerator FadeInVisualRoutine(float duration)
     {
-        // pega todos os SpriteRenderers do visual (inclui filhos)
         var rends = lightVisual.GetComponentsInChildren<SpriteRenderer>(true);
         Color[] originals = new Color[rends.Length];
 
@@ -435,21 +397,13 @@ public class Lampiao : MonoBehaviour
             yield return null;
         }
 
-        // garante valores finais
         for (int i = 0; i < rends.Length; i++)
         {
             rends[i].color = originals[i];
         }
 
-        // Atualiza o dicionário de cores originais após o fade
         SaveOriginalColors();
-
-        // Aplica a cor do modo atual
         ApplyModeColor();
-
-        // manter visual ativo; não ativa área de luz automaticamente (o jogador deve ligar)
-        // se desejar ativar a lightArea junto com o visual, descomente abaixo:
-        // if (lightArea != null) lightArea.SetActive(true);
     }
 
     // =====================================
@@ -458,16 +412,10 @@ public class Lampiao : MonoBehaviour
 
     void UpdateBaseFollow()
     {
-        if (
-            player == null ||
-            playerController == null
-        )
+        if (player == null || playerController == null)
             return;
 
-        float dir =
-            playerController.IsFacingRight()
-                ? followOffsetX
-                : -followOffsetX;
+        float dir = playerController.IsFacingRight() ? followOffsetX : -followOffsetX;
 
         basePosition = new Vector3(
             player.position.x + dir,
@@ -480,12 +428,11 @@ public class Lampiao : MonoBehaviour
     {
         currentTarget = basePosition;
 
-        transform.position =
-            Vector3.MoveTowards(
-                transform.position,
-                currentTarget,
-                followSpeed * Time.deltaTime
-            );
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            currentTarget,
+            followSpeed * Time.deltaTime
+        );
     }
 
     // =====================================
@@ -494,15 +441,9 @@ public class Lampiao : MonoBehaviour
 
     void HandleAdvance()
     {
-        if (
-            Input.GetKeyDown(moveKey) &&
-            advanceRoutine == null
-        )
+        if (Input.GetKeyDown(moveKey) && advanceRoutine == null)
         {
-            advanceRoutine =
-                StartCoroutine(
-                    AdvanceRoutine()
-                );
+            advanceRoutine = StartCoroutine(AdvanceRoutine());
         }
     }
 
@@ -510,42 +451,28 @@ public class Lampiao : MonoBehaviour
     {
         isAdvancing = true;
 
-        float dir =
-            playerController != null &&
-            playerController.IsFacingRight()
-            ? 1f
-            : -1f;
+        float dir = (playerController != null && playerController.IsFacingRight()) ? 1f : -1f;
 
-        Vector3 advanceTarget =
-            new Vector3(
-                basePosition.x + dir * moveDistance,
-                basePosition.y,
-                transform.position.z
-            );
+        Vector3 advanceTarget = new Vector3(
+            basePosition.x + dir * moveDistance,
+            basePosition.y,
+            transform.position.z
+        );
 
-        while (
-            Vector3.Distance(
-                transform.position,
-                advanceTarget
-            ) > 0.02f
-        )
+        while (Vector3.Distance(transform.position, advanceTarget) > 0.02f)
         {
-            transform.position =
-                Vector3.MoveTowards(
-                    transform.position,
-                    advanceTarget,
-                    followSpeed * Time.deltaTime
-                );
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                advanceTarget,
+                followSpeed * Time.deltaTime
+            );
 
             yield return null;
         }
 
-        yield return new WaitForSeconds(
-            advanceTime
-        );
+        yield return new WaitForSeconds(advanceTime);
 
         isAdvancing = false;
-
         advanceRoutine = null;
     }
 
@@ -555,10 +482,7 @@ public class Lampiao : MonoBehaviour
 
     void ApplyFloat()
     {
-        floatOffsetY =
-            Mathf.Sin(
-                Time.time * floatFrequency
-            ) * floatAmplitude;
+        floatOffsetY = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
     }
 
     // =====================================
@@ -568,15 +492,12 @@ public class Lampiao : MonoBehaviour
     void ApplyFinalPosition()
     {
         Vector3 p = transform.position;
-
-        p.y =
-            basePosition.y + floatOffsetY;
-
+        p.y = basePosition.y + floatOffsetY;
         transform.position = p;
     }
 
     // =====================================
-    // FIXED UPDATE: AFASTAR / ATRIIR
+    // FIXED UPDATE: AFASTAR / ATRAIR
     // =====================================
 
     void FixedUpdate()
@@ -584,20 +505,11 @@ public class Lampiao : MonoBehaviour
         if (!isActive)
             return;
 
-        // Só aplica forças se estiver no modo Afastar ou Atrair
-        // e o modo estiver disponível
-        if (
-            isParalisarActive ||
-            currentMode == LampiaoMode.Normal
-        )
+        if (isParalisarActive || currentMode == LampiaoMode.Normal)
             return;
 
-        if (
-            (currentMode == LampiaoMode.Afastar &&
-             (modesAvailable & LampiaoMode.Afastar) != 0) ||
-            (currentMode == LampiaoMode.Atrair &&
-             (modesAvailable & LampiaoMode.Atrair) != 0)
-        )
+        if ((currentMode == LampiaoMode.Afastar && (modesAvailable & LampiaoMode.Afastar) != 0) ||
+            (currentMode == LampiaoMode.Atrair && (modesAvailable & LampiaoMode.Atrair) != 0))
         {
             ApplyAfastarAtrair();
         }
@@ -626,7 +538,6 @@ public class Lampiao : MonoBehaviour
             float force = currentMode == LampiaoMode.Afastar ? repelForce : attractForce;
             float signedForce = currentMode == LampiaoMode.Afastar ? -force : force;
 
-            // Aplica força contínua para afastar ou atrair
             rb.AddForce(dir * signedForce, ForceMode2D.Force);
         }
     }
@@ -635,16 +546,11 @@ public class Lampiao : MonoBehaviour
     // MODOS DO LAMPIÃO
     // =====================================
 
-    /// <summary>
-    /// Alterna entre os modos disponíveis (Normal → Afastar → Atrair → volta).
-    /// Ignora o modo Paralisar (controlado por tecla separada).
-    /// </summary>
     public void AlternarModo()
     {
         if (!isActive)
             return;
 
-        // Coleta modos disponíveis (exclui Paralisar e None)
         LampiaoMode cicloModes = modesAvailable & (LampiaoMode.Normal | LampiaoMode.Afastar | LampiaoMode.Atrair);
 
         if (cicloModes == LampiaoMode.None)
@@ -653,7 +559,6 @@ public class Lampiao : MonoBehaviour
             return;
         }
 
-        // Lista de modos possíveis em ordem
         List<LampiaoMode> possible = new List<LampiaoMode>();
         if ((cicloModes & LampiaoMode.Normal) != 0) possible.Add(LampiaoMode.Normal);
         if ((cicloModes & LampiaoMode.Afastar) != 0) possible.Add(LampiaoMode.Afastar);
@@ -662,7 +567,6 @@ public class Lampiao : MonoBehaviour
         int currentIndex = possible.IndexOf(currentMode);
         int nextIndex = (currentIndex + 1) % possible.Count;
 
-        // Se o modo atual não está na lista (ex: era Paralisar), começa do Normal
         if (currentIndex < 0)
             nextIndex = 0;
 
@@ -673,18 +577,28 @@ public class Lampiao : MonoBehaviour
     }
 
     /// <summary>
-    /// <summary>
-    /// Ativa o modo Paralisar temporariamente.
+    /// Ativa o modo Paralisar temporariamente com verificação de cooldown.
     /// </summary>
     public void AtivarParalisar()
     {
         if (!isActive)
+        {
+            Debug.Log("[Lampião] O Lampião precisa estar ligado para paralisar.");
             return;
+        }
 
         // Verifica se Paralisar está liberado nesta fase
         if ((modesAvailable & LampiaoMode.Paralisar) == 0)
         {
             Debug.Log("[Lampião] Paralisar não está disponível nesta fase.");
+            return;
+        }
+
+        // Verifica se está em cooldown
+        if (Time.time < nextParalisarTime)
+        {
+            float tempoRestante = nextParalisarTime - Time.time;
+            Debug.Log($"[Lampião] Paralisar em Cooldown! Faltam {tempoRestante:F1}s.");
             return;
         }
 
@@ -695,8 +609,6 @@ public class Lampiao : MonoBehaviour
         paralisarRoutine = StartCoroutine(ParalisarRoutine());
     }
 
-    // Compatibilidade: antiga API que outros scripts podem chamar.
-    // Agora redireciona para AtivarParalisar() (modo temporário).
     public void ToggleParalisar()
     {
         AtivarParalisar();
@@ -706,6 +618,9 @@ public class Lampiao : MonoBehaviour
     {
         isParalisarActive = true;
 
+        // Inicia a contagem de cooldown
+        nextParalisarTime = Time.time + paralisarCooldown;
+
         // Muda a cor imediatamente
         ApplyModeColor();
 
@@ -714,7 +629,7 @@ public class Lampiao : MonoBehaviour
 
         Debug.Log("[Lampião] PARALISAR ativado!");
 
-        // Mantém a cor durante a duração configurada
+        // Mantém a cor durante a duração do stun
         yield return new WaitForSeconds(stunDuration);
 
         isParalisarActive = false;
@@ -739,35 +654,27 @@ public class Lampiao : MonoBehaviour
 
         if (areaCollider == null)
         {
-            Debug.LogWarning(
-                "[Lampião] LightArea precisa possuir um Collider2D."
-            );
+            Debug.LogWarning("[Lampião] LightArea precisa possuir um Collider2D.");
             return;
         }
 
         ContactFilter2D filter = new ContactFilter2D();
-
         filter.useTriggers = true;
         filter.useLayerMask = false;
         filter.useDepth = false;
 
         List<Collider2D> resultados = new List<Collider2D>();
-
-        // Usa OverlapCollider para coletar colisores dentro da área
         areaCollider.Overlap(filter, resultados);
 
-        HashSet<GameObject> inimigosProcessados =
-            new HashSet<GameObject>();
+        HashSet<GameObject> inimigosProcessados = new HashSet<GameObject>();
 
         foreach (Collider2D hit in resultados)
         {
             if (hit == null)
                 continue;
 
-            // Procura o objeto raiz do inimigo
             GameObject enemyObject = hit.gameObject;
 
-            // Se a tag não estiver no próprio collider, sobe pela hierarquia
             if (!enemyObject.CompareTag(enemyTag))
             {
                 Transform atual = hit.transform;
@@ -787,7 +694,6 @@ public class Lampiao : MonoBehaviour
             if (!enemyObject.CompareTag(enemyTag))
                 continue;
 
-            // Evita paralisar o mesmo inimigo várias vezes
             if (!inimigosProcessados.Add(enemyObject))
                 continue;
 
@@ -800,78 +706,34 @@ public class Lampiao : MonoBehaviour
         if (enemy == null)
             return;
 
-        // Primeiro procura no próprio objeto
-        IAtordoavel atordoavel =
-            enemy.GetComponent<IAtordoavel>();
+        IAtordoavel atordoavel = enemy.GetComponent<IAtordoavel>() ?? enemy.GetComponentInParent<IAtordoavel>();
 
-        // Depois procura nos pais
-        if (atordoavel == null)
-        {
-            atordoavel =
-                enemy.GetComponentInParent<IAtordoavel>();
-        }
-
-        // Reutiliza o sistema existente do projeto
         if (atordoavel != null)
         {
             atordoavel.Atordoar(stunDuration);
-
-            Debug.Log(
-                "[Lampião] Inimigo atordoado: " +
-                enemy.name +
-                " por " +
-                stunDuration +
-                " segundos."
-            );
-
+            Debug.Log($"[Lampião] Inimigo atordoado: {enemy.name} por {stunDuration}s.");
             return;
         }
 
-        // Fallback:
-        // Se esse inimigo ainda não implementa IAtordoavel,
-        // tenta congelar o Rigidbody2D.
-        Rigidbody2D rb =
-            enemy.GetComponent<Rigidbody2D>();
-
-        if (rb == null)
-        {
-            rb = enemy.GetComponentInParent<Rigidbody2D>();
-        }
+        Rigidbody2D rb = enemy.GetComponent<Rigidbody2D>() ?? enemy.GetComponentInParent<Rigidbody2D>();
 
         if (rb != null)
         {
-            StartCoroutine(
-                FreezeRigidbodyRoutine(rb, stunDuration)
-            );
-
-            Debug.Log(
-                "[Lampião] Rigidbody congelado: " +
-                enemy.name
-            );
+            StartCoroutine(FreezeRigidbodyRoutine(rb, stunDuration));
+            Debug.Log($"[Lampião] Rigidbody congelado: {enemy.name}");
         }
         else
         {
-            Debug.LogWarning(
-                "[Lampião] " +
-                enemy.name +
-                " não possui IAtordoavel nem Rigidbody2D."
-            );
+            Debug.LogWarning($"[Lampião] {enemy.name} não possui IAtordoavel nem Rigidbody2D.");
         }
     }
 
-    private IEnumerator FreezeRigidbodyRoutine(
-        Rigidbody2D rb,
-        float duration
-    )
+    private IEnumerator FreezeRigidbodyRoutine(Rigidbody2D rb, float duration)
     {
         if (rb == null)
             yield break;
 
-        RigidbodyConstraints2D constraintsOriginais =
-            rb.constraints;
-
-        Vector2 velocidadeOriginal =
-            rb.linearVelocity;
+        RigidbodyConstraints2D constraintsOriginais = rb.constraints;
 
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
@@ -882,37 +744,35 @@ public class Lampiao : MonoBehaviour
         if (rb != null)
         {
             rb.constraints = constraintsOriginais;
-
-            // Não restaura velocidade antiga porque ela pode
-            // fazer o inimigo "sair voando" depois do stun.
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
     }
 
-    /// <summary>
-    /// Configura quais modos estão disponíveis (chamado via script, ex: pelo PlayerController).
-    /// </summary>
     public void ConfigureModes(LampiaoMode modes)
     {
         modesAvailable = modes;
 
-        // Garante que o modo atual seja válido
         if ((modesAvailable & currentMode) == 0 && (modesAvailable & LampiaoMode.Normal) != 0)
             currentMode = LampiaoMode.Normal;
         else if (modesAvailable == LampiaoMode.None)
             currentMode = LampiaoMode.Normal;
     }
 
+    // =====================================
+    // PROPRIEDADES / GETTERS
+    // =====================================
+
     public LampiaoMode ModesAvailable => modesAvailable;
-
     public bool IsLightOn => isActive;
-
     public GameObject LightArea => lightArea;
-
     public bool IsParalisarActive => isParalisarActive;
-
     public LampiaoMode CurrentMode => currentMode;
+
+    // --- Getters de Cooldown para UI ---
+    public bool IsParalisarOnCooldown => Time.time < nextParalisarTime;
+    public float ParalisarCooldownRemaining => Mathf.Max(0f, nextParalisarTime - Time.time);
+    public float ParalisarCooldownProgress => paralisarCooldown > 0f ? Mathf.Clamp01(ParalisarCooldownRemaining / paralisarCooldown) : 0f;
 
     // =====================================
     // CORES
@@ -949,19 +809,17 @@ public class Lampiao : MonoBehaviour
         foreach (var rend in rends)
         {
             Color original = originalColors.ContainsKey(rend) ? originalColors[rend] : rend.color;
-            // Aplica RGB da cor do modo, mantendo o alpha original
             Color newColor = new Color(targetColor.r, targetColor.g, targetColor.b, original.a);
             rend.color = newColor;
         }
     }
 
     // =====================================
-    // PARALISAR: DETECÇÃO E APLICAÇÃO
+    // DETECÇÃO
     // =====================================
 
     float GetDetectRadius()
     {
-        // Se lightArea tem CircleCollider2D, usa seu raio
         if (lightArea != null)
         {
             CircleCollider2D circle = lightArea.GetComponent<CircleCollider2D>();
@@ -969,22 +827,9 @@ public class Lampiao : MonoBehaviour
                 return circle.radius * Mathf.Max(lightArea.transform.lossyScale.x, lightArea.transform.lossyScale.y);
         }
 
-        // Se detectRadius foi configurado, usa ele
         if (detectRadius > 0f)
             return detectRadius;
 
-        // Fallback padrão
         return 3f;
     }
-
-
-    // =====================================
-    // API EXTRA
-    // =====================================
-
-    /// <summary>
-    /// Força a aplicação de paralisão a inimigos que entrarem na área.
-    /// Chamado via trigger ou evento.
-    /// </summary>
-
 }

@@ -177,12 +177,14 @@ public class PlayerInputHandler : MonoBehaviour
     bool AcaoHeld(MapeamentoAcao acao)
     {
         if (Input.GetKey(acao.teclado)) return true;
+        if (acao.useMouse && Input.GetMouseButton(acao.mouseButton)) return true;
         if (usarControle) return BotaoHeld(acao);
         return false;
     }
 
     bool AcaoUp(MapeamentoAcao acao)
     {
+        // Para o pulo: verifica teclado E controle separadamente
         if (Input.GetKeyUp(acao.teclado)) return true;
         if (usarControle) return BotaoUp(acao);
         return false;
