@@ -105,19 +105,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   visual: {fileID: 0}
-  raioDeteccao: 12
-  raioCorpoACorpo: 2
-  velocidadeDash: 14
-  duracaoDash: 1
-  cooldownDash: 3
-  danoDash: 3
-  danoCorpoACorpo: 5
-  cooldownCorpoACorpo: 1
-  velocidadePerseguicao: 2
-  vida: 3
-  corDeteccao: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  corCorpoACorpo: {r: 1, g: 0, b: 0, a: 1}
+  animator: {fileID: 0}
+  detectionRadius: 12
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  pursuitSpeed: 2
+  dashSpeed: 14
+  dashDuration: 0.3
+  dashCooldown: 1.5
+  dashDamage: 4
+  dashHitboxSize: {x: 1.2, y: 0.8}
+  dashHitboxOffset: {x: 0.8, y: 0}
+  meleeHitboxSize: {x: 1.2, y: 1}
+  meleeHitboxOffset: {x: 0.9, y: 0}
+  meleeDamage: 3
+  meleeCooldown: 1
+  maxLife: 3
+  deathDelay: 0.1
+  groundCheck: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gravityScale: 1
   debugLogs: 1
+  showGizmos: 1
+  gizmoDetection: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  gizmoBody: {r: 0, g: 0, b: 1, a: 1}
+  gizmoMelee: {r: 1, g: 0, b: 0, a: 1}
+  gizmoDash: {r: 0.5, g: 0, b: 0.5, a: 1}
 --- !u!58 &2116597957885912044
 CircleCollider2D:
   m_ObjectHideFlags: 0
