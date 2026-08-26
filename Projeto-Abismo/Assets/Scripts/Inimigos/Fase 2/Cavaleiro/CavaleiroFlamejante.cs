@@ -158,11 +158,17 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        // Ensure dash collider initially disabled
+        // Direção inicial correta
+        if (visual != null)
+        {
+            Vector3 s = visual.localScale;
+            s.x = Mathf.Abs(s.x); // começa virado para esquerda (positivo = esquerda nesse sprite)
+            visual.localScale = s;
+        }
+
         if (hitboxDashCollider != null)
             hitboxDashCollider.enabled = false;
 
-        // Melee collider is used only for visualization; detection will use OverlapBox.
         if (hitboxMeleeCollider != null)
             hitboxMeleeCollider.enabled = false;
     }
@@ -241,7 +247,9 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
     {
         if (visual == null) return;
         Vector3 s = visual.localScale;
-        s.x = Mathf.Abs(s.x) * (dx >= 0f ? 1f : -1f);
+        // dx > 0 = movendo para direita = vira para direita (escala positiva)
+        // dx < 0 = movendo para esquerda = vira para esquerda (escala negativa)
+        s.x = Mathf.Abs(s.x) * (dx >= 0f ? -1f : 1f);
         visual.localScale = s;
     }
 
@@ -257,9 +265,16 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
         dashCooldownTimer = dashCooldown;
         dashAlreadyHit = false;
         dashDirection = ((Vector2)player.position - rb.position).normalized;
+
         if (hitboxDashCollider != null) hitboxDashCollider.enabled = true;
-        // aplica velocidade de dash (mantém Y atual)
         rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, rb.linearVelocity.y);
+
+        // ── Animação ──
+        if (animator != null)
+            animator.SetBool("Dash", true);
+
+        if (debugLogs)
+            Debug.Log("[EnemyDashAttack] Dash iniciado");
     }
 
     private void PerformDashStep()
@@ -274,10 +289,17 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
     {
         isDashing = false;
         dashTimer = 0f;
+
         if (hitboxDashCollider != null) hitboxDashCollider.enabled = false;
         dashAlreadyHit = false;
-        // zera só componente X (preserva Y para cair)
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
+        // ── Animação ──
+        if (animator != null)
+            animator.SetBool("Dash", false);
+
+        if (debugLogs)
+            Debug.Log("[EnemyDashAttack] Dash encerrado");
     }
 
     // Called from HitboxRelay when dash hitbox triggers
