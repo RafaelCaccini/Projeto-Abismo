@@ -219,7 +219,7 @@ MonoBehaviour:
   wallCheckDistance: 0.6
   dano: 1
   danoCooldown: 1
-  vidaMaxima: 3
+  vidaMaxima: 2
   podeMorrer: 1
   deathAnimationDuration: 1
   mostrarRaycast: 1

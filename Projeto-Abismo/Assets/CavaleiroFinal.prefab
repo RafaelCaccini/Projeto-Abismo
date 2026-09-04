@@ -277,10 +277,10 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
-  pursuitSpeed: 5
-  dashSpeed: 14
-  dashDuration: 0.3
-  dashCooldown: 6
+  pursuitSpeed: 0.1
+  dashSpeed: 20
+  dashDuration: 0.5
+  dashCooldown: 4
   dashDamage: 4
   dashHitboxSize: {x: 1.2, y: 0.8}
   dashHitboxOffset: {x: 0.8, y: 0}
