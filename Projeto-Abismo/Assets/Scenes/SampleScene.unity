@@ -5051,10 +5051,15 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   raioDeteccao: 8
   raioExplosao: 3
+  distanciaParaExplodir: 2.5
   tagPlayer: Player
   velocidadePerseguicao: 3
+<<<<<<< HEAD
   distanciaParaExplodir: 2.5
   danoExplosao: 10
+=======
+  danoExplosao: 2
+>>>>>>> d84043bde40680352e68a3f5f409189f35341f18
   tempoAteExplodir: 1.5
   efeitoExplosaoPrefab: {fileID: 835826101196084873, guid: c65500664534e7847a54db37d3cbdeea, type: 3}
   somExplosao: {fileID: 0}

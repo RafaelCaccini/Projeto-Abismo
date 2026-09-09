@@ -561,11 +561,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         isInvincible = false;
     }
 
-    public interface IDamageable
-    {
-        void TakeDamage(int damage, GameObject source);
-    }
-
     // =============================================
     // MORTE
     // =============================================
