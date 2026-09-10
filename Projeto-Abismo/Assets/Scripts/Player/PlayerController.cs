@@ -134,6 +134,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Vector2 dashDirection;
     private float originalGravityScale;
     private float storedVerticalVelocity;
+    public bool IsDashing => isDashing;
 
     // ESTADO ATAQUE
     private float lastAttackTime;
