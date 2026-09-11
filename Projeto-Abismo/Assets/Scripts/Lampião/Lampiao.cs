@@ -234,8 +234,7 @@ public class Lampiao : MonoBehaviour
 
         ApplyFinalPosition();
 
-        // Entrada local (teclado configurável no Inspector) —
-        // Apenas quando não existe PlayerInputHandler global.
+        // Entrada local — teclado, mouse e controle
         if (PlayerInputHandler.Instance == null)
         {
             HandleLight();
@@ -251,6 +250,13 @@ public class Lampiao : MonoBehaviour
             {
                 AtivarParalisar();
             }
+        }
+
+        // Clique direito do mouse
+        // Funciona mesmo quando existe PlayerInputHandler.
+        if (Input.GetMouseButtonDown(1))
+        {
+            ToggleLuzExterno();
         }
     }
 
@@ -271,6 +277,8 @@ public class Lampiao : MonoBehaviour
             }
         }
     }
+
+
 
     void SnapToPlayer()
     {
