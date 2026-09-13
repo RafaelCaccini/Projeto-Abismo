@@ -7,6 +7,32 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField]
     private List<AbilityData> abilities = new List<AbilityData>();
 
+    private void Awake()
+    {
+        GarantirHabilidadeExistente(SkillType.Jump);
+        GarantirHabilidadeExistente(SkillType.ChargedJump);
+        GarantirHabilidadeExistente(SkillType.Dash);
+
+        GarantirHabilidadeExistente(SkillType.LampiaoAfastar);
+        GarantirHabilidadeExistente(SkillType.LampiaoAtrair);
+        GarantirHabilidadeExistente(SkillType.LampiaoParalisar);
+
+        // Nova habilidade
+        GarantirHabilidadeExistente(SkillType.Invincibility);
+    }
+
+    private void GarantirHabilidadeExistente(SkillType ability)
+    {
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            if (abilities[i] != null && abilities[i].ability == ability)
+                return;
+        }
+
+        // Adiciona bloqueada por padrão
+        abilities.Add(new AbilityData(ability, false));
+    }
+
     public bool Has(SkillType ability)
     {
         for (int i = 0; i < abilities.Count; i++)

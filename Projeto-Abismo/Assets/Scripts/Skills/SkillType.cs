@@ -43,5 +43,10 @@ public enum SkillType
     /// <summary>
     /// Modo Paralisar inimigos - o Lampião paralisa inimigos próximos (Fase 4).
     /// </summary>
-    LampiaoParalisar
+    LampiaoParalisar,
+
+    /// <summary>
+    /// Invencibilidade temporária - torna o jogador imune a dano durante X segundos.
+    /// </summary>
+    Invincibility,
 }
