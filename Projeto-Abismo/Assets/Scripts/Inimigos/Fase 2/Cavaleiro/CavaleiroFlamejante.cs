@@ -40,7 +40,12 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
     [SerializeField] private float dashSpeed = 14f;
     [SerializeField] private float dashDuration = 0.3f;
     [SerializeField] private float dashCooldown = 1.5f;
+
+    [Tooltip("Tempo de preparação antes do inimigo realmente iniciar o dash.")]
+    [SerializeField] private float dashPreparationDelay = 0.4f;
+
     [SerializeField] private int dashDamage = 15;
+    
 
     [Header("Hitbox Dash")]
     [SerializeField] private Vector2 dashHitboxSize = new Vector2(1.2f, 0.8f);
@@ -104,6 +109,7 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
 
     // Dash state
     private bool isDashing = false;
+    private bool isPreparingDash = false;
     private float dashTimer = 0f;
     private float dashCooldownTimer = 0f;
     private Vector2 dashDirection = Vector2.zero;
@@ -181,7 +187,10 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
         if (player == null)
             EnsurePlayerReference();
 
-        // Timers
+        // =====================================
+        // TIMERS
+        // =====================================
+
         if (dashCooldownTimer > 0f)
             dashCooldownTimer -= Time.fixedDeltaTime;
 
@@ -191,35 +200,67 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
         if (meleeTimer > 0f)
             meleeTimer -= Time.fixedDeltaTime;
 
-        // Detection: use a circle to decide behavior (not the hitboxes)
-        bool playerDetected = PlayerIsWithinDetection();
+        // =====================================
+        // SE ESTÁ PREPARANDO O DASH
+        // NÃO FAZ MAIS NADA
+        // =====================================
 
-        // If dash active, move accordingly
+        if (isPreparingDash)
+        {
+            rb.linearVelocity = new Vector2(
+                0f,
+                rb.linearVelocity.y
+            );
+
+            return;
+        }
+
+        // =====================================
+        // DETECÇÃO
+        // =====================================
+
+        bool playerDetected =
+            PlayerIsWithinDetection();
+
+        // =====================================
+        // DASH ATIVO
+        // =====================================
+
         if (isDashing)
         {
             PerformDashStep();
-            return; // during dash we don't do pursuit/melee checks
+            return;
         }
 
-        // If player detected, attempt dash if available, otherwise pursue and attempt melee
+        // =====================================
+        // PLAYER DETECTADO
+        // =====================================
+
         if (playerDetected)
         {
-            float distSq = ((Vector2)player.position - (Vector2)rb.position).sqrMagnitude;
+            // =================================
+            // TENTA INICIAR DASH
+            // =================================
 
-            // Start dash if cooldown ready
             if (dashCooldownTimer <= 0f)
             {
                 StartDash();
                 return;
             }
 
-            // Attempt melee using precise overlap box (not simple distance)
+            // =================================
+            // MELEE
+            // =================================
+
             if (TryMelee())
             {
-                return; // melee performed this frame
+                return;
             }
 
-            // Pursue otherwise
+            // =================================
+            // PERSEGUIÇÃO
+            // =================================
+
             PursuePlayer();
         }
     }
@@ -259,22 +300,112 @@ public class EnemyDashAttack : MonoBehaviour, IDamageable
 
     private void StartDash()
     {
-        if (player == null) return;
+        if (player == null)
+            return;
+
+        // Evita iniciar outro dash enquanto já está preparando
+        // ou executando um dash.
+        if (isPreparingDash || isDashing)
+            return;
+
+        StartCoroutine(DashPreparationRoutine());
+    }
+
+    private IEnumerator DashPreparationRoutine()
+    {
+        if (isDead || player == null)
+            yield break;
+
+        isPreparingDash = true;
+
+        // =====================================
+        // GUARDA A DIREÇÃO ANTES DA PREPARAÇÃO
+        // =====================================
+
+        dashDirection =
+            ((Vector2)player.position - rb.position).normalized;
+
+        // =====================================
+        // VIRA PARA O PLAYER
+        // =====================================
+
+        UpdateVisualFacing(dashDirection.x);
+
+        // =====================================
+        // TOCA A ANIMAÇÃO PRIMEIRO
+        // =====================================
+
+        if (animator != null)
+        {
+            animator.SetBool("Dash", true);
+        }
+
+        if (debugLogs)
+        {
+            Debug.Log(
+                "[EnemyDashAttack] Preparando Dash por "
+                + dashPreparationDelay
+                + " segundos..."
+            );
+        }
+
+        // =====================================
+        // DELAY
+        // =====================================
+
+        yield return new WaitForSeconds(dashPreparationDelay);
+
+        // =====================================
+        // VERIFICA SE AINDA PODE DAR DASH
+        // =====================================
+
+        if (isDead)
+        {
+            isPreparingDash = false;
+
+            if (animator != null)
+                animator.SetBool("Dash", false);
+
+            yield break;
+        }
+
+        // =====================================
+        // INICIA O DASH DE VERDADE
+        // =====================================
+
+        isPreparingDash = false;
+
         isDashing = true;
+
         dashTimer = dashDuration;
         dashCooldownTimer = dashCooldown;
         dashAlreadyHit = false;
-        dashDirection = ((Vector2)player.position - rb.position).normalized;
 
-        if (hitboxDashCollider != null) hitboxDashCollider.enabled = true;
-        rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, rb.linearVelocity.y);
+        // Recalcula a direção no momento em que o dash começa.
+        // Assim, se o Player se mexer durante os 0.4s,
+        // o inimigo ainda pode acompanhar a posição dele.
+        if (player != null)
+        {
+            dashDirection =
+                ((Vector2)player.position - rb.position).normalized;
+        }
 
-        // ── Animação ──
-        if (animator != null)
-            animator.SetBool("Dash", true);
+        // Ativa a hitbox somente AGORA.
+        if (hitboxDashCollider != null)
+            hitboxDashCollider.enabled = true;
+
+        // Começa o movimento do dash.
+        rb.linearVelocity = new Vector2(
+            dashDirection.x * dashSpeed,
+            rb.linearVelocity.y
+        );
 
         if (debugLogs)
-            Debug.Log("[EnemyDashAttack] Dash iniciado");
+        {
+            Debug.Log(
+                "[EnemyDashAttack] 🔥 DASH INICIADO!"
+            );
+        }
     }
 
     private void PerformDashStep()

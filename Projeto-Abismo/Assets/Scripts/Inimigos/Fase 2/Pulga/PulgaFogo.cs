@@ -69,6 +69,13 @@ public class PulgaFogo : MonoBehaviour, IDamageable
     [SerializeField] private bool debugLogs = true;
 
     // =====================================
+    // DELAY DO PULO
+    // =====================================
+
+    [Header("Delay do Pulo")]
+    [SerializeField] private float delayAntesDoPulo = 0.5f;
+
+    // =====================================
     // CONTROLE
     // =====================================
 
@@ -157,11 +164,7 @@ public class PulgaFogo : MonoBehaviour, IDamageable
 
         while (!morto)
         {
-            yield return new WaitForSeconds(
-                tempoEntrePulos
-            );
-
-            // tenta achar player de novo
+            yield return new WaitForSeconds(tempoEntrePulos);
 
             if (player == null)
             {
@@ -169,72 +172,111 @@ public class PulgaFogo : MonoBehaviour, IDamageable
                 continue;
             }
 
-            // DISTÂNCIA PLAYER
-
-            float distancia =
-                Vector2.Distance(
-                    transform.position,
-                    player.position
-                );
+            float distancia = Vector2.Distance(
+                transform.position,
+                player.position
+            );
 
             if (debugLogs)
             {
                 Debug.Log(
-                    "📏 Distância Player: "
-                    + distancia
+                    "📏 Distância Player: " + distancia
                 );
             }
-
-            // PLAYER FORA RANGE
 
             if (distancia > rangeAtivacao)
             {
                 if (debugLogs)
                 {
-                    Debug.Log(
-                        "🚫 Player fora do range"
-                    );
+                    Debug.Log("🚫 Player fora do range");
                 }
 
                 continue;
             }
 
-            // DETECÇÃO CHÃO
+            Vector2 origemRay = new Vector2(
+                col.bounds.center.x,
+                col.bounds.min.y + 0.05f
+            );
 
-            Vector2 origemRay =
-                new Vector2(
-                    col.bounds.center.x,
-                    col.bounds.min.y + 0.05f
-                );
-
-            bool noChao =
-                Physics2D.Raycast(
-                    origemRay,
-                    Vector2.down,
-                    0.2f,
-                    wallLayer
-                );
-
-            // DEBUG CHÃO
+            bool noChao = Physics2D.Raycast(
+                origemRay,
+                Vector2.down,
+                0.2f,
+                wallLayer
+            );
 
             if (debugLogs)
             {
                 Debug.Log(
-                    "🟢 No chão: "
-                    + noChao
+                    "🟢 No chão: " + noChao
                 );
             }
 
-            // NÃO ESTÁ NO CHÃO
-
             if (!noChao)
-            {
                 continue;
+
+            // =====================================
+            // PREPARAÇÃO DO PULO
+            // =====================================
+
+            if (Random.value > 0.5f)
+            {
+                olhandoDireita = !olhandoDireita;
             }
 
-            // PULAR
+            float direcao =
+                olhandoDireita ? 1f : -1f;
 
-            FazerPulo();
+            AtualizarDirecaoVisual(direcao);
+
+            // TOCA A ANIMAÇÃO PRIMEIRO
+            if (animator != null)
+            {
+                animator.ResetTrigger("Pular");
+                animator.SetTrigger("Pular");
+            }
+
+            if (debugLogs)
+            {
+                Debug.Log(
+                    "⏳ Pulga preparando o pulo por "
+                    + delayAntesDoPulo
+                    + " segundos..."
+                );
+            }
+
+            // =====================================
+            // DELAY REAL
+            // =====================================
+
+            yield return new WaitForSeconds(
+                delayAntesDoPulo
+            );
+
+            // Se morreu durante a preparação,
+            // não pula.
+            if (morto)
+                yield break;
+
+            // =====================================
+            // AGORA SIM: PULO FÍSICO
+            // =====================================
+
+            rb.linearVelocity = Vector2.zero;
+
+            rb.AddForce(
+                new Vector2(
+                    direcao * forcaPuloX,
+                    forcaPuloY
+                ),
+                ForceMode2D.Impulse
+            );
+
+            if (debugLogs)
+            {
+                Debug.Log("🔥 PULGA PULOU!");
+            }
         }
     }
 
@@ -290,26 +332,25 @@ public class PulgaFogo : MonoBehaviour, IDamageable
     // VISUAL
     // =====================================
 
-    void AtualizarDirecaoVisual(
-        float direcao
-    )
+    void AtualizarDirecaoVisual(float direcao)
     {
-        Vector3 escala =
-            transform.localScale;
+        Vector3 escala = transform.localScale;
 
-        if (direcao > 0)
+        // O sprite original está virado para a ESQUERDA.
+        // Portanto:
+        // direcao < 0 = esquerda = escala positiva
+        // direcao > 0 = direita = escala negativa
+
+        if (direcao < 0)
         {
-            escala.x =
-                Mathf.Abs(escala.x);
+            escala.x = Mathf.Abs(escala.x);
         }
         else
         {
-            escala.x =
-                -Mathf.Abs(escala.x);
+            escala.x = -Mathf.Abs(escala.x);
         }
 
-        transform.localScale =
-            escala;
+        transform.localScale = escala;
     }
 
     // =====================================
