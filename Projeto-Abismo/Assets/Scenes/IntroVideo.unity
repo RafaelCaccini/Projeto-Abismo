@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: c7234c409ec2c82439c136d3b01a5118, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8cc097e8ddabe7544acbf835642e456c, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -604,11 +604,11 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940806100}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: f8d9b1291e9681445a478ad01be7a351, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 85b2b3e1a4a5b314b80f2a08704c2370, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: c7234c409ec2c82439c136d3b01a5118, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: 8cc097e8ddabe7544acbf835642e456c, type: 2}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
