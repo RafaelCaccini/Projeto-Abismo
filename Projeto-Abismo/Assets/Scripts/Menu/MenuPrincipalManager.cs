@@ -11,6 +11,7 @@ public class MenuPrincipalManager : MonoBehaviour
     [SerializeField] private string fase1Junta = "Fase1Junta";
     [SerializeField] private string fase2Junta = "Fase2Junta";
     [SerializeField] private string fase3Junta = "";
+    [SerializeField] private string creditos = "Creditos";
 
 
     [Header("PAINÉIS")]
@@ -105,5 +106,12 @@ public class MenuPrincipalManager : MonoBehaviour
         Debug.Log("Indo para Fase2Junta");
 
         SceneManager.LoadScene(fase2Junta);
+    }
+
+    public void IrParaCreditos()
+    {
+        Debug.Log("Indo para Creditos");
+
+        SceneManager.LoadScene(creditos);
     }
 }

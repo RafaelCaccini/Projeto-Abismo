@@ -1,0 +1,988 @@
+fileFormatVersion: 2
+guid: 2d2152fd290615c49960237cc94686ac
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2597120151458825913
+    second: LIMEHEX MEMBRO_0
+  - first:
+      213: -1647869295570067145
+    second: LIMEHEX MEMBRO_1
+  - first:
+      213: 3229230215240991901
+    second: LIMEHEX MEMBRO_2
+  - first:
+      213: -2952476838758934678
+    second: LIMEHEX MEMBRO_3
+  - first:
+      213: 4098534342217111952
+    second: LIMEHEX MEMBRO_4
+  - first:
+      213: -719129180091313187
+    second: LIMEHEX MEMBRO_5
+  - first:
+      213: 7723168496662636041
+    second: LIMEHEX MEMBRO_6
+  - first:
+      213: 7475901751698186345
+    second: LIMEHEX MEMBRO_7
+  - first:
+      213: -5121016914594082696
+    second: LIMEHEX MEMBRO_8
+  - first:
+      213: 148362712394030921
+    second: LIMEHEX MEMBRO_9
+  - first:
+      213: 4595428971859077436
+    second: LIMEHEX MEMBRO_10
+  - first:
+      213: 9030260560930735199
+    second: LIMEHEX MEMBRO_11
+  - first:
+      213: -1861084655364007001
+    second: LIMEHEX MEMBRO_12
+  - first:
+      213: -9217423845904790856
+    second: LIMEHEX MEMBRO_13
+  - first:
+      213: 7112234845287633554
+    second: LIMEHEX MEMBRO_14
+  - first:
+      213: -3126778562375866562
+    second: LIMEHEX MEMBRO_15
+  - first:
+      213: -6223441085827870992
+    second: LIMEHEX MEMBRO_16
+  - first:
+      213: -770159902133860425
+    second: LIMEHEX MEMBRO_17
+  - first:
+      213: -6460931112126360875
+    second: LIMEHEX MEMBRO_18
+  - first:
+      213: 3287209232185004897
+    second: LIMEHEX MEMBRO_19
+  - first:
+      213: 797556347910320106
+    second: LIMEHEX MEMBRO_20
+  - first:
+      213: -7332740352909042477
+    second: LIMEHEX MEMBRO_21
+  - first:
+      213: 629291927334404213
+    second: LIMEHEX MEMBRO_22
+  - first:
+      213: 6290974648961289911
+    second: LIMEHEX MEMBRO_23
+  - first:
+      213: -774083040577469977
+    second: LIMEHEX MEMBRO_24
+  - first:
+      213: 8068684748493378709
+    second: LIMEHEX MEMBRO_25
+  - first:
+      213: 355196493466773082
+    second: LIMEHEX MEMBRO_26
+  - first:
+      213: -306771010236795268
+    second: LIMEHEX MEMBRO_27
+  - first:
+      213: 2197606475830244756
+    second: LIMEHEX MEMBRO_28
+  - first:
+      213: 6485463606353817659
+    second: LIMEHEX MEMBRO_29
+  - first:
+      213: -5098027675428006663
+    second: LIMEHEX MEMBRO_30
+  - first:
+      213: -4294935802385227224
+    second: LIMEHEX MEMBRO_31
+  - first:
+      213: 8440252189371131069
+    second: LIMEHEX MEMBRO_32
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 1
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_0
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 768
+        width: 1050
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b646b28403da0420800000000000000
+      internalID: 2597120151458825913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_1
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 623
+        width: 42
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 731e5414b979129e0800000000000000
+      internalID: -1647869295570067145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_2
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 553
+        width: 605
+        height: 207
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d94c56585c780dc20800000000000000
+      internalID: 3229230215240991901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_3
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 598
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a67943245f1b607d0800000000000000
+      internalID: -2952476838758934678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_4
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 590
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 099179fe44be0e830800000000000000
+      internalID: 4098534342217111952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_5
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 582
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd31a0122d32506f0800000000000000
+      internalID: -719129180091313187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_6
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 556
+        width: 51
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 906601024d43e2b60800000000000000
+      internalID: 7723168496662636041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_7
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 556
+        width: 43
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 960e0bdb80dbfb760800000000000000
+      internalID: 7475901751698186345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_8
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 580
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8705adc9f3e7ee8b0800000000000000
+      internalID: -5121016914594082696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_9
+      rect:
+        serializedVersion: 2
+        x: 1111
+        y: 321
+        width: 530
+        height: 269
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94fd822d9171f0200800000000000000
+      internalID: 148362712394030921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_10
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 576
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c39e2326d4e36cf30800000000000000
+      internalID: 4595428971859077436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_11
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 566
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f540f73c22ee15d70800000000000000
+      internalID: 9030260560930735199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_12
+      rect:
+        serializedVersion: 2
+        x: 1300
+        y: 576
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ab191ccd591c26e0800000000000000
+      internalID: -1861084655364007001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_13
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 545
+        width: 33
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ba41a029d1251080800000000000000
+      internalID: -9217423845904790856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_14
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 551
+        width: 32
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2925688d8ebb3b260800000000000000
+      internalID: 7112234845287633554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_15
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 557
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e37a742c6737b94d0800000000000000
+      internalID: -3126778562375866562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_16
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 559
+        width: 87
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fe88ae3e45e1a9a0800000000000000
+      internalID: -6223441085827870992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_17
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 550
+        width: 27
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b7cf0546a7df45f0800000000000000
+      internalID: -770159902133860425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_18
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 560
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d2507f82692656a0800000000000000
+      internalID: -6460931112126360875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_19
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 562
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16395ca51638e9d20800000000000000
+      internalID: 3287209232185004897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_20
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 319
+        width: 526
+        height: 211
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aef6d85d54d711b00800000000000000
+      internalID: 797556347910320106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_21
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 317
+        width: 543
+        height: 213
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dc1fa2ef7fdc3a90800000000000000
+      internalID: -7332740352909042477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_22
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 15
+        width: 564
+        height: 287
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 570c9cc7ca1bbb800800000000000000
+      internalID: 629291927334404213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_23
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 47
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7be435abc180e4750800000000000000
+      internalID: 6290974648961289911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_24
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 47
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e1c9bb6397e145f0800000000000000
+      internalID: -774083040577469977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_25
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 23
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5945f8e670ab9ff60800000000000000
+      internalID: 8068684748493378709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_26
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 47
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a562d823459ede400800000000000000
+      internalID: 355196493466773082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_27
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 46
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c76b27b34612ebbf0800000000000000
+      internalID: -306771010236795268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_28
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 43
+        width: 28
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 495b5f342777f7e10800000000000000
+      internalID: 2197606475830244756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_29
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 0
+        width: 1089
+        height: 301
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b30717cd9cef00a50800000000000000
+      internalID: 6485463606353817659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_30
+      rect:
+        serializedVersion: 2
+        x: 870
+        y: 31
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f4d007f6da2049b0800000000000000
+      internalID: -5098027675428006663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_31
+      rect:
+        serializedVersion: 2
+        x: 898
+        y: 29
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 822a8bda4a25564c0800000000000000
+      internalID: -4294935802385227224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LIMEHEX MEMBRO_32
+      rect:
+        serializedVersion: 2
+        x: 1392
+        y: 21
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db4ed2ad5acc12570800000000000000
+      internalID: 8440252189371131069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      LIMEHEX MEMBRO_0: 2597120151458825913
+      LIMEHEX MEMBRO_1: -1647869295570067145
+      LIMEHEX MEMBRO_10: 4595428971859077436
+      LIMEHEX MEMBRO_11: 9030260560930735199
+      LIMEHEX MEMBRO_12: -1861084655364007001
+      LIMEHEX MEMBRO_13: -9217423845904790856
+      LIMEHEX MEMBRO_14: 7112234845287633554
+      LIMEHEX MEMBRO_15: -3126778562375866562
+      LIMEHEX MEMBRO_16: -6223441085827870992
+      LIMEHEX MEMBRO_17: -770159902133860425
+      LIMEHEX MEMBRO_18: -6460931112126360875
+      LIMEHEX MEMBRO_19: 3287209232185004897
+      LIMEHEX MEMBRO_2: 3229230215240991901
+      LIMEHEX MEMBRO_20: 797556347910320106
+      LIMEHEX MEMBRO_21: -7332740352909042477
+      LIMEHEX MEMBRO_22: 629291927334404213
+      LIMEHEX MEMBRO_23: 6290974648961289911
+      LIMEHEX MEMBRO_24: -774083040577469977
+      LIMEHEX MEMBRO_25: 8068684748493378709
+      LIMEHEX MEMBRO_26: 355196493466773082
+      LIMEHEX MEMBRO_27: -306771010236795268
+      LIMEHEX MEMBRO_28: 2197606475830244756
+      LIMEHEX MEMBRO_29: 6485463606353817659
+      LIMEHEX MEMBRO_3: -2952476838758934678
+      LIMEHEX MEMBRO_30: -5098027675428006663
+      LIMEHEX MEMBRO_31: -4294935802385227224
+      LIMEHEX MEMBRO_32: 8440252189371131069
+      LIMEHEX MEMBRO_4: 4098534342217111952
+      LIMEHEX MEMBRO_5: -719129180091313187
+      LIMEHEX MEMBRO_6: 7723168496662636041
+      LIMEHEX MEMBRO_7: 7475901751698186345
+      LIMEHEX MEMBRO_8: -5121016914594082696
+      LIMEHEX MEMBRO_9: 148362712394030921
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
