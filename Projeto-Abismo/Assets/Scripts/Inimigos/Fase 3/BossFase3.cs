@@ -1,8 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BossVislumbra : MonoBehaviour, IDamageable
+public class BossFase3 : MonoBehaviour, IDamageable
 {
     // =============================================
     // REFERÊNCIAS
@@ -13,52 +12,68 @@ public class BossVislumbra : MonoBehaviour, IDamageable
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
 
-    [Header("Cortes da Arena")]
-    [SerializeField] private Transform corteA;
-    [SerializeField] private Transform corteB;
-    [SerializeField] private Transform corteC;
-
-    [Header("Mão")]
-    [SerializeField] private Transform mao;
-    [SerializeField] private Collider2D colliderMao;
-    [SerializeField] private GameObject indicadorCorte;
-
-    [Header("Projetil")]
-    [SerializeField] private GameObject projetilPrefab;
-    [SerializeField] private Transform pontoDisparo;
-
     // =============================================
-    // SOCO
+    // PONTOS DA ARENA
     // =============================================
 
-    [Header("Soco")]
-    [SerializeField] private float tempoAvisoSoco = 1.5f;
-    [SerializeField] private float tempoPreparacaoSoco = 1f;
-    [SerializeField] private float tempoDuracaoSoco = 0.3f;
-    [SerializeField] private float tempoVulneravelAposSoco = 2f;
-    [SerializeField] private int danoSoco = 2;
-    [SerializeField] private float forcaEmpurraoSoco = 15f;
-    [SerializeField] private string tagPlayer = "Player";
+    [Header("Pontos da Arena")]
+    [Tooltip("Ponto esquerdo — spawn e destino das ondas")]
+    [SerializeField] private Transform spawnA;
+
+    [Tooltip("Ponto direito — spawn e destino das ondas")]
+    [SerializeField] private Transform spawnB;
+
+    [Tooltip("Ponto A do Bullet Hell")]
+    [SerializeField] private Transform pontoAtaqueA;
+
+    [Tooltip("Ponto B do Bullet Hell")]
+    [SerializeField] private Transform pontoAtaqueB;
+
+    [Tooltip("Ponto C do Bullet Hell")]
+    [SerializeField] private Transform pontoAtaqueC;
+
+    [Tooltip("Centro da arena — onde o boss cai e fica vulnerável")]
+    [SerializeField] private Transform centroArena;
+
+    // =============================================
+    // ONDA
+    // =============================================
+
+    [Header("Onda")]
+    [SerializeField] private GameObject ondaPrefab;
+    [SerializeField] private float velocidadeOnda = 6f;
+    [SerializeField] private int danoOnda = 1;
+    [SerializeField] private int quantidadeOndas = 2;
+    [SerializeField] private float intervaloEntreOndas = 0.6f;
 
     // =============================================
     // BULLET HELL
     // =============================================
 
     [Header("Bullet Hell")]
-    [SerializeField] private float velocidadeProjetil = 8f;
-    [SerializeField] private int quantidadeLeque = 7;
-    [SerializeField] private float anguloLeque = 120f;
-    [SerializeField] private int quantidadeCirculo = 12;
-    [SerializeField] private int ondas = 3;
-    [SerializeField] private float intervaloOndas = 0.4f;
-    [SerializeField] private float tempoBulletHell = 5f;
+    [SerializeField] private GameObject projetilPrefab;
+    [SerializeField] private float velocidadeProjetil = 7f;
+    [SerializeField] private int quantidadeProjeteis = 8;
+    [SerializeField] private float anguloEspalhamento = 90f;
+    [SerializeField] private int ondasBulletHell = 3;
+    [SerializeField] private float intervaloOndasBulletHell = 0.4f;
+
+    // =============================================
+    // VULNERABILIDADE
+    // =============================================
+
+    [Header("Vulnerabilidade")]
+    [SerializeField] private float duracaoVulneravel = 3f;
+    [SerializeField] private float velocidadeQueda = 8f;
+    [SerializeField] private Color corVulneravel = Color.red;
+    [SerializeField] private Color corNormal = Color.white;
 
     // =============================================
     // VIDA
     // =============================================
 
     [Header("Vida")]
-    [SerializeField] private int vidaMaxima = 6;
+    [SerializeField] private int vidaMaxima = 8;
     [SerializeField] private float duracaoAnimacaoMorte = 1.5f;
 
     // =============================================
@@ -66,13 +81,21 @@ public class BossVislumbra : MonoBehaviour, IDamageable
     // =============================================
 
     [Header("Efeitos")]
-    [SerializeField] private AudioClip somAviso;
-    [SerializeField] private AudioClip somSoco;
-    [SerializeField] private AudioClip somVulneravel;
+    [SerializeField] private AudioClip somOnda;
     [SerializeField] private AudioClip somBulletHell;
+    [SerializeField] private AudioClip somQueda;
+    [SerializeField] private AudioClip somVulneravel;
     [SerializeField] private AudioClip somMorte;
-    [SerializeField] private GameObject efeitoImpacto;
     [SerializeField] private GameObject efeitoMorte;
+    [SerializeField] private GameObject efeitoImpacto;
+
+    // =============================================
+    // TEMPOS
+    // =============================================
+
+    [Header("Tempos")]
+    [SerializeField] private float tempoEntreAtaques = 1.5f;
+    [SerializeField] private float tempoPreparacaoQueda = 1f;
 
     // =============================================
     // DEBUG
@@ -89,30 +112,30 @@ public class BossVislumbra : MonoBehaviour, IDamageable
     private enum EstadoBoss
     {
         Idle,
-        PreparandoSoco,
-        Socando,
-        VulneravelPosSoco,
-        BulletHell,
+        AtaqueOnda,
+        AtaqueBulletHell,
+        Caindo,
+        Vulneravel,
         Morto
     }
 
-    private enum TipoAtaque { Soco, BulletHell }
+    private enum TipoAtaque { Onda, BulletHell }
 
     private EstadoBoss estado = EstadoBoss.Idle;
 
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
+    private Collider2D col;
     private Transform player;
     private PlayerController playerController;
 
     private int vidaAtual;
     private bool morto = false;
     private bool vulneravel = false;
-    private int corteEscolhido = -1; // 0=A, 1=B, 2=C
     private int cicloAtual = 0;
-    private bool lequeInvertido = false;
 
-    // Posições originais da mão para animação
-    private Vector3 posOriginalMao;
+    // Posição original do boss (no ar)
+    private Vector3 posicaoOriginal;
 
     // =============================================
     // AWAKE
@@ -121,6 +144,12 @@ public class BossVislumbra : MonoBehaviour, IDamageable
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+
+        if (visual != null)
+            sr = visual.GetComponent<SpriteRenderer>();
+        else
+            sr = GetComponentInChildren<SpriteRenderer>();
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
@@ -130,11 +159,17 @@ public class BossVislumbra : MonoBehaviour, IDamageable
 
         vidaAtual = vidaMaxima;
 
-        if (colliderMao != null)
-            colliderMao.enabled = false;
+        // Boss flutua — sem gravidade
+        if (rb != null)
+        {
+            rb.gravityScale = 0f;
+            rb.freezeRotation = true;
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        }
 
-        if (indicadorCorte != null)
-            indicadorCorte.SetActive(false);
+        // Desativa collider físico inicialmente
+        if (col != null)
+            col.enabled = false;
     }
 
     // =============================================
@@ -144,11 +179,9 @@ public class BossVislumbra : MonoBehaviour, IDamageable
     private void Start()
     {
         BuscarPlayer();
-
-        if (mao != null)
-            posOriginalMao = mao.localPosition;
-
         ValidarReferencias();
+
+        posicaoOriginal = transform.position;
 
         StartCoroutine(CicloDeAtaques());
     }
@@ -159,14 +192,16 @@ public class BossVislumbra : MonoBehaviour, IDamageable
 
     private void ValidarReferencias()
     {
-        if (corteA == null) Debug.LogError("[BossVislumbra] ⚠️ Corte A não atribuído!");
-        if (corteB == null) Debug.LogError("[BossVislumbra] ⚠️ Corte B não atribuído!");
-        if (corteC == null) Debug.LogError("[BossVislumbra] ⚠️ Corte C não atribuído!");
-        if (colliderMao == null) Debug.LogError("[BossVislumbra] ⚠️ Collider da Mão não atribuído!");
-        if (projetilPrefab == null) Debug.LogWarning("[BossVislumbra] ⚠️ Projetil Prefab não atribuído!");
-        if (indicadorCorte == null) Debug.LogWarning("[BossVislumbra] ⚠️ Indicador de Corte não atribuído!");
+        if (spawnA == null) Debug.LogError("[BossFase3] ⚠️ SpawnA não atribuído!");
+        if (spawnB == null) Debug.LogError("[BossFase3] ⚠️ SpawnB não atribuído!");
+        if (pontoAtaqueA == null) Debug.LogError("[BossFase3] ⚠️ Ponto Ataque A não atribuído!");
+        if (pontoAtaqueB == null) Debug.LogError("[BossFase3] ⚠️ Ponto Ataque B não atribuído!");
+        if (pontoAtaqueC == null) Debug.LogError("[BossFase3] ⚠️ Ponto Ataque C não atribuído!");
+        if (centroArena == null) Debug.LogError("[BossFase3] ⚠️ Centro da Arena não atribuído!");
+        if (ondaPrefab == null) Debug.LogWarning("[BossFase3] ⚠️ Onda Prefab não atribuído!");
+        if (projetilPrefab == null) Debug.LogWarning("[BossFase3] ⚠️ Projetil Prefab não atribuído!");
 
-        Debug.Log($"[BossVislumbra] ✅ Boss iniciado | Vida: {vidaAtual}/{vidaMaxima}");
+        Debug.Log($"[BossFase3] ✅ Boss Fase 3 iniciado | Vida: {vidaAtual}/{vidaMaxima}");
     }
 
     // =============================================
@@ -175,231 +210,112 @@ public class BossVislumbra : MonoBehaviour, IDamageable
 
     private IEnumerator CicloDeAtaques()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         while (!morto)
         {
             cicloAtual++;
 
-            // A cada 3 ciclos faz Bullet Hell, senão faz Soco
+            // Alterna: Onda → Onda → BulletHell → cai → repete
             TipoAtaque proximo = (cicloAtual % 3 == 0)
                 ? TipoAtaque.BulletHell
-                : TipoAtaque.Soco;
+                : TipoAtaque.Onda;
 
             if (debugLogs)
-                Debug.Log($"[BossVislumbra] 🔄 Ciclo {cicloAtual} — Ataque: {proximo}");
+                Debug.Log($"[BossFase3] 🔄 Ciclo {cicloAtual} — Ataque: {proximo}");
 
-            if (proximo == TipoAtaque.Soco)
-                yield return StartCoroutine(SequenciaSoco());
+            if (proximo == TipoAtaque.Onda)
+                yield return StartCoroutine(SequenciaOnda());
             else
                 yield return StartCoroutine(SequenciaBulletHell());
 
-            yield return new WaitForSeconds(1f);
+            // Após cada ciclo completo (3 ataques) — cai e fica vulnerável
+            if (cicloAtual % 3 == 0)
+                yield return StartCoroutine(SequenciaVulneravel());
+
+            yield return new WaitForSeconds(tempoEntreAtaques);
         }
     }
 
     // =============================================
-    // SEQUÊNCIA: SOCO
+    // SEQUÊNCIA: ONDA
     // =============================================
 
-    private IEnumerator SequenciaSoco()
+    private IEnumerator SequenciaOnda()
     {
-        // 1. Escolhe o corte
-        corteEscolhido = EscolherCorte();
-        Transform corteAlvo = ObterCorte(corteEscolhido);
+        estado = EstadoBoss.AtaqueOnda;
+
+        if (animator != null)
+            animator.SetTrigger("Onda");
+
+        // Escolhe aleatoriamente SpawnA ou SpawnB
+        bool sairDeA = Random.value > 0.5f;
+        Transform spawnOrigem = sairDeA ? spawnA : spawnB;
+        Transform spawnDestino = sairDeA ? spawnB : spawnA;
 
         if (debugLogs)
-            Debug.Log($"[BossVislumbra] 👊 Soco no corte: {NomeCorte(corteEscolhido)}");
+            Debug.Log($"[BossFase3] 🌊 Onda saindo de {(sairDeA ? "SpawnA" : "SpawnB")} → {(sairDeA ? "SpawnB" : "SpawnA")}");
 
-        // 2. Mostra indicador no corte escolhido
-        if (indicadorCorte != null && corteAlvo != null)
+        // Spawna as ondas com intervalo
+        for (int i = 0; i < quantidadeOndas; i++)
         {
-            indicadorCorte.transform.position = corteAlvo.position;
-            indicadorCorte.SetActive(true);
+            SpawnarOnda(spawnOrigem, spawnDestino);
+
+            if (i < quantidadeOndas - 1)
+                yield return new WaitForSeconds(intervaloEntreOndas);
         }
 
-        if (somAviso != null && audioSource != null)
-            audioSource.PlayOneShot(somAviso);
+        // Espera as ondas atravessarem a arena
+        float larguraArena = spawnA != null && spawnB != null
+            ? Vector2.Distance(spawnA.position, spawnB.position)
+            : 20f;
 
-        if (animator != null)
-            animator.SetTrigger("Preparando");
+        float tempoTraverssia = larguraArena / velocidadeOnda + 0.5f;
+        yield return new WaitForSeconds(tempoTraverssia);
 
-        estado = EstadoBoss.PreparandoSoco;
-
-        // 3. Espera o aviso (tempo para o player esquivar)
-        yield return new WaitForSeconds(tempoAvisoSoco);
-
-        // 4. Esconde indicador e prepara o soco
-        if (indicadorCorte != null)
-            indicadorCorte.SetActive(false);
-
-        yield return new WaitForSeconds(tempoPreparacaoSoco);
-
-        // 5. EXECUTA O SOCO
-        estado = EstadoBoss.Socando;
-
-        if (animator != null)
-            animator.SetTrigger("Socando");
-
-        if (somSoco != null && audioSource != null)
-            audioSource.PlayOneShot(somSoco);
-
-        // Move a mão para o corte
-        if (mao != null && corteAlvo != null)
-            yield return StartCoroutine(MoverMaoParaCorte(corteAlvo.position));
-
-        // 6. Verifica se o player tomou dano
-        VerificarDanoSoco(corteAlvo);
-
-        yield return new WaitForSeconds(tempoDuracaoSoco);
-
-        // 7. Mão volta — Boss fica vulnerável
-        if (mao != null)
-            yield return StartCoroutine(MoverMaoDeVolta());
-
-        // 8. Abre vulnerabilidade
-        estado = EstadoBoss.VulneravelPosSoco;
-        AbrirVulnerabilidade();
-
-        yield return new WaitForSeconds(tempoVulneravelAposSoco);
-
-        // 9. Fecha vulnerabilidade
-        FecharVulnerabilidade();
         estado = EstadoBoss.Idle;
     }
 
     // =============================================
-    // VERIFICAR DANO DO SOCO
+    // SPAWNAR ONDA
     // =============================================
 
-    private void VerificarDanoSoco(Transform corteAlvo)
+    private void SpawnarOnda(Transform origem, Transform destino)
     {
-        if (player == null || corteAlvo == null) return;
+        if (ondaPrefab == null || origem == null || destino == null) return;
 
-        // Verifica se o player está no corte atacado
-        int cortePlayer = ObterCorteDoPlayer();
+        GameObject onda = Instantiate(
+            ondaPrefab,
+            origem.position,
+            Quaternion.identity
+        );
 
-        if (debugLogs)
-            Debug.Log($"[BossVislumbra] Player no corte: {NomeCorte(cortePlayer)} | Soco no corte: {NomeCorte(corteEscolhido)}");
-
-        if (cortePlayer == corteEscolhido)
+        // Passa os dados para o script da onda
+        OndaBoss ondaScript = onda.GetComponent<OndaBoss>();
+        if (ondaScript != null)
         {
-            // Player tomou o soco!
-            if (playerController != null)
-            {
-                playerController.TakeDamage(danoSoco, gameObject);
-
-                // Empurra o player para o corte oposto
-                EmpurrarPlayer();
-
-                if (debugLogs)
-                    Debug.Log($"[BossVislumbra] 💥 Player tomou soco! Dano: {danoSoco}");
-            }
-
-            if (efeitoImpacto != null)
-                Instantiate(efeitoImpacto, corteAlvo.position, Quaternion.identity);
+            ondaScript.Inicializar(
+                destino.position,
+                velocidadeOnda,
+                danoOnda
+            );
         }
         else
         {
-            if (debugLogs)
-                Debug.Log("[BossVislumbra] 🧍 Player esquivou do soco!");
-        }
-    }
-
-    // =============================================
-    // EMPURRAR PLAYER
-    // =============================================
-
-    private void EmpurrarPlayer()
-    {
-        if (player == null) return;
-
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        if (rbPlayer == null) return;
-
-        // Empurra na direção oposta ao boss
-        Vector2 direcao = (player.position - transform.position).normalized;
-        direcao.y = 0.3f; // leve impulso para cima
-        rbPlayer.AddForce(direcao * forcaEmpurraoSoco, ForceMode2D.Impulse);
-
-        if (debugLogs)
-            Debug.Log($"[BossVislumbra] ↗️ Player empurrado com força {forcaEmpurraoSoco}");
-    }
-
-    // =============================================
-    // MOVIMENTO DA MÃO
-    // =============================================
-
-    private IEnumerator MoverMaoParaCorte(Vector3 destino)
-    {
-        if (mao == null) yield break;
-
-        float duracao = 0.15f;
-        float tempo = 0f;
-        Vector3 origem = mao.position;
-
-        while (tempo < duracao)
-        {
-            tempo += Time.deltaTime;
-            mao.position = Vector3.Lerp(origem, destino, tempo / duracao);
-            yield return null;
+            // Fallback: move por Rigidbody se não tiver script
+            Rigidbody2D rbOnda = onda.GetComponent<Rigidbody2D>();
+            if (rbOnda != null)
+            {
+                Vector2 direcao = (destino.position - origem.position).normalized;
+                rbOnda.linearVelocity = direcao * velocidadeOnda;
+            }
         }
 
-        mao.position = destino;
-    }
-
-    private IEnumerator MoverMaoDeVolta()
-    {
-        if (mao == null) yield break;
-
-        float duracao = 0.3f;
-        float tempo = 0f;
-        Vector3 origem = mao.position;
-        Vector3 destino = transform.TransformPoint(posOriginalMao);
-
-        while (tempo < duracao)
-        {
-            tempo += Time.deltaTime;
-            mao.position = Vector3.Lerp(origem, destino, tempo / duracao);
-            yield return null;
-        }
-
-        mao.localPosition = posOriginalMao;
-    }
-
-    // =============================================
-    // VULNERABILIDADE
-    // =============================================
-
-    private void AbrirVulnerabilidade()
-    {
-        vulneravel = true;
-
-        if (colliderMao != null)
-            colliderMao.enabled = true;
-
-        if (somVulneravel != null && audioSource != null)
-            audioSource.PlayOneShot(somVulneravel);
-
-        if (animator != null)
-            animator.SetBool("Vulneravel", true);
+        if (somOnda != null && audioSource != null)
+            audioSource.PlayOneShot(somOnda);
 
         if (debugLogs)
-            Debug.Log("[BossVislumbra] 🟢 Mão ABERTA — Boss vulnerável!");
-    }
-
-    private void FecharVulnerabilidade()
-    {
-        vulneravel = false;
-
-        if (colliderMao != null)
-            colliderMao.enabled = false;
-
-        if (animator != null)
-            animator.SetBool("Vulneravel", false);
-
-        if (debugLogs)
-            Debug.Log("[BossVislumbra] 🔴 Mão FECHADA — Boss invulnerável!");
+            Debug.Log($"[BossFase3] 🌊 Onda spawnada em {origem.name} → {destino.name}");
     }
 
     // =============================================
@@ -408,168 +324,209 @@ public class BossVislumbra : MonoBehaviour, IDamageable
 
     private IEnumerator SequenciaBulletHell()
     {
-        estado = EstadoBoss.BulletHell;
+        estado = EstadoBoss.AtaqueBulletHell;
+
+        // Escolhe um dos 3 pontos aleatoriamente
+        int pontoEscolhido = Random.Range(0, 3);
+        Transform pontoAtaque = ObterPontoAtaque(pontoEscolhido);
 
         if (debugLogs)
-            Debug.Log("[BossVislumbra] 🌀 Iniciando Bullet Hell!");
-
-        if (somBulletHell != null && audioSource != null)
-            audioSource.PlayOneShot(somBulletHell);
+            Debug.Log($"[BossFase3] 💥 Bullet Hell no ponto: {NomePonto(pontoEscolhido)}");
 
         if (animator != null)
             animator.SetTrigger("BulletHell");
 
-        float tempoDecorrido = 0f;
-        int ondaAtual = 0;
+        if (somBulletHell != null && audioSource != null)
+            audioSource.PlayOneShot(somBulletHell);
 
-        while (tempoDecorrido < tempoBulletHell && !morto)
+        // Dispara múltiplas ondas de projeteis do ponto escolhido
+        for (int i = 0; i < ondasBulletHell; i++)
         {
-            // Alterna entre leque e círculo
-            if (ondaAtual % 2 == 0)
-                DispararLeque();
-            else
-                DispararCirculo();
-
-            ondaAtual++;
-            lequeInvertido = !lequeInvertido;
-
-            yield return new WaitForSeconds(intervaloOndas);
-            tempoDecorrido += intervaloOndas;
+            DispararLequeDoNponto(pontoAtaque);
+            yield return new WaitForSeconds(intervaloOndasBulletHell);
         }
+
+        estado = EstadoBoss.Idle;
+    }
+
+    // =============================================
+    // DISPARAR LEQUE DO PONTO
+    // =============================================
+
+    private void DispararLequeDoNponto(Transform ponto)
+    {
+        if (projetilPrefab == null || ponto == null || player == null) return;
+
+        Vector2 direcaoBase = ((Vector2)player.position - (Vector2)ponto.position).normalized;
+
+        float anguloInicio = -anguloEspalhamento / 2f;
+        float passo = quantidadeProjeteis > 1
+            ? anguloEspalhamento / (quantidadeProjeteis - 1)
+            : 0f;
+
+        for (int i = 0; i < quantidadeProjeteis; i++)
+        {
+            float angulo = anguloInicio + passo * i;
+            Vector2 dir = RotacionarVetor(direcaoBase, angulo);
+
+            GameObject proj = Instantiate(
+                projetilPrefab,
+                ponto.position,
+                Quaternion.identity
+            );
+
+            Rigidbody2D rbProj = proj.GetComponent<Rigidbody2D>();
+            if (rbProj != null)
+                rbProj.linearVelocity = dir * velocidadeProjetil;
+
+            float anguloRot = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            proj.transform.rotation = Quaternion.AngleAxis(anguloRot, Vector3.forward);
+        }
+
+        if (debugLogs)
+            Debug.Log($"[BossFase3] 🔥 Leque de {quantidadeProjeteis} projeteis disparado de {ponto.name}");
+    }
+
+    // =============================================
+    // SEQUÊNCIA: VULNERÁVEL (CAI NO CENTRO)
+    // =============================================
+
+    private IEnumerator SequenciaVulneravel()
+    {
+        estado = EstadoBoss.Caindo;
+
+        if (debugLogs)
+            Debug.Log("[BossFase3] ⬇️ Boss caindo para o centro!");
+
+        if (somQueda != null && audioSource != null)
+            audioSource.PlayOneShot(somQueda);
+
+        if (animator != null)
+            animator.SetTrigger("Caindo");
+
+        yield return new WaitForSeconds(tempoPreparacaoQueda);
+
+        // Move o boss suavemente até o centro
+        yield return StartCoroutine(MoverParaCentro());
+
+        // Ativa collider físico para o player poder bater
+        if (col != null)
+            col.enabled = true;
+
+        // Fica vulnerável
+        vulneravel = true;
+
+        if (sr != null)
+            sr.color = corVulneravel;
+
+        if (somVulneravel != null && audioSource != null)
+            audioSource.PlayOneShot(somVulneravel);
+
+        if (animator != null)
+            animator.SetTrigger("Vulneravel");
+
+        estado = EstadoBoss.Vulneravel;
+
+        if (debugLogs)
+            Debug.Log($"[BossFase3] 🟢 VULNERÁVEL por {duracaoVulneravel}s!");
+
+        yield return new WaitForSeconds(duracaoVulneravel);
+
+        // Fecha vulnerabilidade e volta para posição original
+        FecharVulnerabilidade();
+
+        yield return StartCoroutine(VoltarParaPosicaoOriginal());
 
         estado = EstadoBoss.Idle;
 
         if (debugLogs)
-            Debug.Log("[BossVislumbra] ✅ Bullet Hell encerrado!");
+            Debug.Log("[BossFase3] 🦋 Boss voltou — ciclo reiniciando!");
     }
 
     // =============================================
-    // PADRÃO: LEQUE
+    // MOVER PARA CENTRO
     // =============================================
 
-    private void DispararLeque()
+    private IEnumerator MoverParaCentro()
     {
-        if (projetilPrefab == null || player == null) return;
+        if (centroArena == null) yield break;
 
-        Vector3 origem = pontoDisparo != null
-            ? pontoDisparo.position
-            : transform.position;
+        Vector3 origem = transform.position;
+        Vector3 destino = centroArena.position;
+        float duracao = Vector3.Distance(origem, destino) / velocidadeQueda;
+        float tempo = 0f;
 
-        Vector2 direcaoBase = ((Vector2)player.position - (Vector2)origem).normalized;
-
-        float anguloInicio = -anguloLeque / 2f;
-        float passo = quantidadeLeque > 1
-            ? anguloLeque / (quantidadeLeque - 1)
-            : 0f;
-
-        if (lequeInvertido)
-            anguloInicio = -anguloInicio;
-
-        for (int i = 0; i < quantidadeLeque; i++)
+        while (tempo < duracao)
         {
-            float angulo = anguloInicio + passo * i;
-            if (lequeInvertido) angulo = -angulo;
-
-            Vector2 dir = RotacionarVetor(direcaoBase, angulo);
-            SpawnarProjetil(origem, dir);
+            tempo += Time.deltaTime;
+            transform.position = Vector3.Lerp(origem, destino, tempo / duracao);
+            yield return null;
         }
 
-        if (debugLogs)
-            Debug.Log($"[BossVislumbra] 🌊 Leque disparado ({quantidadeLeque} projeteis) | Invertido: {lequeInvertido}");
+        transform.position = destino;
     }
 
     // =============================================
-    // PADRÃO: CÍRCULO
+    // VOLTAR PARA POSIÇÃO ORIGINAL
     // =============================================
 
-    private void DispararCirculo()
+    private IEnumerator VoltarParaPosicaoOriginal()
     {
-        if (projetilPrefab == null) return;
+        Vector3 origem = transform.position;
+        Vector3 destino = posicaoOriginal;
+        float duracao = 0.8f;
+        float tempo = 0f;
 
-        Vector3 origem = pontoDisparo != null
-            ? pontoDisparo.position
-            : transform.position;
+        if (animator != null)
+            animator.SetTrigger("Subindo");
 
-        float passo = 360f / quantidadeCirculo;
-
-        for (int i = 0; i < quantidadeCirculo; i++)
+        while (tempo < duracao)
         {
-            float angulo = passo * i;
-            Vector2 dir = new Vector2(
-                Mathf.Cos(angulo * Mathf.Deg2Rad),
-                Mathf.Sin(angulo * Mathf.Deg2Rad)
-            );
-            SpawnarProjetil(origem, dir);
+            tempo += Time.deltaTime;
+            transform.position = Vector3.Lerp(origem, destino, tempo / duracao);
+            yield return null;
         }
 
+        transform.position = destino;
+    }
+
+    // =============================================
+    // FECHAR VULNERABILIDADE
+    // =============================================
+
+    private void FecharVulnerabilidade()
+    {
+        vulneravel = false;
+
+        if (col != null)
+            col.enabled = false;
+
+        if (sr != null)
+            sr.color = corNormal;
+
+        if (animator != null)
+            animator.SetBool("Vulneravel", false);
+
         if (debugLogs)
-            Debug.Log($"[BossVislumbra] ⭕ Círculo disparado ({quantidadeCirculo} projeteis)");
+            Debug.Log("[BossFase3] 🔴 Vulnerabilidade encerrada!");
     }
 
     // =============================================
-    // SPAWNAR PROJETIL
+    // HELPERS
     // =============================================
 
-    private void SpawnarProjetil(Vector3 origem, Vector2 direcao)
-    {
-        GameObject proj = Instantiate(projetilPrefab, origem, Quaternion.identity);
-
-        Rigidbody2D rbProj = proj.GetComponent<Rigidbody2D>();
-        if (rbProj != null)
-            rbProj.linearVelocity = direcao * velocidadeProjetil;
-
-        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
-        proj.transform.rotation = Quaternion.AngleAxis(angulo, Vector3.forward);
-    }
-
-    // =============================================
-    // HELPERS — CORTES
-    // =============================================
-
-    private int EscolherCorte()
-    {
-        // Tende a escolher o corte onde o player está
-        int cortePlayer = ObterCorteDoPlayer();
-
-        // 70% de chance de escolher o corte do player
-        if (Random.value < 0.7f)
-            return cortePlayer;
-
-        // 30% aleatório
-        return Random.Range(0, 3);
-    }
-
-    private int ObterCorteDoPlayer()
-    {
-        if (player == null) return 0;
-
-        float px = player.position.x;
-
-        float xA = corteA != null ? corteA.position.x : 0f;
-        float xB = corteB != null ? corteB.position.x : 0f;
-        float xC = corteC != null ? corteC.position.x : 0f;
-
-        float distA = Mathf.Abs(px - xA);
-        float distB = Mathf.Abs(px - xB);
-        float distC = Mathf.Abs(px - xC);
-
-        if (distA <= distB && distA <= distC) return 0;
-        if (distB <= distA && distB <= distC) return 1;
-        return 2;
-    }
-
-    private Transform ObterCorte(int indice)
+    private Transform ObterPontoAtaque(int indice)
     {
         return indice switch
         {
-            0 => corteA,
-            1 => corteB,
-            2 => corteC,
-            _ => corteB
+            0 => pontoAtaqueA,
+            1 => pontoAtaqueB,
+            2 => pontoAtaqueC,
+            _ => pontoAtaqueB
         };
     }
 
-    private string NomeCorte(int indice)
+    private string NomePonto(int indice)
     {
         return indice switch
         {
@@ -600,14 +557,14 @@ public class BossVislumbra : MonoBehaviour, IDamageable
         if (!vulneravel)
         {
             if (debugLogs)
-                Debug.Log($"[BossVislumbra] 🛡️ Dano BLOQUEADO — Boss invulnerável | Fonte: {fonte.name}");
+                Debug.Log($"[BossFase3] 🛡️ Dano BLOQUEADO | Estado: {estado} | Fonte: {fonte.name}");
             return;
         }
 
         vidaAtual -= dano;
 
         if (debugLogs)
-            Debug.Log($"[BossVislumbra] 💥 Tomou {dano} de dano | Vida: {vidaAtual}/{vidaMaxima} | Fonte: {fonte.name}");
+            Debug.Log($"[BossFase3] 💥 Tomou {dano} | Vida: {vidaAtual}/{vidaMaxima} | Fonte: {fonte.name}");
 
         if (animator != null)
             animator.SetTrigger("Hit");
@@ -645,8 +602,8 @@ public class BossVislumbra : MonoBehaviour, IDamageable
         foreach (var c in GetComponentsInChildren<Collider2D>())
             c.enabled = false;
 
-        if (indicadorCorte != null)
-            indicadorCorte.SetActive(false);
+        if (sr != null)
+            sr.color = corNormal;
 
         if (efeitoMorte != null)
             Instantiate(efeitoMorte, transform.position, Quaternion.identity);
@@ -657,7 +614,7 @@ public class BossVislumbra : MonoBehaviour, IDamageable
         if (animator != null)
             animator.SetTrigger("Morrer");
 
-        Debug.Log("[BossVislumbra] ☠️ Boss derrotado!");
+        Debug.Log("[BossFase3] ☠️ Boss Fase 3 derrotado!");
 
         yield return new WaitForSeconds(duracaoAnimacaoMorte);
 
@@ -670,18 +627,18 @@ public class BossVislumbra : MonoBehaviour, IDamageable
 
     private void BuscarPlayer()
     {
-        var go = GameObject.FindWithTag(tagPlayer);
+        var go = GameObject.FindWithTag("Player");
         if (go != null)
         {
             player = go.transform;
             playerController = go.GetComponent<PlayerController>();
 
             if (debugLogs)
-                Debug.Log($"[BossVislumbra] ✅ Player encontrado: {go.name}");
+                Debug.Log($"[BossFase3] ✅ Player encontrado: {go.name}");
         }
         else
         {
-            Debug.LogWarning("[BossVislumbra] ⚠️ Player NÃO encontrado!");
+            Debug.LogWarning("[BossFase3] ⚠️ Player NÃO encontrado!");
         }
     }
 
@@ -693,39 +650,48 @@ public class BossVislumbra : MonoBehaviour, IDamageable
     {
         if (!mostrarGizmos) return;
 
-        // Cortes
-        Color[] coresCortes = { Color.red, Color.green, Color.blue };
-        Transform[] cortes = { corteA, corteB, corteC };
-        string[] nomes = { "A", "B", "C" };
-
-        for (int i = 0; i < cortes.Length; i++)
+        // SpawnA e SpawnB — linha da onda
+        if (spawnA != null && spawnB != null)
         {
-            if (cortes[i] == null) continue;
-
-            Gizmos.color = coresCortes[i];
-            Gizmos.DrawWireSphere(cortes[i].position, 0.5f);
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(spawnA.position, spawnB.position);
+            Gizmos.DrawWireSphere(spawnA.position, 0.4f);
+            Gizmos.DrawWireSphere(spawnB.position, 0.4f);
 
 #if UNITY_EDITOR
-            UnityEditor.Handles.color = coresCortes[i];
-            UnityEditor.Handles.Label(
-                cortes[i].position + Vector3.up * 0.7f,
-                $"Corte {nomes[i]}"
-            );
+            UnityEditor.Handles.color = Color.cyan;
+            UnityEditor.Handles.Label(spawnA.position + Vector3.up * 0.6f, "SpawnA");
+            UnityEditor.Handles.Label(spawnB.position + Vector3.up * 0.6f, "SpawnB");
 #endif
         }
 
-        // Mão
-        if (mao != null)
+        // Pontos de ataque Bullet Hell
+        Color[] cores = { Color.red, Color.green, Color.blue };
+        Transform[] pontos = { pontoAtaqueA, pontoAtaqueB, pontoAtaqueC };
+        string[] nomes = { "PontoA", "PontoB", "PontoC" };
+
+        for (int i = 0; i < pontos.Length; i++)
         {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(mao.position, 0.4f);
+            if (pontos[i] == null) continue;
+            Gizmos.color = cores[i];
+            Gizmos.DrawWireSphere(pontos[i].position, 0.4f);
+
+#if UNITY_EDITOR
+            UnityEditor.Handles.color = cores[i];
+            UnityEditor.Handles.Label(pontos[i].position + Vector3.up * 0.6f, nomes[i]);
+#endif
         }
 
-        // Ponto de disparo
-        if (pontoDisparo != null)
+        // Centro da arena
+        if (centroArena != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(pontoDisparo.position, 0.25f);
+            Gizmos.DrawWireSphere(centroArena.position, 0.5f);
+
+#if UNITY_EDITOR
+            UnityEditor.Handles.color = Color.yellow;
+            UnityEditor.Handles.Label(centroArena.position + Vector3.up * 0.7f, "Centro");
+#endif
         }
 
         // Estado em runtime
