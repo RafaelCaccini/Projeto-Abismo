@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 
-public class PiranhaEnemy : MonoBehaviour
+public class PiranhaEnemy : MonoBehaviour, IDamageable
 {
     // =============================================
     // MOVIMENTO
@@ -49,6 +50,13 @@ public class PiranhaEnemy : MonoBehaviour
     [SerializeField] private bool gizmos = true;
 
     // =============================================
+    // VISUAL (configurável pelo Inspector)
+    // =============================================
+    [Header("Visual")]
+    [Tooltip("Arraste aqui o SpriteRenderer que representa o visual do inimigo (opcional).")]
+    [SerializeField] private SpriteRenderer visualRenderer;
+
+    // =============================================
     // REFERÊNCIAS
     // =============================================
 
@@ -59,6 +67,10 @@ public class PiranhaEnemy : MonoBehaviour
     private float proximoDano;
 
     private bool perseguindo;
+    private bool facingRight = true; // controla direção visual
+
+    // estado interno de morte
+    private bool morto = false;
 
     // =============================================
     // AWAKE
@@ -67,6 +79,27 @@ public class PiranhaEnemy : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        // usa o SpriteRenderer configurado no Inspector; se vazio busca automaticamente
+        if (visualRenderer == null)
+            visualRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (visualRenderer == null)
+        {
+            visualRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        if (visualRenderer == null)
+        {
+            Debug.LogWarning("[Piranha] SpriteRenderer não encontrado! Verifique o GameObject ou arraste no Inspector.");
+        }
+
+        // garante que o objeto tenha tag "Enemy" (facilita interações como ParedeAntiEnemy / Lampião)
+        if (!gameObject.CompareTag("Enemy"))
+        {
+            // só seta se não estiver marcado (evita sobrescrever configuração intencional)
+            gameObject.tag = "Enemy";
+        }
     }
 
     // =============================================
@@ -75,6 +108,8 @@ public class PiranhaEnemy : MonoBehaviour
 
     private void Update()
     {
+        if (morto) return;
+
         ProcurarPlayer();
 
         if (player == null)
@@ -186,7 +221,8 @@ public class PiranhaEnemy : MonoBehaviour
             transform.position += (Vector3)movimento;
         }
 
-        VirarParaPlayer();
+        // ATUALIZA FACING UMA VEZ SE A DIREÇÃO MUDA
+        AtualizarFacing(direcao.x);
     }
 
     // =============================================
@@ -206,27 +242,25 @@ public class PiranhaEnemy : MonoBehaviour
     }
 
     // =============================================
-    // VIRAR
+    // ATUALIZAR FACING (usando SpriteRenderer.flipX)
     // =============================================
 
-    private void VirarParaPlayer()
+    private void AtualizarFacing(float direcaoX)
     {
-        if (player == null)
+        if (visualRenderer == null)
             return;
 
-        float direcaoX = player.position.x - transform.position.x;
-
-        if (Mathf.Abs(direcaoX) < 0.01f)
-            return;
-
-        Vector3 escala = transform.localScale;
-
-        if (direcaoX > 0f)
-            escala.x = Mathf.Abs(escala.x);
-        else
-            escala.x = -Mathf.Abs(escala.x);
-
-        transform.localScale = escala;
+        // Apenas atualiza se a direção mudou significativamente
+        if (direcaoX > 0.1f && !facingRight)
+        {
+            facingRight = true;
+            visualRenderer.flipX = false;
+        }
+        else if (direcaoX < -0.1f && facingRight)
+        {
+            facingRight = false;
+            visualRenderer.flipX = true;
+        }
     }
 
     // =============================================
@@ -265,28 +299,63 @@ public class PiranhaEnemy : MonoBehaviour
     }
 
     // =============================================
-    // RECEBER DANO
+    // RECEBER DANO - implementação correta de IDamageable
     // =============================================
-
-    public void TakeDamage(int quantidade)
+    public void TakeDamage(int amount, GameObject source)
     {
-        if (quantidade <= 0)
-            return;
+        if (morto) return;
+        if (amount <= 0) return;
 
-        vida -= quantidade;
+        vida -= amount;
 
         if (logs)
         {
-            Debug.Log(
-                $"[Piranha] Recebeu {quantidade} de dano. " +
-                $"Vida: {vida}"
-            );
+            Debug.Log($"[Piranha] Recebeu {amount} de dano de {source?.name ?? "desconhecido"}. Vida: {vida}");
         }
 
         if (vida <= 0)
         {
-            Morrer();
+            StartCoroutine(DieRoutine());
         }
+    }
+
+    // Mantive sobrecarga compatível caso algo chame sem source
+    public void TakeDamage(int amount)
+    {
+        TakeDamage(amount, null);
+    }
+
+    // rotina de morte para limpar estado e evitar "sprite sumindo"
+    private IEnumerator DieRoutine()
+    {
+        if (morto) yield break;
+        morto = true;
+
+        // interrompe rotinas de movimento/dano
+        StopAllCoroutines();
+
+        // pára física
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        // desativa colliders (inclui filhos) para evitar interação posterior
+        foreach (var c in GetComponentsInChildren<Collider2D>())
+        {
+            if (c != null) c.enabled = false;
+        }
+
+        // opcional: desativa renderer para garantir que não "some" por hierarquia mal posicionada
+        if (visualRenderer != null)
+            visualRenderer.enabled = false;
+
+        // pequena espera para animação/efeitos (se houver)
+        yield return new WaitForSeconds(0.05f);
+
+        Destroy(gameObject);
     }
 
     // =============================================
@@ -295,10 +364,8 @@ public class PiranhaEnemy : MonoBehaviour
 
     private void Morrer()
     {
-        if (logs)
-            Debug.Log("[Piranha] Morreu.");
-
-        Destroy(gameObject);
+        // compatibilidade: mantém método antigo (se algo chamar)
+        StartCoroutine(DieRoutine());
     }
 
     // =============================================

@@ -2500,6 +2500,7 @@ MonoBehaviour:
     m_Bits: 0
   logs: 0
   gizmos: 1
+  visualRenderer: {fileID: 1997490178}
 --- !u!4 &1102224697
 Transform:
   m_ObjectHideFlags: 0
@@ -3709,11 +3710,11 @@ PrefabInstance:
       objectReference: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 817.8
+      value: 888.2
       objectReference: {fileID: 0}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -157.9
+      value: -242.4
       objectReference: {fileID: 0}
     - target: {fileID: 7642753771900838465, guid: 247cc2fca1cdde941a80fe50be34283f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5703,7 +5704,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 6
 --- !u!212 &1997490178
 SpriteRenderer:
   m_ObjectHideFlags: 0
