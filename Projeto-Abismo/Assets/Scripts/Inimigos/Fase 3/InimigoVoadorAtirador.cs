@@ -1,33 +1,61 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 // =========================================================
-// SCRIPT ⁄NICO DO INIMIGO VOADOR
+// INIMIGO VOADOR
 // =========================================================
-public class InimigoVoador : MonoBehaviour
+public class InimigoVoador : MonoBehaviour, IDamageable
 {
-    [Header("ConfiguraÁıes do Disparo")]
+    // =============================================
+    // DISPARO
+    // =============================================
+
+    [Header("Disparo")]
     [SerializeField] private GameObject prefabProjetil;
     [SerializeField] private Transform pontoDisparo;
     [SerializeField] private float intervaloAtaque = 2f;
     [SerializeField] private float velocidadeProjetil = 10f;
     [SerializeField] private int danoProjetil = 1;
 
-    [Header("DetecÁ„o")]
+    // =============================================
+    // DETEC√á√ÉO
+    // =============================================
+
+    [Header("Detec√ß√£o")]
     [SerializeField] private float alcanceVisao = 12f;
+
+    // =============================================
+    // VIDA
+    // =============================================
 
     [Header("Vida")]
     [SerializeField] private int vidaMaxima = 1;
-    [SerializeField] private int danoDash = 1;
+    [SerializeField] private int danoPorContato = 1;
+
+    // =============================================
+    // DEBUG
+    // =============================================
+
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = true;
+
+    // =============================================
+    // ESTADO INTERNO
+    // =============================================
 
     private int vidaAtual;
     private Transform playerTransform;
     private float cronometroAtaque;
+    private bool morto = false;
+
+    // =============================================
+    // START
+    // =============================================
 
     private void Start()
     {
         vidaAtual = vidaMaxima;
 
-        // Encontra o Player na cena pela Tag
+        // Busca o player
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
         {
@@ -35,27 +63,36 @@ public class InimigoVoador : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[{name}] Nenhum GameObject com a tag 'Player' foi encontrado na cena. O inimigo n„o vai atirar atÈ isso ser corrigido.");
+            Debug.LogWarning($"[{name}] Player n√£o encontrado! Verifique a tag 'Player'.");
         }
 
-        // Tenta achar o PontoDisparoAtirador nos filhos se n„o for atribuÌdo no Inspector
+        // Busca ponto de disparo automaticamente se n√£o atribu√≠do
         if (pontoDisparo == null)
         {
-            Transform filho = transform.Find("PontoDisparoAtirador");
+            Transform filho = transform.Find("PontoDisparo");
             pontoDisparo = filho != null ? filho : transform;
+
+            if (debugLogs)
+                Debug.Log($"[{name}] PontoDisparo auto-atribu√≠do: {pontoDisparo.name}");
         }
 
+        // Valida prefab
         if (prefabProjetil == null)
-        {
-            Debug.LogWarning($"[{name}] O campo 'Prefab Projetil' est· vazio no Inspector. Arraste o prefab do tiro para esse campo.");
-        }
+            Debug.LogError($"[{name}] ‚ö†Ô∏è Prefab Projetil N√ÉO atribu√≠do no Inspector!");
+        else if (debugLogs)
+            Debug.Log($"[{name}] ‚úÖ Iniciado | Vida: {vidaAtual} | Alcance: {alcanceVisao}");
     }
+
+    // =============================================
+    // UPDATE
+    // =============================================
 
     private void Update()
     {
+        if (morto) return;
         if (playerTransform == null) return;
+        if (prefabProjetil == null) return;
 
-        // Dist‚ncia atÈ o jogador
         float distancia = Vector2.Distance(transform.position, playerTransform.position);
 
         if (distancia <= alcanceVisao)
@@ -68,104 +105,194 @@ public class InimigoVoador : MonoBehaviour
                 cronometroAtaque = 0f;
             }
         }
+        else
+        {
+            // Reseta o timer quando o player sai do alcance
+            cronometroAtaque = 0f;
+        }
     }
+
+    // =============================================
+    // ATIRAR
+    // =============================================
 
     private void Atirar()
     {
-        if (prefabProjetil == null) return; // j· avisado no Start()
+        if (prefabProjetil == null || playerTransform == null) return;
 
-        // DireÁ„o reta apontando para a posiÁ„o atual do Player
-        Vector2 direcao = (playerTransform.position - pontoDisparo.position).normalized;
+        Vector3 origem = pontoDisparo != null ? pontoDisparo.position : transform.position;
+        Vector2 direcao = ((Vector2)playerTransform.position - (Vector2)origem).normalized;
 
-        // Instancia o Prefab do tiro
-        GameObject projetilObj = Instantiate(prefabProjetil, pontoDisparo.position, Quaternion.identity);
+        // Rotaciona o projetil para apontar na dire√ß√£o certa
+        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+        Quaternion rotacao = Quaternion.AngleAxis(angulo, Vector3.forward);
 
-        // Adiciona e configura o componente de movimento do tiro no prÛprio objeto instanciado
-        ComportamentoProjetil tiro = projetilObj.GetComponent<ComportamentoProjetil>();
-        if (tiro == null)
+        GameObject projetilObj = Instantiate(prefabProjetil, origem, rotacao);
+
+        // Tenta pegar o script do prefab
+        ProjetilInimigoVoador tiro = projetilObj.GetComponent<ProjetilInimigoVoador>();
+
+        if (tiro != null)
         {
-            tiro = projetilObj.AddComponent<ComportamentoProjetil>();
+            tiro.Inicializar(direcao, velocidadeProjetil, danoProjetil);
+        }
+        else
+        {
+            // Fallback: usa Rigidbody2D se n√£o tiver o script
+            Rigidbody2D rb = projetilObj.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = direcao * velocidadeProjetil;
+            }
+            else
+            {
+                Debug.LogError($"[{name}] ‚ö†Ô∏è Prefab do projetil n√£o tem ProjetilInimigoVoador nem Rigidbody2D!");
+            }
         }
 
-        tiro.Inicializar(direcao, velocidadeProjetil, danoProjetil);
+        if (debugLogs)
+            Debug.Log($"[{name}] üî• Atirou em dire√ß√£o ao player | Dir: {direcao}");
     }
 
-    // =========================================================
-    // DETEC«√O DE MORTE PELO DASH
-    // =========================================================
+    // =============================================
+    // IDamageable ‚Äî recebe dano de qualquer fonte
+    // =============================================
 
-    public void TomarDano(int quantidade = 1)
+    public void TakeDamage(int dano, GameObject fonte)
     {
-        vidaAtual -= quantidade;
+        if (morto) return;
+
+        vidaAtual -= dano;
+
+        if (debugLogs)
+            Debug.Log($"[{name}] üí• Tomou {dano} | Vida: {vidaAtual}/{vidaMaxima} | Fonte: {fonte.name}");
 
         if (vidaAtual <= 0)
-        {
             Morrer();
-        }
     }
+
+    // =============================================
+    // CONTATO COM PLAYER
+    // =============================================
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
-        {
-            PlayerController player = collision.GetComponent<PlayerController>();
+        if (morto) return;
+        if (!collision.CompareTag("Player")) return;
 
-            // O dash agora d· dano em vez de matar na hora ó precisa de v·rios hits conforme a vida
-            if (player != null && player.IsDashing)
-            {
-                TomarDano(danoDash);
-            }
-        }
+        IDamageable player = collision.GetComponent<IDamageable>();
+        if (player == null)
+            player = collision.GetComponentInParent<IDamageable>();
+
+        if (player != null)
+            player.TakeDamage(danoPorContato, gameObject);
     }
+
+    // =============================================
+    // MORTE
+    // =============================================
 
     private void Morrer()
     {
+        morto = true;
+
+        if (debugLogs)
+            Debug.Log($"[{name}] ‚ò†Ô∏è Morreu!");
+
         Destroy(gameObject);
     }
+
+    // =============================================
+    // GIZMOS
+    // =============================================
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, alcanceVisao);
+
+        if (pontoDisparo != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(pontoDisparo.position, 0.15f);
+        }
     }
 }
 
 // =========================================================
-// COMPORTAMENTO INTERNO DO TIRO (Sem arquivo separado)
+// PROJETIL DO INIMIGO VOADOR
+// Coloque esse script no Prefab do projetil
 // =========================================================
-public class ComportamentoProjetil : MonoBehaviour
+public class ProjetilInimigoVoador : MonoBehaviour
 {
+    // =============================================
+    // ESTADO
+    // =============================================
+
     private Vector2 direcao;
     private float velocidade;
     private int dano;
+    private bool inicializado = false;
 
-    public void Inicializar(Vector2 novaDirecao, float novaVelocidade, int novoDano)
+    [SerializeField] private float tempoDeVida = 5f;
+    [SerializeField] private string tagChao = "Ground";
+
+    // =============================================
+    // INICIALIZAR
+    // =============================================
+
+    public void Inicializar(Vector2 direcao, float velocidade, int dano)
     {
-        direcao = novaDirecao;
-        velocidade = novaVelocidade;
-        dano = novoDano;
+        this.direcao = direcao;
+        this.velocidade = velocidade;
+        this.dano = dano;
+        this.inicializado = true;
+
+        // Rotaciona o sprite na dire√ß√£o do movimento
+        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angulo, Vector3.forward);
+
+        // Destr√≥i ap√≥s tempo de vida
+        Destroy(gameObject, tempoDeVida);
     }
+
+    // =============================================
+    // UPDATE ‚Äî move via transform
+    // =============================================
 
     private void Update()
     {
+        if (!inicializado) return;
+
         transform.position += (Vector3)(direcao * velocidade * Time.deltaTime);
     }
 
+    // =============================================
+    // COLIS√ÉO
+    // =============================================
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Ignora o pr√≥prio inimigo
+        if (collision.CompareTag("Enemy")) return;
+
+        // Dano no player
         if (collision.CompareTag("Player"))
         {
-            PlayerController player = collision.GetComponent<PlayerController>();
+            IDamageable player = collision.GetComponent<IDamageable>();
+            if (player == null)
+                player = collision.GetComponentInParent<IDamageable>();
+
             if (player != null)
-            {
                 player.TakeDamage(dano, gameObject);
-            }
 
             Destroy(gameObject);
             return;
         }
 
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Default"))
+        // Destr√≥i ao bater no ch√£o ou parede
+        if (collision.CompareTag(tagChao) ||
+            collision.CompareTag("Wall"))
         {
             Destroy(gameObject);
         }
