@@ -155,6 +155,10 @@ public class InimigoExplosivo : MonoBehaviour, IDamageable
             rb.collisionDetectionMode =
                 CollisionDetectionMode2D.Continuous;
         }
+
+        BuscarPlayer();
+
+        IgnorarColisaoComPlayer();
     }
 
     // =============================================
@@ -169,6 +173,10 @@ public class InimigoExplosivo : MonoBehaviour, IDamageable
         if (player == null)
         {
             BuscarPlayer();
+
+            if (player != null)
+                IgnorarColisaoComPlayer();
+
             return;
         }
 
@@ -183,15 +191,12 @@ public class InimigoExplosivo : MonoBehaviour, IDamageable
                 break;
 
             case Estado.PreparandoExplosao:
-                // A coroutine controla esse estado.
                 break;
 
             case Estado.Explodido:
-                // Nada.
                 break;
 
             case Estado.Morto:
-                // Nada.
                 break;
         }
 
@@ -771,7 +776,49 @@ public class InimigoExplosivo : MonoBehaviour, IDamageable
     // =============================================
     // MORTE POR DANO
     // =============================================
+    // =============================================
+    // IGNORAR COLISÃO COM O PLAYER
+    // =============================================
 
+    private void IgnorarColisaoComPlayer()
+    {
+        if (player == null)
+            return;
+
+        Collider2D[] collidersPlayer =
+            player.GetComponentsInChildren<Collider2D>();
+
+        if (collidersPlayer == null || collidersPlayer.Length == 0)
+            return;
+
+        if (colliders == null || colliders.Length == 0)
+            return;
+
+        foreach (Collider2D colliderInimigo in colliders)
+        {
+            if (colliderInimigo == null)
+                continue;
+
+            foreach (Collider2D colliderPlayer in collidersPlayer)
+            {
+                if (colliderPlayer == null)
+                    continue;
+
+                Physics2D.IgnoreCollision(
+                    colliderInimigo,
+                    colliderPlayer,
+                    true
+                );
+            }
+        }
+
+        if (debugLogs)
+        {
+            Debug.Log(
+                "[InimigoExplosivo] Colisão física com o Player desativada."
+            );
+        }
+    }
     private void MorrerSemExplodir()
     {
         if (morto)
