@@ -1,90 +1,159 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
-
 
 public class MiniBossFase1 : MonoBehaviour, IDamageable
 {
-    [Header("Player")]
-    public Transform jogador;
+    // =============================================
+    // REFERÊNCIAS
+    // =============================================
+
+    [Header("Referências")]
+    [SerializeField] private Transform jogador;
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    // =============================================
+    // ARENA
+    // =============================================
 
     [Header("Arena")]
-    public Transform pontoEsquerda;
-    public Transform pontoDireita;
+    [SerializeField] private Transform pontoA;
+    [SerializeField] private Transform pontoB;
+    [SerializeField] private GameObject paredeEsquerda;
+    [SerializeField] private GameObject paredeDireita;
 
-    [Header("Paredes")]
-    public GameObject paredeEsquerda;
-    public GameObject paredeDireita;
+    // =============================================
+    // TELEPORTE
+    // =============================================
 
-    [Header("Movimento")]
-    public float velocidadePerseguicao = 6f;
-    public float tempoPulo = 0.5f; // duração base de um pulo/arc
-    public float alturaPulo = 1.8f;
+    [Header("Teleporte")]
+    [SerializeField] private float duracaoEfeitoTeleporte = 0.15f;
+    [SerializeField] private GameObject efeitoTeleportePrefab;
+
+    // =============================================
+    // DETECÇÃO
+    // =============================================
 
     [Header("Detecção")]
-    public float alcanceDeteccao = 10f;
+    [SerializeField] private float alcanceDeteccao = 10f;
 
-    [Header("Spikes")]
-    public GameObject prefabSpike;
-    public Transform inicioChao;
-    public Transform fimChao;
-    public Transform inicioTeto;
-    public Transform fimTeto;
-    public int quantidadeSpikes = 6;
-    public float tempoSpike = 2f;
-    public float atrasoAntesPisao = 0.35f; // tempo para animação de pisar antes de spawnar spikes
+    // =============================================
+    // ESPINHOS
+    // =============================================
 
-    [Header("Linha de pulos")]
-    public int pulosVerticaisPorLinha = 3;
-    public int pulosDiagonais = 3;
-    public float intervaloEntrePulos = 0.18f;
-    public float alturaVertical = 2.0f;
-    public float duracaoPulo = 0.45f;
+    [Header("Espinhos")]
+    [SerializeField] private GameObject prefabSpike;
+    [SerializeField] private Transform inicioChao;
+    [SerializeField] private Transform fimChao;
+    [SerializeField] private Transform inicioTeto;
+    [SerializeField] private Transform fimTeto;
+    [SerializeField] private int quantidadeSpikes = 6;
+    [SerializeField] private float tempoSpike = 2f;
+    [SerializeField] private float atrasoAntesPisao = 0.35f;
+
+    // =============================================
+    // PROJETIL
+    // =============================================
 
     [Header("Projetil")]
-    public GameObject prefabProjetil;
-    public Transform pontoTiro; // se nulo, usa a posição do boss
-    public int quantidadeProjetisAtirar = 4;
-    public float intervaloEntreTiros = 0.25f;
-    public float velocidadeProjetil = 8f;
-    public float tempoMoverParaExtremidade = 0.35f; // tempo para ir até a extremidade antes de atirar
+    [SerializeField] private GameObject prefabProjetil;
+    [SerializeField] private Transform pontoTiro;
+    [SerializeField] private int quantidadeProjetisAtirar = 4;
+    [SerializeField] private float intervaloEntreTiros = 0.25f;
+    [SerializeField] private float velocidadeProjetil = 8f;
+
+    // =============================================
+    // CONTATO
+    // =============================================
 
     [Header("Contato")]
-    public int danoAoTocar = 2;
-    public float cooldownDanoContato = 0.6f;
+    [SerializeField] private int danoAoTocar = 2;
+    [SerializeField] private float cooldownDanoContato = 0.6f;
+
+    // =============================================
+    // VIDA
+    // =============================================
 
     [Header("Vida")]
-    public int vidaMaxima = 20;
+    [SerializeField] private int vidaMaxima = 20;
+
+    // =============================================
+    // CICLO DE ATAQUES
+    // =============================================
+
+    [Header("Ciclo de Ataques")]
+    [Tooltip("Tempo entre cada ataque")]
+    [SerializeField] private float intervaloEntreAtaques = 2.5f;
+    [Tooltip("Quantos ataques antes de teleportar para o outro ponto")]
+    [SerializeField] private int ataquesPorPonto = 2;
+
+    // =============================================
+    // PAREDES
+    // =============================================
+
+    [Header("Paredes")]
+    [SerializeField] private float wallEnterMargin = 0.1f;
+    [SerializeField] private float wallReenableDistance = 1.2f;
+
+    // =============================================
+    // DEBUG
+    // =============================================
+
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = true;
+    [SerializeField] private bool mostrarGizmos = true;
+
+    // =============================================
+    // ESTADO INTERNO
+    // =============================================
+
+    private enum EstadoBoss { Idle, Lutando, Atacando, Morto }
+    private EstadoBoss estado = EstadoBoss.Idle;
+
     private int vidaAtual;
+    private bool morto = false;
+    private bool lutaComecou = false;
+    private bool ocupado = false;
+    private bool estaNoPontoA = true;
 
-    // ========================= Paredes controláveis =========================
-    [Header("Paredes - Configuração")]
-    [SerializeField] private float wallEnterMargin = 0.1f; // quanto além do X da parede o player deve ultrapassar para considerar "passou pela parede"
-    [SerializeField] private float wallReenableDistance = 1.2f; // distância a partir da parede para reativar colisão (sair do "raio")
+    private int ataquesNoPontoAtual = 0;
 
-    // estado interno das paredes
+    private Rigidbody2D rb;
+    private Collider2D col;
+    private Vector3 posicaoInicial;
+
+    private Dictionary<Collider2D, float> ultimoDanoPorCollider = new Dictionary<Collider2D, float>();
+
+    // Paredes
+    private WallInfo leftWall;
+    private WallInfo rightWall;
+
+    // =============================================
+    // WALL INFO
+    // =============================================
+
     private class WallInfo
     {
         public GameObject go;
         public Collider2D col;
         public SpriteRenderer sr;
-        public Color originalColor;
-        public bool originalIsTrigger;
-        public bool originalActive;
+        public Color corOriginal;
+        public bool isTriggerOriginal;
         public bool passedThrough = false;
         public bool reenabled = false;
 
         public WallInfo(GameObject g)
         {
             go = g;
-            originalActive = g.activeSelf;
-            col = g != null ? g.GetComponent<Collider2D>() : null;
-            sr = g != null ? g.GetComponent<SpriteRenderer>() : null;
-            if (sr != null) originalColor = sr.color;
-            if (col != null) originalIsTrigger = col.isTrigger;
+            if (g == null) return;
+            col = g.GetComponent<Collider2D>();
+            sr = g.GetComponent<SpriteRenderer>();
+            if (sr != null) corOriginal = sr.color;
+            if (col != null) isTriggerOriginal = col.isTrigger;
         }
 
-        public void MakeTransparentOpen()
+        public void AbrirParaEntrar()
         {
             if (go != null && !go.activeSelf) go.SetActive(true);
             if (sr != null)
@@ -93,419 +162,212 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
                 c.a = 0.35f;
                 sr.color = c;
             }
-            if (col != null)
-            {
-                col.isTrigger = true; // permite atravessar
-            }
+            if (col != null) col.isTrigger = true;
             passedThrough = false;
             reenabled = false;
         }
 
-        public void ReenableCollision()
+        public void ReativarColisao()
         {
-            if (col != null)
-                col.isTrigger = false;
+            if (col != null) col.isTrigger = false;
             if (sr != null)
             {
-                var c = originalColor;
+                var c = corOriginal;
                 c.a = 1f;
                 sr.color = c;
             }
             reenabled = true;
         }
 
-        public void RestoreOriginal()
+        public void Restaurar()
         {
-            if (go != null) go.SetActive(originalActive);
-            if (col != null) col.isTrigger = originalIsTrigger;
-            if (sr != null) sr.color = originalColor;
+            if (col != null) col.isTrigger = isTriggerOriginal;
+            if (sr != null) sr.color = corOriginal;
             passedThrough = false;
             reenabled = false;
         }
     }
 
-    private WallInfo leftWall;
-    private WallInfo rightWall;
+    // =============================================
+    // AWAKE
+    // =============================================
 
-    private bool lutaComecou;
-    private bool morto;
-    private bool ocupado;
-    private bool pulando;
-    private Vector3 posicaoInicial;
-    private Rigidbody2D rb;
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
-    private float tempoUltimoAtaque = 0f;
-
-    // Estados de IA
-    private enum Estado { Idle, Perseguindo, Atacando }
-    private Estado estadoAtual = Estado.Idle;
-
-    // controle de dano por contato para não spammar
-    private Dictionary<Collider2D, float> ultimoDanoPorCollider = new Dictionary<Collider2D, float>();
-
-    // facing
-    private bool facingRight = true;
-
-    void Start()
+    private void Awake()
     {
-        posicaoInicial = transform.position;
         rb = GetComponent<Rigidbody2D>();
-        // Usamos movimento por interpolação (não física) então mantemos gravidade 0
-        // e tornamos o Rigidbody2D Kinematic para evitar que a física interfira
-        // na posição manual via transform.position (que causava o boss "entrar na terra")
-        if (rb != null)
-        {
-            rb.gravityScale = 0;
-            rb.freezeRotation = true;
-            rb.bodyType = RigidbodyType2D.Kinematic;
-        }
+        col = GetComponent<Collider2D>();
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         vidaAtual = vidaMaxima;
 
-        if (jogador == null)
-            jogador = GameObject.FindGameObjectWithTag("Player")?.transform;
-
-        // Inicializa estados das paredes (não altera ativo original aqui)
-        if (paredeEsquerda != null)
-            leftWall = new WallInfo(paredeEsquerda);
-
-        if (paredeDireita != null)
-            rightWall = new WallInfo(paredeDireita);
-
-        // NÃO desativa as paredes aqui — elas serão configuradas quando a luta começar.
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
-        // define facing inicial baseado no sprite atual (assume escala positiva = right)
-        if (spriteRenderer != null)
-            facingRight = spriteRenderer.flipX ? false : true;
+        if (rb != null)
+        {
+            rb.gravityScale = 0f;
+            rb.freezeRotation = true;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
     }
 
-    void Update()
+    // =============================================
+    // START
+    // =============================================
+
+    private void Start()
+    {
+        posicaoInicial = transform.position; // ← usa a posição onde você colocou na cena
+
+        if (jogador == null)
+        {
+            var go = GameObject.FindWithTag("Player");
+            if (go != null) jogador = go.transform;
+        }
+
+        if (paredeEsquerda != null) leftWall = new WallInfo(paredeEsquerda);
+        if (paredeDireita != null) rightWall = new WallInfo(paredeDireita);
+
+        // ← REMOVIDO: TeleportarPara(pontoA.position, false);
+
+        if (debugLogs)
+            Debug.Log($"[MiniBoss] Iniciado em {transform.position} | Vida: {vidaAtual}/{vidaMaxima}");
+    }
+
+    // =============================================
+    // UPDATE
+    // =============================================
+
+    private void Update()
     {
         if (morto) return;
         if (jogador == null) return;
 
         float distancia = Vector2.Distance(transform.position, jogador.position);
 
+        // Inicia a luta
         if (!lutaComecou && distancia <= alcanceDeteccao)
         {
-            lutaComecou = true;
-            AtivarParedes(); // ativa e deixa transparentes/atravessáveis no começo
-            Debug.Log("LUTA INICIADA");
+            IniciarLuta();
         }
 
-        // Se a luta começou, gerencia reativação de colisão das paredes com base no jogador
         if (lutaComecou)
-        {
-            ManageWallsDuringFight();
-        }
-
-        // Gestão de estado
-        switch (estadoAtual)
-        {
-            case Estado.Idle:
-                if (distancia <= alcanceDeteccao)
-                    estadoAtual = Estado.Perseguindo;
-                break;
-
-            case Estado.Perseguindo:
-                MovimentoInteligente();
-                GerenciarAtaques();
-                break;
-
-            case Estado.Atacando:
-                GerenciarAtaques();
-                break;
-        }
+            GerenciarParedes();
     }
 
-    // LateUpdate garante que o boss fique na altura correta (Y = posicaoInicial.y)
-    // quando não está atacando. Atua como proteção contra interferência física
-    // ou qualquer outro fator que possa mover o boss para baixo acidentalmente.
-    void LateUpdate()
-    {
-        if (morto || jogador == null) return;
-        if (estadoAtual == Estado.Atacando) return; // deixa os ataques controlarem o Y
+    // =============================================
+    // INICIAR LUTA
+    // =============================================
 
-        // Corrige Y se driftou por qualquer motivo
-        if (Mathf.Abs(transform.position.y - posicaoInicial.y) > 0.01f)
-        {
-            transform.position = new Vector3(transform.position.x, posicaoInicial.y, transform.position.z);
-        }
+    private void IniciarLuta()
+    {
+        lutaComecou = true;
+        estado = EstadoBoss.Lutando;
+
+        AtivarParedes();
+
+        if (debugLogs)
+            Debug.Log("[MiniBoss] ⚔️ Luta iniciada!");
+
+        StartCoroutine(CicloDeLuta());
     }
 
-    void ManageWallsDuringFight()
+    // =============================================
+    // CICLO DE LUTA
+    // =============================================
+
+    private IEnumerator CicloDeLuta()
     {
-        if (jogador == null) return;
+        yield return new WaitForSeconds(1f);
 
-        // checa cada parede individualmente: quando jogador "passou pela parede" e saiu do raio (distância) reativa colisão
-        if (leftWall != null && !leftWall.reenabled)
+        while (!morto)
         {
-            // considerar "passou" se jogador estiver à direita da parede (ultrapassou seu X)
-            float wallX = leftWall.go.transform.position.x;
-            if (!leftWall.passedThrough)
-            {
-                if (jogador.position.x > wallX + wallEnterMargin)
-                {
-                    leftWall.passedThrough = true;
-                    Debug.Log("[MiniBoss] Player passou pela parede esquerda.");
-                }
-            }
-            else
-            {
-                // se já passou e saiu do "raio", reabilita colisão
-                if (Mathf.Abs(jogador.position.x - wallX) >= wallReenableDistance)
-                {
-                    leftWall.ReenableCollision();
-                    Debug.Log("[MiniBoss] Parede esquerda reativou colisão.");
-                }
-            }
-        }
+            yield return new WaitForSeconds(intervaloEntreAtaques);
 
-        if (rightWall != null && !rightWall.reenabled)
-        {
-            float wallX = rightWall.go.transform.position.x;
-            if (!rightWall.passedThrough)
+            if (morto || ocupado) continue;
+
+            // Executa ataque aleatório no ponto atual
+            yield return StartCoroutine(ExecutarAtaque());
+
+            ataquesNoPontoAtual++;
+
+            // Após X ataques, teleporta para o outro ponto
+            if (ataquesNoPontoAtual >= ataquesPorPonto)
             {
-                if (jogador.position.x < wallX - wallEnterMargin)
-                {
-                    rightWall.passedThrough = true;
-                    Debug.Log("[MiniBoss] Player passou pela parede direita.");
-                }
-            }
-            else
-            {
-                if (Mathf.Abs(jogador.position.x - wallX) >= wallReenableDistance)
-                {
-                    rightWall.ReenableCollision();
-                    Debug.Log("[MiniBoss] Parede direita reativou colisão.");
-                }
+                ataquesNoPontoAtual = 0;
+                yield return StartCoroutine(TeleportarParaOutroPonto());
             }
         }
     }
 
-    // Centraliza flip do sprite: facingRight=true => olhar para a direita.
-    void SetFacingTowards(float targetX)
+    // =============================================
+    // ESCOLHER E EXECUTAR ATAQUE
+    // =============================================
+
+    private IEnumerator ExecutarAtaque()
     {
-        if (targetX > transform.position.x) facingRight = true;
-        else if (targetX < transform.position.x) facingRight = false;
-        ApplyFacing();
-    }
+        if (morto) yield break;
 
-    void ApplyFacing()
-    {
-        if (spriteRenderer == null) return;
-        // Observação: flipX == true mostra sprite "virado para a esquerda" em muitos setups.
-        spriteRenderer.flipX = !facingRight;
-    }
+        estado = EstadoBoss.Atacando;
+        ocupado = true;
 
-    void MovimentoInteligente()
-    {
-        // evita mover enquanto está ocupado executando um ataque/pulo
-        if (ocupado || pulando) 
-            return;
+        // Escolhe aleatoriamente entre os dois ataques
+        int escolha = Random.Range(0, 2);
 
-        // move apenas no eixo X em direção ao jogador (mantendo dentro da arena)
-        float dirX = Mathf.Sign(jogador.position.x - transform.position.x);
-        if (Mathf.Abs(jogador.position.x - transform.position.x) < 0.05f)
-            dirX = 0f;
-
-        float novoX = Mathf.Clamp(transform.position.x + dirX * velocidadePerseguicao * Time.deltaTime,
-                                pontoEsquerda.position.x,
-                                pontoDireita.position.x);
-
-        transform.position = new Vector3(novoX, posicaoInicial.y, transform.position.z);
-
-        // atualiza facing para olhar na direção do movimento se houver movimento horizontal significativo
-        if (dirX > 0f) facingRight = true;
-        else if (dirX < 0f) facingRight = false;
-        ApplyFacing();
-    }
-
-    void GerenciarAtaques()
-    {
-        tempoUltimoAtaque += Time.deltaTime;
-
-        // Decide ataque a cada ~3s (ajuste conforme quiser)
-        if (estadoAtual == Estado.Atacando && tempoUltimoAtaque >= 2.8f && !ocupado)
-        {
-            tempoUltimoAtaque = 0f;
-            estadoAtual = Estado.Perseguindo;
-        }
-        else if (tempoUltimoAtaque >= 3f && !ocupado)
-        {
-            EscolherAtaqueAleatorio();
-            tempoUltimoAtaque = 0f;
-        }
-    }
-
-    void EscolherAtaqueAleatorio()
-    {
-        int escolha = Random.Range(0, 4);
+        if (debugLogs)
+            Debug.Log($"[MiniBoss] 🎲 Ataque escolhido: {(escolha == 0 ? "Espinhos" : "Projetil")} | Ponto: {(estaNoPontoA ? "A" : "B")}");
 
         switch (escolha)
         {
-            case 0: // pular de um lado pro outro (Ponto A -> B)
-                if (!ocupado)
-                {
-                    estadoAtual = Estado.Atacando;
-                    StartCoroutine(PularEntrePontos(3)); // 3 saltos entre pontos, ajustável
-                }
+            case 0:
+                yield return StartCoroutine(AtaqueEspinhos());
                 break;
-
-            case 1: // spawnar espinhos (chão + teto) com animação de pisar
-                if (!ocupado)
-                {
-                    estadoAtual = Estado.Atacando;
-                    StartCoroutine(PisaoSpawnSpikes());
-                }
-                break;
-
-            case 2: // pulos em linhas (vários pulos verticais + diagonais)
-                if (!ocupado)
-                {
-                    estadoAtual = Estado.Atacando;
-                    StartCoroutine(PulosEmLinhas());
-                }
-                break;
-
-            case 3: // atirar da extremidade
-                if (!ocupado)
-                {
-                    estadoAtual = Estado.Atacando;
-                    StartCoroutine(AtirarDaExtremidade());
-                }
+            case 1:
+                yield return StartCoroutine(AtaqueProjetil());
                 break;
         }
-    }
 
-    IEnumerator PularEntrePontos(int repeticoes)
-    {
-        ocupado = true;
-        pulando = true;
-
-        for (int i = 0; i < repeticoes; i++)
-        {
-            // garante que a animação de pulo seja disparada a cada salto
-            if (animator != null) animator.SetTrigger("Pular");
-
-            float targetX = (transform.position.x <= (pontoEsquerda.position.x + pontoDireita.position.x) / 2)
-                ? pontoDireita.position.x
-                : pontoEsquerda.position.x;
-
-            // garante facing para o destino do pulo
-            SetFacingTowards(targetX);
-
-            yield return JumpArc(targetX, alturaPulo, tempoPulo);
-
-            yield return new WaitForSeconds(0.15f);
-        }
-
-        pulando = false;
         ocupado = false;
-        estadoAtual = Estado.Perseguindo;
+        estado = EstadoBoss.Lutando;
     }
 
-    IEnumerator PulosEmLinhas()
+    // =============================================
+    // ATAQUE: ESPINHOS
+    // =============================================
+
+    private IEnumerator AtaqueEspinhos()
     {
-        ocupado = true;
-        pulando = true;
+        if (debugLogs)
+            Debug.Log("[MiniBoss] 🦔 Ataque: Espinhos!");
 
-        // 1) Pulinhos verticais no local atual (subir reto)
-        for (int i = 0; i < pulosVerticaisPorLinha; i++)
-        {
-            if (animator != null) animator.SetTrigger("Pular");
-            yield return JumpArc(transform.position.x, alturaVertical, duracaoPulo);
-            yield return new WaitForSeconds(intervaloEntrePulos);
-        }
+        // Olha para o jogador antes do pisão
+        OlharParaJogador();
 
-        // 2) Depois, sequencia de pulos diagonais cruzando a arena (cair diagonalmente)
-        for (int i = 0; i < pulosDiagonais; i++)
-        {
-            if (animator != null) animator.SetTrigger("Pular");
+        if (animator != null)
+            animator.SetTrigger("Pisao");
 
-            float targetX = (transform.position.x <= (pontoEsquerda.position.x + pontoDireita.position.x) / 2)
-                ? pontoDireita.position.x
-                : pontoEsquerda.position.x;
-
-            SetFacingTowards(targetX);
-
-            yield return JumpArc(targetX, alturaVertical * 1.0f, duracaoPulo * 1.05f);
-            yield return new WaitForSeconds(intervaloEntrePulos);
-        }
-
-        pulando = false;
-        ocupado = false;
-        estadoAtual = Estado.Perseguindo;
-    }
-
-    // Interpola posição do boss entre start.x e targetX com arco parabólico
-    IEnumerator JumpArc(float targetX, float altura, float duracao)
-    {
-        float t = 0f;
-        Vector3 start = transform.position;
-        Vector3 end = new Vector3(targetX, posicaoInicial.y, transform.position.z);
-
-        while (t < duracao)
-        {
-            float normalized = t / duracao;
-            // interpola X e Y linearmente e adiciona arco parabólico no Y
-            float x = Mathf.Lerp(start.x, end.x, normalized);
-            float yLinear = Mathf.Lerp(start.y, end.y, normalized);
-            float arc = 4f * altura * normalized * (1f - normalized); // pico no meio
-            transform.position = new Vector3(x, yLinear + arc, start.z);
-
-            // mantém facing adequado para o alvo do salto
-            SetFacingTowards(end.x);
-
-            t += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = end;
-    }
-
-    IEnumerator PisaoSpawnSpikes()
-    {
-        ocupado = true;
-        if (animator != null) animator.SetTrigger("Pisao");
-
-        // espera um pouco para sincronizar com animação
         yield return new WaitForSeconds(atrasoAntesPisao);
 
-        // spawn no chão
+        // Spawna espinhos no chão
         if (prefabSpike != null && inicioChao != null && fimChao != null)
-        {
-            SpawnLinhaSpikes(inicioChao.position, fimChao.position);
-        }
+            SpawnarLinhaEspinhos(inicioChao.position, fimChao.position);
 
-        // spawn no teto
+        // Spawna espinhos no teto
         if (prefabSpike != null && inicioTeto != null && fimTeto != null)
-        {
-            SpawnLinhaSpikes(inicioTeto.position, fimTeto.position);
-        }
+            SpawnarLinhaEspinhos(inicioTeto.position, fimTeto.position);
 
-        // tempo para os spikes existirem e animação terminar
-        yield return new WaitForSeconds(tempoSpike + 0.1f);
-
-        ocupado = false;
-        estadoAtual = Estado.Perseguindo;
+        yield return new WaitForSeconds(tempoSpike + 0.2f);
     }
 
-    void SpawnLinhaSpikes(Vector2 inicio, Vector2 fim)
+    private void SpawnarLinhaEspinhos(Vector2 inicio, Vector2 fim)
     {
-        Collider2D colliderBoss = GetComponent<Collider2D>();
         if (quantidadeSpikes <= 1)
         {
-            GameObject s = Instantiate(prefabSpike, inicio, Quaternion.identity);
-            if (s != null)
-            {
-                Collider2D c = s.GetComponent<Collider2D>();
-                if (c != null && colliderBoss != null) Physics2D.IgnoreCollision(c, colliderBoss);
-                Destroy(s, tempoSpike);
-            }
+            var s = Instantiate(prefabSpike, inicio, Quaternion.identity);
+            IgnorarColisaoComBoss(s);
+            Destroy(s, tempoSpike);
             return;
         }
 
@@ -513,168 +375,309 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
         {
             float p = (float)i / (quantidadeSpikes - 1);
             Vector2 pos = Vector2.Lerp(inicio, fim, p);
-            GameObject spike = Instantiate(prefabSpike, pos, Quaternion.identity);
-            if (spike != null)
-            {
-                Collider2D c = spike.GetComponent<Collider2D>();
-                if (c != null && colliderBoss != null) Physics2D.IgnoreCollision(c, colliderBoss);
-                Destroy(spike, tempoSpike);
-            }
+            var spike = Instantiate(prefabSpike, pos, Quaternion.identity);
+            IgnorarColisaoComBoss(spike);
+            Destroy(spike, tempoSpike);
         }
     }
 
-    IEnumerator AtirarDaExtremidade()
+    private void IgnorarColisaoComBoss(GameObject obj)
     {
-        ocupado = true;
+        if (obj == null || col == null) return;
+        Collider2D c = obj.GetComponent<Collider2D>();
+        if (c != null) Physics2D.IgnoreCollision(c, col);
+    }
 
-        // Decide qual extremidade usar: aleatório entre esquerda/direita
-        bool usarDireita = Random.value > 0.5f;
-        Transform alvoExtremo = usarDireita ? pontoDireita : pontoEsquerda;
-        if (alvoExtremo == null)
-        {
-            ocupado = false;
-            estadoAtual = Estado.Perseguindo;
-            yield break;
-        }
+    // =============================================
+    // ATAQUE: PROJETIL
+    // =============================================
 
-        // Move suavemente até a extremidade (somente X)
-        Vector3 inicio = transform.position;
-        Vector3 destino = new Vector3(alvoExtremo.position.x, posicaoInicial.y, transform.position.z);
-        float t = 0f;
-        while (t < tempoMoverParaExtremidade)
-        {
-            transform.position = Vector3.Lerp(inicio, destino, t / tempoMoverParaExtremidade);
-            t += Time.deltaTime;
-            yield return null;
-        }
+    private IEnumerator AtaqueProjetil()
+    {
+        if (debugLogs)
+            Debug.Log("[MiniBoss] 🔥 Ataque: Projetil!");
 
-        transform.position = destino;
+        OlharParaJogador();
 
-        // Ajusta facing para mirar no player (garante que olhe para o jogador)
-        if (jogador != null)
-            SetFacingTowards(jogador.position.x);
+        if (animator != null)
+            animator.SetTrigger("Atirar");
 
-        ApplyFacing();
-
-        // Anima atirar
-        if (animator != null) animator.SetTrigger("Atirar");
-
-        // Atira X projéteis em direção ao jogador atual
         for (int i = 0; i < quantidadeProjetisAtirar; i++)
         {
+            if (morto) yield break;
             if (prefabProjetil == null) break;
 
-            Vector3 spawnPos = (pontoTiro != null) ? pontoTiro.position : transform.position;
-            GameObject proj = Instantiate(prefabProjetil, spawnPos, Quaternion.identity);
+            Vector3 origem = pontoTiro != null ? pontoTiro.position : transform.position;
 
-            // Ignora colisão entre o projétil e o boss para evitar destruição imediata
-            Collider2D colliderBoss = GetComponent<Collider2D>();
-            Collider2D projCollider = proj.GetComponent<Collider2D>();
-            if (projCollider != null && colliderBoss != null)
-            {
-                Physics2D.IgnoreCollision(projCollider, colliderBoss);
-            }
+            if (jogador == null) break;
+
+            Vector2 direcao = ((Vector2)jogador.position - (Vector2)origem).normalized;
+            float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+
+            GameObject proj = Instantiate(prefabProjetil, origem, Quaternion.Euler(0f, 0f, angulo));
+
+            IgnorarColisaoComBoss(proj);
 
             Rigidbody2D rbProj = proj.GetComponent<Rigidbody2D>();
-            if (rbProj != null && jogador != null)
-            {
-                Vector2 dir = (jogador.position - spawnPos).normalized;
-                rbProj.linearVelocity = dir * velocidadeProjetil; // usar propriedade correta
-                float angulo = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                proj.transform.rotation = Quaternion.Euler(0, 0, angulo);
-            }
-
-            // Se prefab não tiver Rigidbody, ainda tenta rotacionar pra aparência
-            if (rbProj == null && jogador != null)
-            {
-                Vector2 dir = (jogador.position - spawnPos).normalized;
-                float angulo = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                proj.transform.rotation = Quaternion.Euler(0, 0, angulo);
-            }
+            if (rbProj != null)
+                rbProj.linearVelocity = direcao * velocidadeProjetil;
 
             yield return new WaitForSeconds(intervaloEntreTiros);
         }
 
-        // pequeno delay pós-ataque
         yield return new WaitForSeconds(0.2f);
-
-        ocupado = false;
-        estadoAtual = Estado.Perseguindo;
     }
 
-    void AtivarParedes()
+    // =============================================
+    // TELEPORTE PARA O OUTRO PONTO
+    // =============================================
+
+    private IEnumerator TeleportarParaOutroPonto()
     {
-        // Ativa visualmente e deixa ABERTAS (transparentes e isTrigger=true) para o começo da luta
-        if (leftWall != null)
+        if (morto) yield break;
+
+        Transform destino = estaNoPontoA ? pontoB : pontoA;
+        if (destino == null) yield break;
+
+        if (debugLogs)
+            Debug.Log($"[MiniBoss] ✨ Teleportando para Ponto {(estaNoPontoA ? "B" : "A")}");
+
+        // Efeito de saída
+        if (efeitoTeleportePrefab != null)
+            Instantiate(efeitoTeleportePrefab, transform.position, Quaternion.identity);
+
+        // Pisca antes de sumir
+        yield return StartCoroutine(PiscarTeleporte());
+
+        // Teleporta
+        TeleportarPara(destino.position, true);
+
+        // Efeito de chegada
+        if (efeitoTeleportePrefab != null)
+            Instantiate(efeitoTeleportePrefab, transform.position, Quaternion.identity);
+
+        estaNoPontoA = !estaNoPontoA;
+
+        if (debugLogs)
+            Debug.Log($"[MiniBoss] ✅ Chegou no Ponto {(estaNoPontoA ? "A" : "B")}");
+    }
+
+    private void TeleportarPara(Vector3 posicao, bool comEfeito)
+    {
+        transform.position = new Vector3(posicao.x, posicaoInicial.y, transform.position.z);
+        OlharParaJogador();
+    }
+
+    private IEnumerator PiscarTeleporte()
+    {
+        if (spriteRenderer == null) yield break;
+
+        for (int i = 0; i < 3; i++)
         {
-            leftWall.MakeTransparentOpen();
-        }
-        if (rightWall != null)
-        {
-            rightWall.MakeTransparentOpen();
+            spriteRenderer.enabled = false;
+            yield return new WaitForSeconds(duracaoEfeitoTeleporte);
+            spriteRenderer.enabled = true;
+            yield return new WaitForSeconds(duracaoEfeitoTeleporte);
         }
 
-        // Caso você queira garantir que o GameObject esteja ativo:
+        spriteRenderer.enabled = false;
+        yield return new WaitForSeconds(duracaoEfeitoTeleporte);
+        spriteRenderer.enabled = true;
+    }
+
+    // =============================================
+    // OLHAR PARA O JOGADOR
+    // =============================================
+
+    private void OlharParaJogador()
+    {
+        if (jogador == null || spriteRenderer == null) return;
+
+        bool olhandoDireita = jogador.position.x > transform.position.x;
+        spriteRenderer.flipX = !olhandoDireita;
+    }
+
+    // =============================================
+    // PAREDES
+    // =============================================
+
+    private void AtivarParedes()
+    {
         if (paredeEsquerda != null) paredeEsquerda.SetActive(true);
         if (paredeDireita != null) paredeDireita.SetActive(true);
+
+        leftWall?.AbrirParaEntrar();
+        rightWall?.AbrirParaEntrar();
     }
+
+    private void GerenciarParedes()
+    {
+        if (jogador == null) return;
+
+        GerenciarParede(leftWall, true);
+        GerenciarParede(rightWall, false);
+    }
+
+    private void GerenciarParede(WallInfo wall, bool ehEsquerda)
+    {
+        if (wall == null || wall.reenabled) return;
+
+        float wallX = wall.go.transform.position.x;
+
+        if (!wall.passedThrough)
+        {
+            bool passou = ehEsquerda
+                ? jogador.position.x > wallX + wallEnterMargin
+                : jogador.position.x < wallX - wallEnterMargin;
+
+            if (passou)
+            {
+                wall.passedThrough = true;
+
+                if (debugLogs)
+                    Debug.Log($"[MiniBoss] Player passou pela parede {(ehEsquerda ? "esquerda" : "direita")}");
+            }
+        }
+        else
+        {
+            if (Mathf.Abs(jogador.position.x - wallX) >= wallReenableDistance)
+            {
+                wall.ReativarColisao();
+
+                if (debugLogs)
+                    Debug.Log($"[MiniBoss] Parede {(ehEsquerda ? "esquerda" : "direita")} reativada");
+            }
+        }
+    }
+
+    // =============================================
+    // VIDA / DANO
+    // =============================================
 
     public void TakeDamage(int dano, GameObject fonte)
     {
         if (morto) return;
-        if (fonte != null && fonte.CompareTag("Spike")) return; // ignora dano vindo de spike
+        if (fonte != null && fonte.CompareTag("Spike")) return;
 
         vidaAtual -= dano;
-        Debug.Log($"Boss tomou {dano} de dano. Vida: {vidaAtual}");
+
+        if (debugLogs)
+            Debug.Log($"[MiniBoss] 💥 Tomou {dano} | Vida: {vidaAtual}/{vidaMaxima}");
+
+        if (animator != null)
+            animator.SetTrigger("Hit");
 
         if (vidaAtual <= 0)
+        {
+            vidaAtual = 0;
             Morrer();
+        }
     }
 
-    void Morrer()
+    // =============================================
+    // MORTE
+    // =============================================
+
+    private void Morrer()
     {
         morto = true;
+        estado = EstadoBoss.Morto;
+
         StopAllCoroutines();
 
-        // quando boss morre, restaura estado original das paredes (permitir atravessar conforme origem)
-        if (leftWall != null) leftWall.RestoreOriginal();
-        if (rightWall != null) rightWall.RestoreOriginal();
+        leftWall?.Restaurar();
+        rightWall?.Restaurar();
 
-        // tocar animação de morte aqui se quiser (notificar animator)
-        Destroy(gameObject);
+        if (animator != null)
+            animator.SetTrigger("Morrer");
+
+        if (debugLogs)
+            Debug.Log("[MiniBoss] ☠️ Boss derrotado!");
+
+        Destroy(gameObject, 1.5f);
     }
 
-    // Quando colidir/trigger com player: causar dano por contato (com cooldown por collider)
-    private void OnTriggerEnter2D(Collider2D other)
+    // =============================================
+    // DANO POR CONTATO
+    // =============================================
+
+    private void OnTriggerEnter2D(Collider2D other) => TentarDanoContato(other);
+    private void OnCollisionEnter2D(Collision2D col) => TentarDanoContato(col.collider);
+
+    private void TentarDanoContato(Collider2D alvo)
     {
-        TryDealContactDamage(other);
-    }
+        if (alvo == null || morto) return;
+        if (!alvo.CompareTag("Player")) return;
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        TryDealContactDamage(collision.collider);
-    }
+        float agora = Time.time;
+        if (ultimoDanoPorCollider.TryGetValue(alvo, out float ultimo))
+            if (agora - ultimo < cooldownDanoContato) return;
 
-    private void TryDealContactDamage(Collider2D target)
-    {
-        if (target == null || !target.CompareTag("Player") || morto) return;
+        IDamageable dmg = alvo.GetComponent<IDamageable>();
+        if (dmg == null) dmg = alvo.GetComponentInParent<IDamageable>();
 
-        float now = Time.time;
-        if (ultimoDanoPorCollider.TryGetValue(target, out float lastTime))
-        {
-            if (now - lastTime < cooldownDanoContato) return;
-        }
-
-        IDamageable dmg = target.GetComponent<IDamageable>();
         if (dmg != null)
         {
             dmg.TakeDamage(danoAoTocar, gameObject);
-            ultimoDanoPorCollider[target] = now;
+            ultimoDanoPorCollider[alvo] = agora;
+
+            if (debugLogs)
+                Debug.Log($"[MiniBoss] 👊 Dano por contato: {danoAoTocar}");
         }
-        else
+    }
+
+    // =============================================
+    // GIZMOS
+    // =============================================
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!mostrarGizmos) return;
+
+        // Alcance de detecção
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, alcanceDeteccao);
+
+        // Ponto A
+        if (pontoA != null)
         {
-            // alternativa: registrar para cooldown mesmo sem aplicar dano
-            ultimoDanoPorCollider[target] = now;
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(pontoA.position, 0.4f);
+#if UNITY_EDITOR
+            UnityEditor.Handles.Label(pontoA.position + Vector3.up * 0.6f, "Ponto A");
+#endif
         }
+
+        // Ponto B
+        if (pontoB != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(pontoB.position, 0.4f);
+#if UNITY_EDITOR
+            UnityEditor.Handles.Label(pontoB.position + Vector3.up * 0.6f, "Ponto B");
+#endif
+        }
+
+        // Linha entre os pontos
+        if (pontoA != null && pontoB != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(pontoA.position, pontoB.position);
+        }
+
+        // Estado em runtime
+#if UNITY_EDITOR
+        if (Application.isPlaying)
+        {
+            UnityEditor.Handles.color = Color.white;
+            UnityEditor.Handles.Label(
+                transform.position + Vector3.up * 2f,
+                $"Estado: {estado}\n" +
+                $"Vida: {vidaAtual}/{vidaMaxima}\n" +
+                $"Ponto: {(estaNoPontoA ? "A" : "B")}\n" +
+                $"Ataques no ponto: {ataquesNoPontoAtual}/{ataquesPorPonto}"
+            );
+        }
+#endif
     }
 }
