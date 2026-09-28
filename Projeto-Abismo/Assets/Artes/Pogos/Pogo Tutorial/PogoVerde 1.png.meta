@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      PogoVerde 1_0: 6986729474871222380
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

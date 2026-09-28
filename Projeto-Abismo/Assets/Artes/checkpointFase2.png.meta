@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      checkpointFase2_0: 6471045849576557796
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
