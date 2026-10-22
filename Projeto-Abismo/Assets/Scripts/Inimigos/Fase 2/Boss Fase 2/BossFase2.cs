@@ -262,11 +262,17 @@ public class BossFase2 : MonoBehaviour, IDamageable
 
         if (timerAtaque >= cooldownAtaque)
         {
-            Atirar();
-
-            contadorAtaques++;
-
-            timerAtaque = 0f;
+            if (Atirar())
+            {
+                contadorAtaques++;
+                timerAtaque = 0f;
+            }
+            else
+            {
+                // Tenta novamente após um pequeno intervalo.
+                timerAtaque = cooldownAtaque - 0.5f;
+                return;
+            }
 
             if (debugLogs)
             {
@@ -385,81 +391,77 @@ public class BossFase2 : MonoBehaviour, IDamageable
     // DISPARO
     // =============================================
 
-    private void Atirar()
+
+    private bool Atirar()
     {
         if (projetilPrefab == null)
         {
-            if (debugLogs)
-                Debug.LogWarning(
-                    "[BossFase2] Tentou atirar, " +
-                    "mas Projetil Prefab está vazio!"
-                );
-
-            return;
+            Debug.LogError("[BossFase2] Projetil Prefab não atribuído!");
+            return false;
         }
 
         if (player == null)
         {
-            if (debugLogs)
-                Debug.LogWarning(
-                    "[BossFase2] Tentou atirar, " +
-                    "mas Player está null!"
-                );
+            BuscarPlayer();
 
-            return;
+            if (player == null)
+            {
+                Debug.LogError("[BossFase2] Player não encontrado!");
+                return false;
+            }
         }
 
         Vector3 origem = pontoDisparo != null
             ? pontoDisparo.position
             : transform.position;
 
-        Vector2 direcao =
-            ((Vector2)player.position - (Vector2)origem).normalized;
+        Vector2 direcao = ((Vector2)player.position - (Vector2)origem).normalized;
 
-        GameObject proj =
-            Instantiate(
-                projetilPrefab,
-                origem,
-                Quaternion.identity
+        GameObject proj = Instantiate(
+            projetilPrefab,
+            origem,
+            Quaternion.identity
+        );
+
+        Rigidbody2D rbProj = proj.GetComponent<Rigidbody2D>();
+
+        if (rbProj == null)
+            rbProj = proj.GetComponentInChildren<Rigidbody2D>();
+
+        if (rbProj == null)
+        {
+            Debug.LogError(
+                "[BossFase2] O projétil foi criado, mas não possui Rigidbody2D na raiz ou nos filhos.",
+                proj
             );
 
-        Rigidbody2D rbProj =
-            proj.GetComponent<Rigidbody2D>();
-
-        if (rbProj != null)
-        {
-            rbProj.linearVelocity =
-                direcao * velocidadeProjetil;
+            return false;
         }
 
-        float angulo =
-            Mathf.Atan2(direcao.y, direcao.x)
-            * Mathf.Rad2Deg;
+        rbProj.linearVelocity = direcao * velocidadeProjetil;
 
-        proj.transform.rotation =
-            Quaternion.AngleAxis(
-                angulo,
-                Vector3.forward
-            );
+        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+
+        proj.transform.rotation = Quaternion.AngleAxis(
+            angulo,
+            Vector3.forward
+        );
 
         if (somAtaque != null && audioSource != null)
-        {
             audioSource.PlayOneShot(somAtaque);
-        }
 
         if (animator != null)
-        {
             animator.SetTrigger("Atacar");
-        }
 
-        if (debugLogs)
-        {
-            Debug.Log(
-                $"[BossFase2] 🔥 Projetil disparado " +
-                $"em direção a {player.name}"
-            );
-        }
+        Debug.Log(
+            $"[BossFase2] Projétil criado: {proj.name} | " +
+            $"Origem: {origem} | Direção: {direcao} | " +
+            $"Velocidade: {rbProj.linearVelocity}"
+        );
+
+        return true;
     }
+
 
     // =============================================
     // TRANSIÇÃO PARA QUEDA
@@ -539,9 +541,7 @@ public class BossFase2 : MonoBehaviour, IDamageable
     private void TransicionarParaChao()
     {
         estado = EstadoBoss.NoChao;
-
         timerChao = 0f;
-
         vulneravel = true;
 
         rb.linearVelocity = Vector2.zero;
@@ -550,22 +550,12 @@ public class BossFase2 : MonoBehaviour, IDamageable
             sr.color = corVulneravel;
 
         if (somVulneravel != null && audioSource != null)
-        {
             audioSource.PlayOneShot(somVulneravel);
-        }
 
-        if (animator != null)
-        {
-            animator.SetTrigger("NoChao");
-        }
+        // Sem trigger — calndoanim volta pro Idle pelo Exit Time
 
         if (debugLogs)
-        {
-            Debug.Log(
-                $"[BossFase2] 🟢 No chão — " +
-                $"VULNERÁVEL por {duracaoNoChao}s!"
-            );
-        }
+            Debug.Log($"[BossFase2] 🟢 No chão — VULNERÁVEL por {duracaoNoChao}s!");
     }
 
     // =============================================
@@ -601,56 +591,28 @@ public class BossFase2 : MonoBehaviour, IDamageable
     private void TransicionarParaVoo()
     {
         estado = EstadoBoss.Voando;
-
         contadorAtaques = 0;
-
         timerAtaque = 0f;
-
         vulneravel = false;
 
         rb.linearVelocity = Vector2.zero;
 
-        // =============================================
-        // RESTAURA ALTURA
-        // =============================================
-
         Vector2 pos = rb.position;
-
         pos.y = alturaVoo;
-
         rb.position = pos;
 
-        // =============================================
-        // NOVO CICLO
-        // =============================================
-
         movendoDireita = true;
-
         AtualizarFlip(1f);
-
-        // =============================================
-        // COR
-        // =============================================
 
         if (sr != null)
             sr.color = corNormal;
 
-        // =============================================
-        // ANIMAÇÃO
-        // =============================================
-
-        if (animator != null)
-        {
-            animator.SetTrigger("Voando");
-        }
+        // Sem trigger — Idle já é o estado padrão
 
         if (debugLogs)
-        {
-            Debug.Log(
-                "[BossFase2] 🦋 Voltando a voar!"
-            );
-        }
+            Debug.Log("[BossFase2] 🦋 Voltando a voar!");
     }
+
 
     // =============================================
     // ANIMAÇÕES
@@ -658,23 +620,7 @@ public class BossFase2 : MonoBehaviour, IDamageable
 
     private void AtualizarAnimacoes()
     {
-        if (animator == null)
-            return;
-
-        animator.SetBool(
-            "IsFlying",
-            estado == EstadoBoss.Voando
-        );
-
-        animator.SetBool(
-            "IsGrounded",
-            estado == EstadoBoss.NoChao
-        );
-
-        animator.SetBool(
-            "IsVulnerable",
-            vulneravel
-        );
+        // Sem bools — seu Animator só tem Atacar, Caindo e Morrer
     }
 
     // =============================================

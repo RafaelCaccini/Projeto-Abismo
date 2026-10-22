@@ -67,7 +67,7 @@ public class PiranhaEnemy : MonoBehaviour, IDamageable
     private float proximoDano;
 
     private bool perseguindo;
-    private bool facingRight = true; // controla direção visual
+    private bool facingRight = false; // controla direção visual
 
     // estado interno de morte
     private bool morto = false;
@@ -123,6 +123,11 @@ public class PiranhaEnemy : MonoBehaviour, IDamageable
             player.position
         );
 
+        // Atualiza a direção visual independentemente do movimento.
+AtualizarFacing(
+    player.position.x - transform.position.x
+);
+
         // =========================================
         // PLAYER FORA DO RAIO
         // =========================================
@@ -153,6 +158,10 @@ public class PiranhaEnemy : MonoBehaviour, IDamageable
 
         if (distancia <= distanciaAtaque)
         {
+            // Continua olhando para o jogador mesmo durante o ataque.
+            float direcaoX = player.position.x - transform.position.x;
+            AtualizarFacing(direcaoX);
+
             Parar();
             Atacar();
 
@@ -245,22 +254,38 @@ public class PiranhaEnemy : MonoBehaviour, IDamageable
     // ATUALIZAR FACING (usando SpriteRenderer.flipX)
     // =============================================
 
+    // =============================================
+    // ATUALIZAR DIREÇÃO VISUAL
+    // O sprite original começa olhando para a ESQUERDA.
+    // =============================================
+
+    // =============================================
+    // VIRAR O SPRITE NA DIREÇÃO DO PLAYER
+    // Sprite original: olhando para a ESQUERDA
+    // =============================================
+
     private void AtualizarFacing(float direcaoX)
     {
         if (visualRenderer == null)
+        {
+            Debug.LogError("[Piranha] SpriteRenderer está NULL!");
             return;
-
-        // Apenas atualiza se a direção mudou significativamente
-        if (direcaoX > 0.1f && !facingRight)
-        {
-            facingRight = true;
-            visualRenderer.flipX = false;
         }
-        else if (direcaoX < -0.1f && facingRight)
+
+        if (direcaoX > 0.01f)
         {
-            facingRight = false;
             visualRenderer.flipX = true;
         }
+        else if (direcaoX < -0.01f)
+        {
+            visualRenderer.flipX = false;
+        }
+
+        Debug.Log(
+            $"[Piranha] Direção X: {direcaoX:F2} | " +
+            $"FlipX: {visualRenderer.flipX} | " +
+            $"Sprite: {visualRenderer.gameObject.name}"
+        );
     }
 
     // =============================================

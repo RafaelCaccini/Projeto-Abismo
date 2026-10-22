@@ -1,0 +1,754 @@
+fileFormatVersion: 2
+guid: 23d3cb0873d0b0b4faea66db34864e2a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7269652859518215209
+    second: boss 2 morte0003_0
+  - first:
+      213: -2788007172456460241
+    second: boss 2 morte0003_1
+  - first:
+      213: -7753361203357719072
+    second: boss 2 morte0003_2
+  - first:
+      213: 3099812012004749526
+    second: boss 2 morte0003_3
+  - first:
+      213: 3312852603983666529
+    second: boss 2 morte0003_4
+  - first:
+      213: 7783196279664007291
+    second: boss 2 morte0003_5
+  - first:
+      213: 8457297818757406905
+    second: boss 2 morte0003_6
+  - first:
+      213: 2679953193665402734
+    second: boss 2 morte0003_7
+  - first:
+      213: 8088849039850054444
+    second: boss 2 morte0003_8
+  - first:
+      213: -3755855125501598395
+    second: boss 2 morte0003_9
+  - first:
+      213: 8886591236519224881
+    second: boss 2 morte0003_10
+  - first:
+      213: 1056540849223609125
+    second: boss 2 morte0003_11
+  - first:
+      213: 7968903169055716087
+    second: boss 2 morte0003_12
+  - first:
+      213: 6818047284202461495
+    second: boss 2 morte0003_13
+  - first:
+      213: -953730596407294320
+    second: boss 2 morte0003_14
+  - first:
+      213: -4620791887463627174
+    second: boss 2 morte0003_15
+  - first:
+      213: -1892616992205503333
+    second: boss 2 morte0003_16
+  - first:
+      213: -6995566555236358122
+    second: boss 2 morte0003_17
+  - first:
+      213: -2662390666770836477
+    second: boss 2 morte0003_18
+  - first:
+      213: 8945984025712327217
+    second: boss 2 morte0003_19
+  - first:
+      213: 1622588527316388361
+    second: boss 2 morte0003_20
+  - first:
+      213: 786537132917854255
+    second: boss 2 morte0003_21
+  - first:
+      213: -1384469407591213229
+    second: boss 2 morte0003_22
+  - first:
+      213: -8935299142360901433
+    second: boss 2 morte0003_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 1
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: boss 2 morte0003_0
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 1098
+        width: 78
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7db93049d310d1b90800000000000000
+      internalID: -7269652859518215209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_1
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 981
+        width: 258
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f20dd768f320f49d0800000000000000
+      internalID: -2788007172456460241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_2
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 986
+        width: 290
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e5619a8017866490800000000000000
+      internalID: -7753361203357719072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_3
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 834
+        width: 102
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d03806f99eb40b20800000000000000
+      internalID: 3099812012004749526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_4
+      rect:
+        serializedVersion: 2
+        x: 534
+        y: 787
+        width: 62
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16d9cad14ed99fd20800000000000000
+      internalID: 3312852603983666529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_5
+      rect:
+        serializedVersion: 2
+        x: 666
+        y: 852
+        width: 76
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b78d38a77c7730c60800000000000000
+      internalID: 7783196279664007291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_6
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 814
+        width: 70
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b0a8b6be8b5e5570800000000000000
+      internalID: 8457297818757406905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_7
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 727
+        width: 218
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e67991b0b3b113520800000000000000
+      internalID: 2679953193665402734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_8
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 678
+        width: 153
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c23a50e585d514070800000000000000
+      internalID: 8088849039850054444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_9
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 572
+        width: 167
+        height: 138
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 545a5a8a9a580ebc0800000000000000
+      internalID: -3755855125501598395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_10
+      rect:
+        serializedVersion: 2
+        x: 653
+        y: 682
+        width: 57
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 136e3dc75a3835b70800000000000000
+      internalID: 8886591236519224881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_11
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 650
+        width: 127
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52ba9a8fd4699ae00800000000000000
+      internalID: 1056540849223609125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_12
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 600
+        width: 129
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f2fc01163b379e60800000000000000
+      internalID: 7968903169055716087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_13
+      rect:
+        serializedVersion: 2
+        x: 906
+        y: 319
+        width: 175
+        height: 327
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73954b4a1e19e9e50800000000000000
+      internalID: 6818047284202461495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_14
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 482
+        width: 163
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 096c8bd531ba3c2f0800000000000000
+      internalID: -953730596407294320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_15
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 380
+        width: 25
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5649b6a246afdfb0800000000000000
+      internalID: -4620791887463627174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_16
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 339
+        width: 99
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9409b38fd21cb5e0800000000000000
+      internalID: -1892616992205503333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_17
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 391
+        width: 85
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618a8883841caee90800000000000000
+      internalID: -6995566555236358122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_18
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 152
+        width: 130
+        height: 204
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3041fc56bc94d0bd0800000000000000
+      internalID: -2662390666770836477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_19
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 294
+        width: 22
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13af6e2d215862c70800000000000000
+      internalID: 8945984025712327217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_20
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 269
+        width: 102
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90a41533ba7948610800000000000000
+      internalID: 1622588527316388361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_21
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 309
+        width: 16
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f20193aea575aea00800000000000000
+      internalID: 786537132917854255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_22
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 164
+        width: 152
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3575126b86069cce0800000000000000
+      internalID: -1384469407591213229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss 2 morte0003_23
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 111
+        width: 40
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c8d9b175c07ff380800000000000000
+      internalID: -8935299142360901433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      boss 2 morte0003_0: -7269652859518215209
+      boss 2 morte0003_1: -2788007172456460241
+      boss 2 morte0003_10: 8886591236519224881
+      boss 2 morte0003_11: 1056540849223609125
+      boss 2 morte0003_12: 7968903169055716087
+      boss 2 morte0003_13: 6818047284202461495
+      boss 2 morte0003_14: -953730596407294320
+      boss 2 morte0003_15: -4620791887463627174
+      boss 2 morte0003_16: -1892616992205503333
+      boss 2 morte0003_17: -6995566555236358122
+      boss 2 morte0003_18: -2662390666770836477
+      boss 2 morte0003_19: 8945984025712327217
+      boss 2 morte0003_2: -7753361203357719072
+      boss 2 morte0003_20: 1622588527316388361
+      boss 2 morte0003_21: 786537132917854255
+      boss 2 morte0003_22: -1384469407591213229
+      boss 2 morte0003_23: -8935299142360901433
+      boss 2 morte0003_3: 3099812012004749526
+      boss 2 morte0003_4: 3312852603983666529
+      boss 2 morte0003_5: 7783196279664007291
+      boss 2 morte0003_6: 8457297818757406905
+      boss 2 morte0003_7: 2679953193665402734
+      boss 2 morte0003_8: 8088849039850054444
+      boss 2 morte0003_9: -3755855125501598395
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

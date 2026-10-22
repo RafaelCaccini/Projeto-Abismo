@@ -1,0 +1,598 @@
+fileFormatVersion: 2
+guid: 447aa026c7fcf394eb08175c4a6245c8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -657283916020399644
+    second: agua viva explode0010_0
+  - first:
+      213: -7950931094581094201
+    second: agua viva explode0010_1
+  - first:
+      213: 4455376492023505769
+    second: agua viva explode0010_2
+  - first:
+      213: 1961262652409275857
+    second: agua viva explode0010_3
+  - first:
+      213: -3492488954344632151
+    second: agua viva explode0010_4
+  - first:
+      213: -429117176431506278
+    second: agua viva explode0010_5
+  - first:
+      213: 8466908501487097986
+    second: agua viva explode0010_6
+  - first:
+      213: -254057971931766327
+    second: agua viva explode0010_7
+  - first:
+      213: -1516144371250949791
+    second: agua viva explode0010_8
+  - first:
+      213: 870019918752686237
+    second: agua viva explode0010_9
+  - first:
+      213: -2767237315068928672
+    second: agua viva explode0010_10
+  - first:
+      213: 1190234183695141890
+    second: agua viva explode0010_11
+  - first:
+      213: -6016465550703232413
+    second: agua viva explode0010_12
+  - first:
+      213: 2196811978365642370
+    second: agua viva explode0010_13
+  - first:
+      213: 5819860195075468475
+    second: agua viva explode0010_14
+  - first:
+      213: 3714683637179202726
+    second: agua viva explode0010_15
+  - first:
+      213: 95892822157099158
+    second: agua viva explode0010_16
+  - first:
+      213: 1574257621343201104
+    second: agua viva explode0010_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 1
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: agua viva explode0010_0
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 1106
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e1c605c2cbd0e6f0800000000000000
+      internalID: -657283916020399644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_1
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 998
+        width: 23
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c8d2e99b4e98a190800000000000000
+      internalID: -7950931094581094201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_2
+      rect:
+        serializedVersion: 2
+        x: 925
+        y: 955
+        width: 110
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 963efab505da4dd30800000000000000
+      internalID: 4455376492023505769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_3
+      rect:
+        serializedVersion: 2
+        x: 1101
+        y: 979
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d5681cbdfdc73b10800000000000000
+      internalID: 1961262652409275857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_4
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 727
+        width: 204
+        height: 267
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a0105ecccf288fc0800000000000000
+      internalID: -3492488954344632151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_5
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 927
+        width: 47
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9c08cb93387b0af0800000000000000
+      internalID: -429117176431506278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_6
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 670
+        width: 299
+        height: 271
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2889fd82c60808570800000000000000
+      internalID: 8466908501487097986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_7
+      rect:
+        serializedVersion: 2
+        x: 269
+        y: 570
+        width: 63
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c1a6aede97697cf0800000000000000
+      internalID: -254057971931766327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_8
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 593
+        width: 26
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 161116b2ab295fae0800000000000000
+      internalID: -1516144371250949791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_9
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 545
+        width: 17
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d90a4cca18ee21c00800000000000000
+      internalID: 870019918752686237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_10
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 498
+        width: 29
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06d5c1ac25cc899d0800000000000000
+      internalID: -2767237315068928672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_11
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 394
+        width: 148
+        height: 148
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20c0da61faf848010800000000000000
+      internalID: 1190234183695141890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_12
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 400
+        width: 185
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36a75fe4578318ca0800000000000000
+      internalID: -6016465550703232413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_13
+      rect:
+        serializedVersion: 2
+        x: 1049
+        y: 421
+        width: 99
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 286aec8ead4ac7e10800000000000000
+      internalID: 2196811978365642370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_14
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 371
+        width: 11
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbca8e1330c44c050800000000000000
+      internalID: 5819860195075468475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_15
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 310
+        width: 62
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6acb50736153d8330800000000000000
+      internalID: 3714683637179202726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_16
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 382
+        width: 52
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6900f21830ea45100800000000000000
+      internalID: 95892822157099158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: agua viva explode0010_17
+      rect:
+        serializedVersion: 2
+        x: 441
+        y: 288
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 057ec1147f2e8d510800000000000000
+      internalID: 1574257621343201104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      agua viva explode0010_0: -657283916020399644
+      agua viva explode0010_1: -7950931094581094201
+      agua viva explode0010_10: -2767237315068928672
+      agua viva explode0010_11: 1190234183695141890
+      agua viva explode0010_12: -6016465550703232413
+      agua viva explode0010_13: 2196811978365642370
+      agua viva explode0010_14: 5819860195075468475
+      agua viva explode0010_15: 3714683637179202726
+      agua viva explode0010_16: 95892822157099158
+      agua viva explode0010_17: 1574257621343201104
+      agua viva explode0010_2: 4455376492023505769
+      agua viva explode0010_3: 1961262652409275857
+      agua viva explode0010_4: -3492488954344632151
+      agua viva explode0010_5: -429117176431506278
+      agua viva explode0010_6: 8466908501487097986
+      agua viva explode0010_7: -254057971931766327
+      agua viva explode0010_8: -1516144371250949791
+      agua viva explode0010_9: 870019918752686237
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
