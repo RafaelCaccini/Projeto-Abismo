@@ -51,12 +51,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidade: 20
-  aceleracao: 20
-  raioDeteccao: 30
+  aceleracao: 15
+  raioDeteccao: 7
   distanciaAtaque: 2
   dano: 1
   cooldownDano: 1
-  vida: 3
+  vida: 2
   layerAgua:
     serializedVersion: 2
     m_Bits: 16
