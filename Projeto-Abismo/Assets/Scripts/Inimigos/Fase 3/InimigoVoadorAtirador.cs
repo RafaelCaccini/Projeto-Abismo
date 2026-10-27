@@ -31,6 +31,7 @@ public class InimigoVoador : MonoBehaviour, IDamageable
     [SerializeField] private int vidaMaxima = 1;
     [SerializeField] private int danoPorContato = 1;
 
+
     // =============================================
     // DEBUG
     // =============================================

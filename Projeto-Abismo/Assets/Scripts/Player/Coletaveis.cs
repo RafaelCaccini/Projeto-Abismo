@@ -56,6 +56,8 @@ public class CollectibleSystem : MonoBehaviour
     private static int coletados;
     private static bool cenaInicializada;
 
+
+
     // =====================================================
     // START
     // =====================================================
@@ -147,30 +149,37 @@ public class CollectibleSystem : MonoBehaviour
         if (SceneManager.GetActiveScene().name != "TutorialTeste")
             return;
 
-        // busca Lampiao mesmo se estiver inativo na hierarquia
-        var lamps = FindObjectsByType<Lampiao>(
+        // Procura o Lampião mesmo se estiver desativado na Hierarchy.
+        Lampiao[] lamps = FindObjectsByType<Lampiao>(
             FindObjectsInactive.Include,
             FindObjectsSortMode.None
         );
 
-        if (lamps != null && lamps.Length > 0)
+        if (lamps == null || lamps.Length == 0)
         {
-            Lampiao lamp = lamps[0];
-            if (lamp != null)
-            {
-                // ativa o GameObject (Start() do Lampiao será executado) e pede fade
-                lamp.gameObject.SetActive(true);
+            Debug.LogWarning(
+                "[Coletável] Nenhum Lampião encontrado na cena TutorialTeste."
+            );
 
-                // aguarda um frame para garantir Start() já rodou
-                lamp.StartCoroutine(DelayedShow(lamp));
-            }
+            return;
         }
+
+        Lampiao lamp = lamps[0];
+
+        if (lamp == null)
+            return;
+
+        lamp.gameObject.SetActive(true);
+        lamp.InicializarDesligado();
+        lamp.StartCoroutine(DelayedShow(lamp));
     }
 
     private System.Collections.IEnumerator DelayedShow(Lampiao lamp)
     {
         yield return null;
-        lamp.AparecerComFade(1f);
+
+        if (lamp != null)
+            lamp.AparecerComFade(1f);
     }
 
     // =====================================================

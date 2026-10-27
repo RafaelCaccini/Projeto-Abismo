@@ -34,6 +34,13 @@ public class VoadorWalker : MonoBehaviour, IDamageable
     [Header("MORTE")]
     [SerializeField] private float deathAnimationDuration = 1f;
 
+    // ======== ÁUDIO ========
+    [Header("ÁUDIO")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip somPassaro;
+    [Range(0f, 1f)]
+    [SerializeField] private float volumePassaro = 0.5f;
+
     // ======== DEBUG ========
     [Header("DEBUG")]
     [SerializeField] private bool mostrarRaycast = true;
@@ -91,16 +98,44 @@ public class VoadorWalker : MonoBehaviour, IDamageable
         // visual transform
         if (spriteRenderer != null)
             visualTransform = spriteRenderer.transform;
+
+        // Configura o som contínuo do pássaro.
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.clip = somPassaro;
+        audioSource.loop = true;
+        audioSource.playOnAwake = false;
+        audioSource.volume = volumePassaro;
+
+        // Som posicional: fica mais alto perto do jogador.
+        audioSource.spatialBlend = 1f;
     }
 
     private void Start()
     {
         UpdateSpriteFlip();
         UpdateAnimatorMoving(true);
-    }
 
-    // DEBUG: move manualmente para testar Rigidbody (botão direito no Inspector → "ForceMove")
-    [ContextMenu("ForceMove")]
+        // Inicia o som do pássaro em loop.
+        if (audioSource != null && somPassaro != null)
+        {
+            audioSource.clip = somPassaro;
+            audioSource.volume = volumePassaro;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[VoadorWalker] Som do pássaro não configurado no Inspector!",
+                this
+            );
+        }
+    }
     private void ForceMove()
     {
         rb.position += Vector2.right * 0.1f;
@@ -225,6 +260,12 @@ public class VoadorWalker : MonoBehaviour, IDamageable
     private IEnumerator HandleDeath()
     {
         morto = true;
+
+        // Para o som contínuo ao iniciar a morte.
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
 
         // stop moving
         rb.linearVelocity = Vector2.zero;

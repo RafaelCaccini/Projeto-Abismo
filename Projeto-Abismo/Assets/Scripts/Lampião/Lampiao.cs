@@ -188,6 +188,45 @@ public class Lampiao : MonoBehaviour
     // Dados para restauração de inimigos paralisados genericamente
     private Coroutine paralisarRoutine;
 
+    [Header("Estado Inicial")]
+    [SerializeField] private bool iniciarComLuzLigada = false;
+
+    /// <summary>
+    /// Mantém a luz desligada ao obter o Lampião no tutorial.
+    /// O objeto do Lampião continua ativo e seguindo o jogador.
+    /// </summary>
+    public void InicializarDesligado()
+    {
+        isActive = false;
+        isParalisarActive = false;
+
+        if (lightVisual != null)
+            lightVisual.SetActive(false);
+
+        if (lightArea != null)
+            lightArea.SetActive(false);
+
+        if (playerController != null)
+            playerController.SetLuz(false);
+
+        Debug.Log("[Lampião] Obtido no tutorial. Luz inicial: DESLIGADA.");
+    }
+
+    // =====================================
+    // AWAKE
+    // =====================================
+    private void Awake()
+    {
+        isActive = iniciarComLuzLigada;
+
+        if (lightVisual != null)
+            lightVisual.SetActive(isActive);
+
+        if (lightArea != null)
+            lightArea.SetActive(isActive);
+    }
+
+
     // =====================================
     // START
     // =====================================
@@ -199,12 +238,12 @@ public class Lampiao : MonoBehaviour
         // Snap imediato para a posição do player.
         SnapToPlayer();
 
-        // Começa desligado
-        if (lightVisual != null)
-            lightVisual.SetActive(false);
+        //// Começa desligado
+        //if (lightVisual != null)
+        //    lightVisual.SetActive(false);
 
-        if (lightArea != null)
-            lightArea.SetActive(false);
+        //if (lightArea != null)
+        //    lightArea.SetActive(false);
 
         // Segurança do áudio
         if (audioSource != null)
@@ -234,30 +273,25 @@ public class Lampiao : MonoBehaviour
 
         ApplyFinalPosition();
 
-        // Entrada local — teclado, mouse e controle
+        // Entradas locais somente quando não existe um gerenciador central.
         if (PlayerInputHandler.Instance == null)
         {
             HandleLight();
 
-            // Alternar modos
             if (isActive && Input.GetKeyDown(alternarModoKey))
-            {
                 AlternarModo();
-            }
 
-            // Paralisar
             if (isActive && Input.GetKeyDown(paralisarKey))
-            {
                 AtivarParalisar();
-            }
         }
 
-        // Clique direito do mouse
-        // Funciona mesmo quando existe PlayerInputHandler.
+        //// Clique direito do mouse
+        //// Funciona mesmo quando existe PlayerInputHandler.
         if (Input.GetMouseButtonDown(1))
         {
             ToggleLuzExterno();
         }
+
     }
 
     // =====================================
@@ -314,24 +348,34 @@ public class Lampiao : MonoBehaviour
         }
     }
 
+
     public void ToggleLuzExterno()
     {
+        Debug.LogError(
+            "[DIAGNÓSTICO LAMPIÃO] ToggleLuzExterno foi chamado!\n" +
+            "Estado anterior: " + isActive + "\n" +
+            "Quem chamou:\n" + System.Environment.StackTrace
+        );
+
         bool estavaAtivo = isActive;
         isActive = !isActive;
 
-        if (lightVisual != null) lightVisual.SetActive(isActive);
-        if (lightArea != null) lightArea.SetActive(isActive);
-        if (playerController != null) playerController.SetLuz(isActive);
+        if (lightVisual != null)
+            lightVisual.SetActive(isActive);
+
+        if (lightArea != null)
+            lightArea.SetActive(isActive);
+
+        if (playerController != null)
+            playerController.SetLuz(isActive);
 
         if (isActive)
             ApplyModeColor();
 
-        // Se a paralisar estiver em execução, para a rotina e restaura cor
         if (!isActive && paralisarRoutine != null)
         {
             StopCoroutine(paralisarRoutine);
             paralisarRoutine = null;
-
             isParalisarActive = false;
             ApplyModeColor();
         }
@@ -339,8 +383,9 @@ public class Lampiao : MonoBehaviour
         if (!estavaAtivo && isActive)
             PlayLightSound();
 
-        Debug.Log("[Lâmpiao] Ligado? " + isActive);
+        Debug.Log("[Lampião] Ligado? " + isActive);
     }
+
 
     // =====================================
     // SOM
@@ -365,14 +410,21 @@ public class Lampiao : MonoBehaviour
 
         FindPlayer();
 
-        if (lightVisual == null)
-            return;
+        // O aparecimento visual não deve ligar a iluminação.
+        isActive = false;
 
         if (lightArea != null)
             lightArea.SetActive(false);
 
+        if (playerController != null)
+            playerController.SetLuz(false);
+
+        if (lightVisual == null)
+            return;
+
+        // A rotina fará o fade do visual sem ligar a área de luz.
         StartCoroutine(FadeInVisualRoutine(duration));
-    }
+    }   
 
     private IEnumerator FadeInVisualRoutine(float duration)
     {
@@ -412,6 +464,15 @@ public class Lampiao : MonoBehaviour
 
         SaveOriginalColors();
         ApplyModeColor();
+
+        // Garante que o fade não ligue a área de iluminação.
+        isActive = false;
+
+        if (lightArea != null)
+            lightArea.SetActive(false);
+
+        if (playerController != null)
+            playerController.SetLuz(false);
     }
 
     // =====================================

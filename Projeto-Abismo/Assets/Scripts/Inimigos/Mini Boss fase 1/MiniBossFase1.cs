@@ -97,6 +97,62 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     [SerializeField] private float wallReenableDistance = 1.2f;
 
     // =============================================
+    // CONTROLE DE ÁUDIO
+    // =============================================
+
+    private void ConfigurarAudio()
+    {
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+
+        // Faz o som parecer vir da posição do chefe.
+        audioSource.spatialBlend = usarAudio3D ? 1f : 0f;
+    }
+
+    private void TocarSom(AudioClip clip)
+    {
+        if (audioSource == null || clip == null)
+            return;
+
+        audioSource.PlayOneShot(clip, volumeSons);
+    }
+
+    // Pode ser chamado por um evento da animação de pulo.
+    public void TocarSomPulo()
+    {
+        TocarSom(somPulo);
+    }
+
+    // =============================================
+    // ÁUDIO
+    // =============================================
+
+    [Header("Áudio - MiniBoss")]
+    [SerializeField] private AudioSource audioSource;
+
+    [Header("Sons dos Ataques")]
+    [SerializeField] private AudioClip somEspinhos;
+    [SerializeField] private AudioClip somPulo;
+    [SerializeField] private AudioClip somProjetil;
+
+    [Header("Sons de Ações")]
+    [SerializeField] private AudioClip somTeleporte;
+    [SerializeField] private AudioClip somDano;
+    [SerializeField] private AudioClip somMorte;
+
+    [Header("Configuração de Áudio")]
+    [Range(0f, 1f)]
+    [SerializeField] private float volumeSons = 1f;
+
+    [SerializeField] private bool usarAudio3D = true;
+
+    // =============================================
     // DEBUG
     // =============================================
 
@@ -211,6 +267,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
             rb.freezeRotation = true;
             rb.bodyType = RigidbodyType2D.Kinematic;
         }
+        ConfigurarAudio();
     }
 
     // =============================================
@@ -341,7 +398,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     {
         if (debugLogs)
             Debug.Log("[MiniBoss] 🦔 Ataque: Espinhos!");
-
+        TocarSom(somEspinhos);
         // Olha para o jogador antes do pisão
         OlharParaJogador();
 
@@ -396,7 +453,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
     {
         if (debugLogs)
             Debug.Log("[MiniBoss] 🔥 Ataque: Projetil!");
-
+        TocarSom(somProjetil);
         OlharParaJogador();
 
         if (animator != null)
@@ -434,6 +491,7 @@ public class MiniBossFase1 : MonoBehaviour, IDamageable
 
     private IEnumerator TeleportarParaOutroPonto()
     {
+        TocarSom(somTeleporte);
         if (morto) yield break;
 
         Transform destino = estaNoPontoA ? pontoB : pontoA;

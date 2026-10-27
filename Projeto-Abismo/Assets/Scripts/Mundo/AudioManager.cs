@@ -1,108 +1,217 @@
-﻿// Assets/Scripts/Mundo/AudioManager.cs
+﻿
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+[Serializable]
+public class MusicaPorCena
+{
+    [Tooltip("Nome exato da cena, como aparece no Unity.")]
+    public string nomeCena;
+
+    [Tooltip("Música que será reproduzida nessa cena.")]
+    public AudioClip musica;
+}
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    [Header("Música")]
+    [Header("Fonte de áudio")]
     [SerializeField] private AudioSource musicSource;
-    [SerializeField] private AudioClip musicaFases;
-    [SerializeField] private string[] cenasComMusica;
 
-    // eventos e volumes
+    [Header("Músicas por cena")]
+    [SerializeField] private MusicaPorCena[] musicasPorCena;
+
+    [Header("Configuração")]
+    [SerializeField] private bool pararMusicaSeNaoEncontrarCena = true;
+
     public Action<float> OnSFXVolumeChanged;
+
     public float MusicVolume { get; private set; } = 1f;
     public float SFXVolume { get; private set; } = 1f;
 
     private void Awake()
     {
-        // singleton
+        // Impede que existam dois AudioManagers.
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
+
+        // Mantém o gerenciador ao trocar de cena.
         DontDestroyOnLoad(gameObject);
 
-        // carregar preferências
+        // Procura um AudioSource caso não tenha sido atribuído.
+        if (musicSource == null)
+        {
+            musicSource = GetComponent<AudioSource>();
+        }
+
+        // Carrega os volumes salvos.
         MusicVolume = PlayerPrefs.GetFloat("volumeMusica", 1f);
         SFXVolume = PlayerPrefs.GetFloat("volumeSFX", 1f);
+
+        // Configura a fonte de música.
+        if (musicSource != null)
+        {
+            musicSource.playOnAwake = false;
+            musicSource.loop = true;
+            musicSource.volume = MusicVolume;
+        }
+        else
+        {
+            Debug.LogError(
+                "[AudioManager] Nenhum AudioSource foi atribuído!"
+            );
+        }
     }
 
-    private void OnEnable() => SceneManager.sceneLoaded += CenaCarregada;
-    private void OnDisable() => SceneManager.sceneLoaded -= CenaCarregada;
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += CenaCarregada;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= CenaCarregada;
+    }
 
     private void Start()
     {
         AtualizarVolumeMusica();
         AtualizarVolumeSFX();
+
+        // Seleciona a música da cena inicial.
         VerificarMusica();
     }
 
-    void CenaCarregada(Scene scene, LoadSceneMode mode) => VerificarMusica();
-
-    void VerificarMusica()
+    private void CenaCarregada(Scene scene, LoadSceneMode mode)
     {
-        string cenaAtual = SceneManager.GetActiveScene().name;
-        bool tocar = false;
-        foreach (string cena in cenasComMusica)
+        // Executado sempre que uma nova cena é carregada.
+        VerificarMusica();
+    }
+
+    private void VerificarMusica()
+    {
+        if (musicSource == null)
         {
-            if (cenaAtual == cena) { tocar = true; break; }
+            Debug.LogError(
+                "[AudioManager] O AudioSource está vazio."
+            );
+            return;
         }
 
-        if (tocar)
+        string cenaAtual = SceneManager.GetActiveScene().name;
+        AudioClip musicaEncontrada = null;
+
+        // Procura a música correspondente ao nome da cena.
+        if (musicasPorCena != null)
         {
-            if (musicSource != null && !musicSource.isPlaying)
+            foreach (MusicaPorCena item in musicasPorCena)
             {
-                musicSource.clip = musicaFases;
-                musicSource.loop = true;
-                AtualizarVolumeMusica(); // garante volume correto antes de tocar
-                musicSource.Play();
+                if (item == null)
+                    continue;
+
+                if (item.nomeCena == cenaAtual)
+                {
+                    musicaEncontrada = item.musica;
+                    break;
+                }
             }
         }
-        else
+
+        // Não encontrou música para essa cena.
+        if (musicaEncontrada == null)
         {
-            musicSource?.Stop();
+            if (pararMusicaSeNaoEncontrarCena)
+            {
+                musicSource.Stop();
+                musicSource.clip = null;
+            }
+
+            Debug.Log(
+                $"[AudioManager] Nenhuma música configurada para: {cenaAtual}"
+            );
+
+            return;
+        }
+
+        // Se a música já está tocando, não reinicia.
+        if (musicSource.clip == musicaEncontrada &&
+            musicSource.isPlaying)
+        {
+            return;
+        }
+
+        // Troca para a música da nova cena.
+        musicSource.Stop();
+        musicSource.clip = musicaEncontrada;
+        musicSource.loop = true;
+        AtualizarVolumeMusica();
+        musicSource.Play();
+
+        Debug.Log(
+            $"[AudioManager] Tocando '{musicaEncontrada.name}' na cena '{cenaAtual}'."
+        );
+    }
+
+    public void AtualizarVolumeMusica()
+    {
+        MusicVolume = Mathf.Clamp01(
+            PlayerPrefs.GetFloat("volumeMusica", 1f)
+        );
+
+        if (musicSource != null)
+        {
+            musicSource.volume = MusicVolume;
         }
     }
 
-    // chama quando slider de música muda
-    public void AtualizarVolumeMusica()
-    {
-        MusicVolume = PlayerPrefs.GetFloat("volumeMusica", 1f);
-        if (musicSource != null)
-            musicSource.volume = MusicVolume;
-    }
-
-    // chama quando slider de SFX muda
     public void AtualizarVolumeSFX()
     {
-        SFXVolume = PlayerPrefs.GetFloat("volumeSFX", 1f);
+        SFXVolume = Mathf.Clamp01(
+            PlayerPrefs.GetFloat("volumeSFX", 1f)
+        );
+
         OnSFXVolumeChanged?.Invoke(SFXVolume);
     }
 
-    // Play via AudioSource existente (recomendado para efeitos locais)
-    public void PlaySFXFromSource(AudioSource source, AudioClip clip, float volumeScale = 1f)
+    public void PlaySFXFromSource(
+        AudioSource source,
+        AudioClip clip,
+        float volumeScale = 1f)
     {
-        if (source == null || clip == null) return;
-        source.PlayOneShot(clip, SFXVolume * volumeScale);
+        if (source == null || clip == null)
+            return;
+
+        source.PlayOneShot(
+            clip,
+            SFXVolume * Mathf.Clamp01(volumeScale)
+        );
     }
 
-    // Play em posição (cria temporariamente um AudioSource)
-    public void PlaySFXAtPoint(AudioClip clip, Vector3 position, float volumeScale = 1f)
+    public void PlaySFXAtPoint(
+        AudioClip clip,
+        Vector3 position,
+        float volumeScale = 1f)
     {
-        if (clip == null) return;
+        if (clip == null)
+            return;
+
         GameObject go = new GameObject("SFX_" + clip.name);
         go.transform.position = position;
-        var src = go.AddComponent<AudioSource>();
-        src.spatialBlend = 0f; // 2D by default; ajuste se quiser 3D
-        src.clip = clip;
-        src.volume = SFXVolume * volumeScale;
-        src.Play();
+
+        AudioSource source = go.AddComponent<AudioSource>();
+
+        source.spatialBlend = 0f;
+        source.clip = clip;
+        source.volume = SFXVolume * Mathf.Clamp01(volumeScale);
+        source.Play();
+
         Destroy(go, clip.length + 0.1f);
     }
 }

@@ -76,6 +76,16 @@ public class PulgaFogo : MonoBehaviour, IDamageable
     [SerializeField] private float delayAntesDoPulo = 0.5f;
 
     // =====================================
+    // ÁUDIO
+    // =====================================
+
+    [Header("Áudio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip somPulo;
+    [Range(0f, 1f)]
+    [SerializeField] private float volumeSomPulo = 1f;
+
+    // =====================================
     // CONTROLE
     // =====================================
 
@@ -110,6 +120,26 @@ public class PulgaFogo : MonoBehaviour, IDamageable
                 "[PulgaFogo] Animator não encontrado!"
             );
         }
+
+        // Busca um AudioSource no inimigo.
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        // Cria um AudioSource se não existir.
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Configura o áudio do pulo.
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.volume = volumeSomPulo;
+
+        // Som posicional: o volume depende da distância.
+        audioSource.spatialBlend = 1f;
     }
 
     // =====================================
@@ -263,8 +293,19 @@ public class PulgaFogo : MonoBehaviour, IDamageable
             // AGORA SIM: PULO FÍSICO
             // =====================================
 
+            // Toca o som no momento em que o pulo acontece.
+            if (audioSource != null && somPulo != null)
+            {
+                audioSource.PlayOneShot(
+                    somPulo,
+                    volumeSomPulo
+                );
+            }
+
+            // Zera a velocidade anterior.
             rb.linearVelocity = Vector2.zero;
 
+            // Aplica a força do pulo.
             rb.AddForce(
                 new Vector2(
                     direcao * forcaPuloX,
