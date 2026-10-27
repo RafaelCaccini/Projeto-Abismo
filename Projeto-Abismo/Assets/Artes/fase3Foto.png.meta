@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      fase3Foto_0: 8371006621951034507
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
