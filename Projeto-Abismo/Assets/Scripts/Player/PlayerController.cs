@@ -202,7 +202,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     // =============================================
     // AWAKE
     // =============================================
-
+    // Propriedade pública para o PlayerAttack saber se está no chão
+    public bool IsGrounded => isGrounded;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -905,75 +906,41 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (isDead)
             return;
 
-        var input =
-            PlayerInputHandler.Instance;
+        var input = PlayerInputHandler.Instance;
 
-        bool dashInput =
-            input != null
-                ? input.DashDown()
-                : Input.GetKeyDown(
-                    dashKey
-                );
+        bool dashInput = input != null
+            ? input.DashDown()
+            : Input.GetKeyDown(dashKey);
 
-        if (
-            dashInput &&
-            Time.time >=
-            lastDashTime +
-            dashCooldown &&
-            !isDashing
-        )
+        if (dashInput && Time.time >= lastDashTime + dashCooldown && !isDashing)
         {
-            if (
-                !abilitiesAvailable ||
-                !abilities.Has(
-                    SkillType.Dash
-                )
-            )
+            if (!abilitiesAvailable || !abilities.Has(SkillType.Dash))
             {
                 return;
             }
 
-            float dir =
-                Mathf.Abs(horizontalInput) >
-                0.1f
-                    ? horizontalInput
-                    : lastMoveDirection;
+            float dir = Mathf.Abs(horizontalInput) > 0.1f ? horizontalInput : lastMoveDirection;
 
-            dashDirection =
-                new Vector2(
-                    dir,
-                    0f
-                );
-
+            dashDirection = new Vector2(dir, 0f);
             isDashing = true;
+            dashTimeLeft = dashDuration;
+            lastDashTime = Time.time;
 
-            dashTimeLeft =
-                dashDuration;
-
-            lastDashTime =
-                Time.time;
-
-            storedVerticalVelocity =
-                rb.linearVelocity.y;
-
+            storedVerticalVelocity = rb.linearVelocity.y;
             rb.gravityScale = 0f;
+            rb.linearVelocity = new Vector2(dashDirection.x * dashSpeed, 0f);
 
-            rb.linearVelocity =
-                new Vector2(
-                    dashDirection.x *
-                    dashSpeed,
-                    0f
-                );
+            // Dispara a animação do Dash
+            if (anim != null)
+            {
+                anim.SetTrigger("Dash");
+            }
         }
 
         if (isDashing)
         {
-            dashTimeLeft -=
-                Time.deltaTime;
-
-            if (
-                dashTimeLeft <= 0f
-            )
+            dashTimeLeft -= Time.deltaTime;
+            if (dashTimeLeft <= 0f)
             {
                 EndDash();
             }
@@ -1515,5 +1482,28 @@ public class PlayerController : MonoBehaviour, IDamageable
     // PROPRIEDADE DO DASH
     // =============================================
 
+    // =============================================
+    // POGO
+    // =============================================
+    public void TriggerPogo(float pogoBounceForce)
+    {
+        if (isDead)
+            return;
+
+        // Aplica a velocidade vertical para cima, mantendo o X atual
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, pogoBounceForce);
+
+        // Reseta o estado do pulo para permitir reagir no ar
+        isJumping = false;
+        isGrounded = false;
+
+        // Dispara a animação de Pogo, se configurada no Animator
+        if (anim != null)
+        {
+            anim.SetTrigger("Pogo");
+        }
+
+        Debug.Log("[PLAYER] 🦘 Pogo executado com sucesso!");
+    }
     public bool IsDashing => isDashing;
 }

@@ -242,15 +242,30 @@ public class AerialStrikeController : MonoBehaviour
     }
 
     // Tornado público para que outros sistemas (ex.: PlayerController ao confirmar stomp) possam chamar o bounce
+    // Tornado público para que outros sistemas (ex.: PlayerController ao confirmar stomp) possam chamar o bounce
     public void ApplyBounce()
     {
         // reset Y para garantir resposta consistente e aplicar impulso
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
 
+        // Dispara o gatilho da animação de Pogo no Animator do player
+        Animator anim = GetComponentInChildren<Animator>();
+        if (anim != null)
+        {
+            anim.SetTrigger("Pogo");
+        }
+
+        // Se o PlayerController tiver uma função própria de pogo, também podemos avisá-lo
+        PlayerController playerController = GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            // Opcional caso queira sincronizar estados internos do PlayerController
+        }
+
         // permitir encadeamento fluido
         lastStrikeTime = Time.time - (cooldown * 0.5f);
-    }
+    }   
 
     /// <summary>
     /// Verifica se o jogador deve ser considerado 'no ar' tomando em conta tolerância

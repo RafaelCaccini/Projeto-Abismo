@@ -7,10 +7,12 @@ public class PlayerAttack : MonoBehaviour
     [Header("Config")]
     [SerializeField] private int damage = 1;
     [SerializeField] private float attackDuration = 0.12f;
+    [SerializeField] private float pogoBounceForce = 14f;
 
     [Header("Attack Points")]
     [SerializeField] private Transform attackPointRight;
     [SerializeField] private Transform attackPointLeft;
+    [SerializeField] private Transform attackPointDown;
 
     [Header("Debug")]
     [SerializeField] private bool showHitbox = false;
@@ -19,9 +21,14 @@ public class PlayerAttack : MonoBehaviour
     private SpriteRenderer sr;
     private HashSet<int> hitIDs = new HashSet<int>();
     private bool isAttacking;
+    private bool isPogoAttack;
+
+    private PlayerController playerController;
 
     void Awake()
     {
+        playerController = GetComponent<PlayerController>();
+
         Transform t = transform.Find("Dano");
 
         if (t == null)
@@ -38,11 +45,7 @@ public class PlayerAttack : MonoBehaviour
         }
 
         damageCollider.enabled = false;
-
-        // pega renderer (visual da hitbox)
         sr = t.GetComponent<SpriteRenderer>();
-
-        // garante estado inicial
         UpdateHitboxVisibility();
 
         var hitbox = t.GetComponent<DamageHitbox>();
@@ -54,7 +57,6 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        // isso permite mudar no Inspector em tempo real
         UpdateHitboxVisibility();
     }
 
@@ -68,7 +70,22 @@ public class PlayerAttack : MonoBehaviour
     {
         if (isAttacking) return;
 
-        Transform point = facingRight ? attackPointRight : attackPointLeft;
+        float verticalInput = PlayerInputHandler.Instance != null
+            ? PlayerInputHandler.Instance.Vertical()
+            : Input.GetAxisRaw("Vertical");
+
+        isPogoAttack = (verticalInput < -0.3f);
+
+        Transform point;
+
+        if (isPogoAttack && attackPointDown != null)
+        {
+            point = attackPointDown;
+        }
+        else
+        {
+            point = facingRight ? attackPointRight : attackPointLeft;
+        }
 
         if (point != null)
             damageCollider.transform.position = point.position;
@@ -89,25 +106,23 @@ public class PlayerAttack : MonoBehaviour
 
         damageCollider.enabled = false;
         isAttacking = false;
+        isPogoAttack = false;
     }
 
     public void RegisterHit(Collider2D other)
     {
-        if (!isAttacking) return;
-
-        int id = other.GetInstanceID();
-        if (hitIDs.Contains(id)) return;
-
-        hitIDs.Add(id);
-
         IDamageable dmg = other.GetComponent<IDamageable>();
-
-        if (dmg == null)
-            dmg = other.GetComponentInParent<IDamageable>();
-
         if (dmg != null)
         {
             dmg.TakeDamage(damage, gameObject);
+
+            Debug.Log($"[DEBUG ATAQUE] Acertou: {other.name} | É pogo? {isPogoAttack} | Está no chão? {playerController.IsGrounded}");
+
+            if (isPogoAttack && !playerController.IsGrounded)
+            {
+                Debug.Log("[DEBUG POGO] Condições atendidas! Chamando o Pogo...");
+                playerController.TriggerPogo(pogoBounceForce);
+            }
         }
     }
 }
