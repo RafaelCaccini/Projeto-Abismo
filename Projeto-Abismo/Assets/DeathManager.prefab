@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168a75a6bc0746a4db4fdba76d05b685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  painelMorte: {fileID: 0}
+  painelMorte: {fileID: 7289133449439208619}
   cenaMenu: Menu
