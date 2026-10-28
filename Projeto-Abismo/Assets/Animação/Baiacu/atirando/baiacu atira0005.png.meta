@@ -61,12 +61,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 161.08
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -259,7 +259,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      baiacu atira0005_0: 7199299675402290143
+      baiacu atira0005_1: 6424711903042358364
+      baiacu atira0005_2: 5595813243473504336
+      baiacu atira0005_3: -2958328447828201538
+      baiacu atira0005_4: 1308089917761623941
+      baiacu atira0005_5: -4002694335090027435
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
