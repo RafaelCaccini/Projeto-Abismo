@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     // MOVIMENTO
     // =============================================
 
-    [Header("Movimento")]
     private Animator anim;
+    [Header("Movimento")]
 
     [SerializeField] private float maxSpeed = 8f;
     [SerializeField] private float acceleration = 25f;
@@ -110,6 +110,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     // =============================================
     // MORTE
     // =============================================
+
+    
 
     [Header("Animação de Morte")]
     [SerializeField] private float deathAnimationDuration = 1.5f;
@@ -1481,7 +1483,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     // =============================================
     // PROPRIEDADE DO DASH
     // =============================================
-
+    
     // =============================================
     // POGO
     // =============================================
