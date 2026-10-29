@@ -3,7 +3,7 @@
 // =========================================================
 // INIMIGO VOADOR
 // =========================================================
-public class InimigoVoador : MonoBehaviour, IDamageable
+public class BaiacuGuloso : MonoBehaviour, IDamageable
 {
     // =============================================
     // DISPARO
@@ -40,6 +40,18 @@ public class InimigoVoador : MonoBehaviour, IDamageable
     [SerializeField] private bool debugLogs = true;
 
     // =============================================
+    // ANIMAÇÕES
+    // =============================================
+
+    [Header("Animações")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private string animacaoIdle = "idleBaiacu";
+    [SerializeField] private string animacaoAtirando = "atirandoBaiacu";
+    [SerializeField] private float duracaoAnimacaoTiro = 0.5f;
+
+    private Coroutine rotinaAnimacaoTiro;
+
+    // =============================================
     // ESTADO INTERNO
     // =============================================
 
@@ -48,6 +60,12 @@ public class InimigoVoador : MonoBehaviour, IDamageable
     private float cronometroAtaque;
     private bool morto = false;
 
+    private void AtualizarAnimacaoTiro(bool atirando)
+    {
+        if (animator != null)
+            animator.SetBool("Atirando", atirando);
+    }
+
     // =============================================
     // START
     // =============================================
@@ -55,6 +73,16 @@ public class InimigoVoador : MonoBehaviour, IDamageable
     private void Start()
     {
         vidaAtual = vidaMaxima;
+
+        // Busca o Animator automaticamente.
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        // O Animator já começa no estado padrão IdleBaiacu.
+        if (animator == null)
+            Debug.LogWarning($"[{name}] Animator não encontrado!");
+        else
+            animator.SetBool("Atirando", false);
 
         // Busca o player
         GameObject playerObj = GameObject.FindWithTag("Player");
@@ -151,6 +179,17 @@ public class InimigoVoador : MonoBehaviour, IDamageable
             }
         }
 
+        // Reproduz a animação de tiro.
+        if (animator != null)
+        {
+            if (rotinaAnimacaoTiro != null)
+                StopCoroutine(rotinaAnimacaoTiro);
+
+            rotinaAnimacaoTiro = StartCoroutine(
+                AnimarDisparo()
+            );
+        }
+
         if (debugLogs)
             Debug.Log($"[{name}] 🔥 Atirou em direção ao player | Dir: {direcao}");
     }
@@ -159,6 +198,21 @@ public class InimigoVoador : MonoBehaviour, IDamageable
     // IDamageable — recebe dano de qualquer fonte
     // =============================================
 
+    // =============================================
+    // ANIMAÇÃO DE DISPARO
+    // =============================================
+
+    private System.Collections.IEnumerator AnimarDisparo()
+    {
+        AtualizarAnimacaoTiro(true);
+
+        yield return new WaitForSeconds(duracaoAnimacaoTiro);
+
+        if (!morto)
+            AtualizarAnimacaoTiro(false);
+
+        rotinaAnimacaoTiro = null;
+    }
     public void TakeDamage(int dano, GameObject fonte)
     {
         if (morto) return;
