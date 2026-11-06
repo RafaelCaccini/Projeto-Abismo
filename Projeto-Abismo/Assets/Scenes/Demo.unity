@@ -153,7 +153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -415, y: 98}
+  m_AnchoredPosition: {x: -648, y: 98}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &573462716
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "VOC\xCA CHEGOU AO FIM DA BETA."
+  m_text: "PARABENS VOC\xCA CHEGOU AO FIM DA BETA."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 78f406328ee40d740858f87491f88de6, type: 2}
   m_sharedMaterial: {fileID: -3256421571604342927, guid: 78f406328ee40d740858f87491f88de6, type: 2}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -997.41846, w: 0}
+  m_margin: {x: 0, y: 0, z: -1511.7947, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

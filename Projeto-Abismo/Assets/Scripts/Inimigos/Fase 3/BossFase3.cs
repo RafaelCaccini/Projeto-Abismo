@@ -408,8 +408,10 @@ public class BossFase3 : MonoBehaviour, IDamageable
     {
         while (!morto)
         {
+            // Permite patrulhar durante o ataque de ondas.
             if (estado != EstadoBoss.Voando &&
-                estado != EstadoBoss.Parado)
+                estado != EstadoBoss.Parado &&
+                estado != EstadoBoss.AtaqueOnda)
             {
                 yield return null;
                 continue;
@@ -422,7 +424,9 @@ public class BossFase3 : MonoBehaviour, IDamageable
             if (destino == null)
                 break;
 
-            estado = EstadoBoss.Voando;
+            // Não sobrescreve o estado do ataque de ondas.
+            if (estado != EstadoBoss.AtaqueOnda)
+                estado = EstadoBoss.Voando;
 
             transform.position = Vector3.MoveTowards(
                 transform.position,
@@ -432,7 +436,7 @@ public class BossFase3 : MonoBehaviour, IDamageable
 
             SincronizarRigidbody();
 
-            // Mantém a orientação do sprite.
+            // Orientação do sprite.
             if (sr != null)
             {
                 sr.flipX =
@@ -449,22 +453,28 @@ public class BossFase3 : MonoBehaviour, IDamageable
                 transform.position = destino.position;
                 SincronizarRigidbody();
 
-                estado = EstadoBoss.Parado;
+                if (estado != EstadoBoss.AtaqueOnda)
+                    estado = EstadoBoss.Parado;
 
                 float tempo = 0f;
 
                 while (tempo < tempoParadaExtremidade &&
                        !morto &&
-                       estado == EstadoBoss.Parado)
+                       (estado == EstadoBoss.Parado ||
+                        estado == EstadoBoss.AtaqueOnda))
                 {
                     tempo += Time.deltaTime;
                     yield return null;
                 }
 
-                if (!morto && estado == EstadoBoss.Parado)
+                if (!morto &&
+                    (estado == EstadoBoss.Parado ||
+                     estado == EstadoBoss.AtaqueOnda))
                 {
                     indoParaB = !indoParaB;
-                    estado = EstadoBoss.Voando;
+
+                    if (estado == EstadoBoss.Parado)
+                        estado = EstadoBoss.Voando;
                 }
             }
 
@@ -550,7 +560,7 @@ public class BossFase3 : MonoBehaviour, IDamageable
             yield break;
 
         // Interrompe a patrulha para o ataque ser uma ação isolada.
-        PararVoo();
+        // O chefe continua patrulhando durante o ataque de ondas.
         estado = EstadoBoss.AtaqueOnda;
 
         bool sairDeA = Random.value > 0.5f;
@@ -566,8 +576,11 @@ public class BossFase3 : MonoBehaviour, IDamageable
                 this
             );
 
+            // Retoma o estado normal de patrulha.
             estado = EstadoBoss.Voando;
-            IniciarVoo();
+
+            if (rotinaVoo == null)
+                IniciarVoo();
             yield break;
         }
 
@@ -1004,6 +1017,13 @@ public class BossFase3 : MonoBehaviour, IDamageable
         if (morto)
             yield break;
 
+        // Inicia a animação de queda.
+        if (animator != null)
+        {
+            animator.SetBool("Voando", false);
+            animator.SetTrigger("Caindo");
+        }
+
         yield return StartCoroutine(MoverParaCentro());
 
         if (morto)
@@ -1287,6 +1307,12 @@ public class BossFase3 : MonoBehaviour, IDamageable
         {
             rb.linearVelocity = Vector2.zero;
             rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        // Inicia a animação de morte.
+        if (animator != null)
+        {
+            animator.SetTrigger("Morrer");
         }
 
         // Desativa os colliders do chefe.
