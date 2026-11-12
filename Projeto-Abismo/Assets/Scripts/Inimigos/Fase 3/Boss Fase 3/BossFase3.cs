@@ -80,18 +80,57 @@ public class BossFase3 : MonoBehaviour, IDamageable
     [Tooltip("Quantas sequências de ondas comuns antes de uma roxa")]
     [SerializeField] private int ondasComunsAntesRoxa = 2;
 
-    [Tooltip("Tempo entre sequências de ataque")]
-    [SerializeField] private float tempoEntreSequencias = 2.5f;
+    [Tooltip("Tempo entre sequências de ataque (respiro para o player)")]
+    [SerializeField] private float tempoEntreSequencias = 3f;
 
-    [Tooltip("Tempo de preparação antes de spawnar ondas (aviso visual)")]
-    [SerializeField] private float tempoPreparacaoOnda = 1f;
+    [Tooltip("Tempo de preparação antes de spawnar ondas (aviso visual do boss)")]
+    [SerializeField] private float tempoPreparacaoOnda = 1.5f;
 
-    [Header("PRESSÃO CONSTANTE (EMPURRÃO PARA ESQUERDA)")]
-    [Tooltip("Força constante aplicada no player para empurrar para esquerda")]
-    [SerializeField] private float forcaEmpurraoConstante = 3f;
+    [Header("PRESSÃO CONSTANTE (EMPURRÃO DIRETO NO RIGIDBODY)")]
+    [Tooltip("Força contínua aplicada no player para empurrar para esquerda (ativa durante ataques)")]
+    [SerializeField] private float forcaEmpurraoConstante = 2f;
 
     [Tooltip("Usar força (AddForce) ou velocidade direta")]
     [SerializeField] private bool usarForcaFisica = true;
+
+    [Header("TIPOS DE PRESSÃO (ALTERNAM A CADA SEQUÊNCIA)")]
+    [Tooltip("Ordem: 0 = Bloco Empurrão, 1 = Chão Dano. Alterna automaticamente a cada sequência.")]
+    [SerializeField] private int indicePressaoInicial = 0;
+
+    [Header("PRESSÃO: BLOCO EMPURRÃO FÍSICO")]
+    [Tooltip("GameObject com BoxCollider (isTrigger = TRUE) no lado direito. Empurra player pra esquerda enquanto ele atravessa.")]
+    [SerializeField] private GameObject blocoEmpurrao;
+
+    [Tooltip("Força de impulso aplicada no player (padrão: 12f - forte mas escapável)")]
+    [SerializeField] private float forcaBlocoEmpurrao = 12f;
+
+    [Tooltip("Se true, ativa/desativa automaticamente com o estado do boss")]
+    [SerializeField] private bool blocoAutomatico = true;
+
+    [Header("PRESSÃO: CHÃO COM DANO (FASE 2 STYLE)")]
+    [Tooltip("GameObject do chão que causa dano (Collider2D isTrigger = TRUE). Cobre área onde o player pisa.")]
+    [SerializeField] private GameObject chaoDano;
+
+    [Tooltip("Dano por segundo enquanto player toca o chão (padrão: 1 - baixo pra dar tempo de reagir)")]
+    [SerializeField] private int danoChaoPorSegundo = 1;
+
+    [Tooltip("Tempo de aviso ANTES do chão ativar (pogo pisca no centro)")]
+    [SerializeField] private float tempoAvisoChao = 1.5f;
+
+    [Tooltip("Tempo que o chão fica ATIVO causando dano (padrão: 4s - janela justa)")]
+    [SerializeField] private float tempoChaoAtivo = 4f;
+
+    [Tooltip("Tempo de PAUSA entre ciclos do chão (respiro)")]
+    [SerializeField] private float tempoPausaChao = 2f;
+
+    [Tooltip("Prefab do aviso visual (pogo) no centro. Se vazio, cria seta procedural amarela.")]
+    [SerializeField] private GameObject prefabPogoAviso;
+
+    [Tooltip("Cor do aviso do pogo")]
+    [SerializeField] private Color corPogoAviso = new Color(1f, 0.9f, 0.2f, 1f); // Amarelo ouro
+
+    [Tooltip("Tempo de fade in/out do pogo")]
+    [SerializeField] private float tempoFadePogo = 0.4f;
 
     [Header("STUN / VULNERABILIDADE")]
     [Tooltip("Vida máxima do boss")]
@@ -161,6 +200,20 @@ public class BossFase3 : MonoBehaviour, IDamageable
     // Perigos ativos (para limpeza)
     private readonly List<GameObject> ondasAtivas = new List<GameObject>();
 
+    // Bloco de empurrão
+    private Collider2D blocoCol;
+    private bool blocoAtivo = false;
+    private Rigidbody2D blocoRb; // Para garantir que o bloco não se mova
+
+    // Chão com dano (Fase 2 style)
+    private Collider2D chaoCol;
+    private bool chaoAtivo = false;
+    private GameObject pogoAvisoInstancia;
+    private Coroutine rotinaChaoDano;
+
+    // Sistema de pressão alternada
+    private int tipoPressaoAtual = 0; // 0 = Bloco Empurrão, 1 = Chão Dano
+
     // Coroutines
     private Coroutine rotinaAtaques;
     private Coroutine rotinaPressao;
@@ -175,6 +228,9 @@ public class BossFase3 : MonoBehaviour, IDamageable
     public float VidaPct => (float)vidaAtual / vidaMaxima;
     public bool EstaAtordoado => estaAtordoado;
     public bool PressaoAtiva => pressaoAtiva;
+    public bool BlocoEmpurraoAtivo => blocoAtivo;
+    public bool ChaoDanoAtivo => chaoAtivo;
+    public string PressaoAtualNome => tipoPressaoAtual == 0 ? "Bloco Empurrão" : "Chão Dano";
 
     // =====================================================
     // UNITY: AWAKE
@@ -201,6 +257,15 @@ public class BossFase3 : MonoBehaviour, IDamageable
 
         // Player
         BuscarPlayer();
+
+        // Bloco de empurrão
+        ConfigurarBlocoEmpurrao();
+
+        // Chão com dano
+        ConfigurarChaoDano();
+
+        // Inicializa tipo de pressão (0 = Bloco, 1 = Chão)
+        tipoPressaoAtual = Mathf.Clamp(indicePressaoInicial, 0, 1);
 
         // Validações
         ValidarReferencias();
@@ -247,6 +312,34 @@ public class BossFase3 : MonoBehaviour, IDamageable
                 transform.position = targetPos;
                 rb.position = targetPos;
                 rb.linearVelocity = Vector2.zero;
+            }
+        }
+
+        // Verifica se player está dentro do trigger do bloco de empurrão
+        if (blocoAtivo && blocoCol != null && playerController != null)
+        {
+            VerificarBlocoPlayerOverlap();
+        }
+
+        // Verifica se player está no chão com dano
+        if (chaoAtivo && chaoCol != null && playerController != null)
+        {
+            VerificarChaoDanoPlayer();
+        }
+    }
+
+    private void VerificarBlocoPlayerOverlap()
+    {
+        // OverlapCollider detecta se o player está dentro do trigger do bloco
+        var results = new Collider2D[5];
+        int count = blocoCol.Overlap(new ContactFilter2D().NoFilter(), results);
+
+        for (int i = 0; i < count; i++)
+        {
+            if (results[i] != null && results[i].CompareTag("Player"))
+            {
+                EmpurrarPlayer(results[i].gameObject);
+                break;
             }
         }
     }
@@ -326,15 +419,21 @@ public class BossFase3 : MonoBehaviour, IDamageable
             case EstadoBoss.Intro:
                 if (animator) animator.SetTrigger("Intro");
                 pressaoAtiva = false; // Sem pressão durante intro
+                DefinirBlocoEmpurraoAtivo(false);
+                DefinirChaoDanoAtivo(false);
                 break;
 
             case EstadoBoss.Atacando:
                 pressaoAtiva = true; // Pressão ATIVA durante ataques
+                // Ativa SÓ o tipo de pressão atual (alternado)
+                AtivarPressaoAtual();
                 IniciarSequenciaAtaque();
                 break;
 
             case EstadoBoss.Atordoado:
                 pressaoAtiva = false; // Pressão PARADA durante stun
+                DefinirBlocoEmpurraoAtivo(false);
+                DefinirChaoDanoAtivo(false); // Para chão com dano
                 estaAtordoado = true;
                 if (animator) { animator.SetTrigger(H_Stun); animator.SetBool(H_Atacando, false); }
                 if (somStun) Play(somStun);
@@ -343,6 +442,8 @@ public class BossFase3 : MonoBehaviour, IDamageable
 
             case EstadoBoss.Morto:
                 pressaoAtiva = false;
+                DefinirBlocoEmpurraoAtivo(false);
+                DefinirChaoDanoAtivo(false);
                 StartCoroutine(RotinaMorte());
                 break;
         }
@@ -401,7 +502,7 @@ public class BossFase3 : MonoBehaviour, IDamageable
             // Decide tipo de onda
             TipoOnda tipo = proximaEondaRoxa ? TipoOnda.Roxa : TipoOnda.Comum;
 
-            if (logsDebug) Debug.Log($"[BossFase3] Iniciando sequência: {tipo}");
+            if (logsDebug) Debug.Log($"[BossFase3] Iniciando sequência: {tipo} | Pressão: {(tipoPressaoAtual == 0 ? "BLOCO EMPURRÃO" : "CHÃO DANO")}");
 
             // Prepara animação
             if (animator)
@@ -410,11 +511,14 @@ public class BossFase3 : MonoBehaviour, IDamageable
                 animator.SetBool(H_Atacando, true);
             }
 
-            // Tempo de preparação (aviso visual)
+            // Tempo de preparação (aviso visual do boss)
             if (somPreparacao) Play(somPreparacao);
             yield return new WaitForSeconds(tempoPreparacaoOnda);
 
             if (morto || estadoAtual != EstadoBoss.Atacando) yield break;
+
+            // Ativa a pressão CORRETA para esta sequência
+            AtivarPressaoAtual();
 
             // Spawna as ondas
             if (tipo == TipoOnda.Comum)
@@ -439,11 +543,44 @@ public class BossFase3 : MonoBehaviour, IDamageable
             // Finaliza animação de ataque
             if (animator) animator.SetBool(H_Atacando, false);
 
-            // Aguarda antes da próxima sequência
+            // ALTERNA o tipo de pressão para a PRÓXIMA sequência
+            AlternarPressao();
+
+            // Aguarda antes da próxima sequência (respiro para o player)
             yield return new WaitForSeconds(tempoEntreSequencias);
         }
 
         rotinaAtaques = null;
+    }
+
+    private void AtivarPressaoAtual()
+    {
+        // FORÇA desativar AMBOS primeiro (garantia total)
+        if (blocoEmpurrao != null) { blocoEmpurrao.SetActive(false); blocoAtivo = false; }
+        if (chaoDano != null) { chaoDano.SetActive(false); chaoAtivo = false; }
+        if (rotinaChaoDano != null) { StopCoroutine(rotinaChaoDano); rotinaChaoDano = null; }
+        RemoverPogoAviso();
+
+        // Ativa SÓ o atual
+        if (tipoPressaoAtual == 0)
+        {
+            // Bloco Empurrão - ativa instantâneo
+            if (blocoEmpurrao != null) { blocoEmpurrao.SetActive(true); blocoAtivo = true; }
+            if (logsDebug) Debug.Log($"[BossFase3] 🔵 Pressão ATIVA: BLOCO EMPURRÃO (força {forcaBlocoEmpurrao})");
+        }
+        else
+        {
+            // Chão Dano - inicia corrotina (pogo aparece instantâneo, chão ativa junto)
+            if (rotinaChaoDano != null) StopCoroutine(rotinaChaoDano);
+            rotinaChaoDano = StartCoroutine(RotinaAtivarChaoDano());
+            if (logsDebug) Debug.Log($"[BossFase3] 🔴 Pressão ATIVA: CHÃO DANO ({danoChaoPorSegundo} dano/s por {tempoChaoAtivo}s)");
+        }
+    }
+
+    private void AlternarPressao()
+    {
+        tipoPressaoAtual = (tipoPressaoAtual + 1) % 2; // Alterna 0 ↔ 1
+        if (logsDebug) Debug.Log($"[BossFase3] ⚡ Próxima pressão será: {(tipoPressaoAtual == 0 ? "BLOCO EMPURRÃO" : "CHÃO DANO")}");
     }
 
     // =====================================================
@@ -633,7 +770,243 @@ public class BossFase3 : MonoBehaviour, IDamageable
     }
 
     // =====================================================
-    // STUN / VULNERABILIDADE
+    // BLOCO DE EMPURRÃO FÍSICO
+    // =====================================================
+
+    private void ConfigurarBlocoEmpurrao()
+    {
+        if (blocoEmpurrao == null)
+        {
+            if (logsDebug) Debug.LogWarning("[BossFase3] BlocoEmpurrao não configurado no Inspector.");
+            return;
+        }
+
+        blocoCol = blocoEmpurrao.GetComponent<Collider2D>();
+        if (blocoCol == null)
+        {
+            Debug.LogError("[BossFase3] BlocoEmpurrao precisa ter um Collider2D!", this);
+            return;
+        }
+
+        // IMPORTANTE: isTrigger = TRUE para o player atravessar e receber força
+        blocoCol.isTrigger = true;
+
+        // Adiciona Rigidbody2D Kinematic no bloco para detectar triggers
+        blocoRb = blocoEmpurrao.GetComponent<Rigidbody2D>();
+        if (blocoRb == null)
+        {
+            blocoRb = blocoEmpurrao.AddComponent<Rigidbody2D>();
+        }
+        blocoRb.bodyType = RigidbodyType2D.Kinematic;
+        blocoRb.gravityScale = 0f;
+        blocoRb.freezeRotation = true;
+        blocoRb.linearVelocity = Vector2.zero;
+
+        // Inicia desativado
+        blocoEmpurrao.SetActive(false);
+        blocoAtivo = false;
+
+        if (logsDebug) Debug.Log($"[BossFase3] Bloco de empurrão configurado: {blocoEmpurrao.name} | isTrigger={blocoCol.isTrigger} (player atravessa) | RB Kinematic={blocoRb.bodyType}");
+    }
+
+    private void DefinirBlocoEmpurraoAtivo(bool ativo)
+    {
+        if (blocoEmpurrao == null) return;
+
+        if (!blocoAutomatico && ativo)
+        {
+            return;
+        }
+
+        if (blocoAtivo == ativo) return;
+
+        blocoEmpurrao.SetActive(ativo);
+        blocoAtivo = ativo;
+
+        if (logsDebug) Debug.Log($"[BossFase3] Bloco de empurrão: {(ativo ? "ATIVADO" : "DESATIVADO")}");
+    }
+
+    // Método público para controle manual do bloco (se blocoAutomatico = false)
+    public void DefinirBlocoEmpurraoManual(bool ativo)
+    {
+        DefinirBlocoEmpurraoAtivo(ativo);
+    }
+
+    private void EmpurrarPlayer(GameObject playerObj)
+    {
+        Rigidbody2D playerRb = playerObj.GetComponent<Rigidbody2D>();
+        if (playerRb == null) return;
+
+        // Aplica força forte para a esquerda
+        Vector2 forca = Vector2.left * forcaBlocoEmpurrao;
+        playerRb.AddForce(forca, ForceMode2D.Impulse);
+
+        if (logsDebug) Debug.Log($"[BossFase3] Bloco empurrou player com força {forcaBlocoEmpurrao}");
+    }
+
+    // =====================================================
+    // CHÃO COM DANO (ESTILO FASE 2)
+    // =====================================================
+
+    private void ConfigurarChaoDano()
+    {
+        if (chaoDano == null)
+        {
+            if (logsDebug) Debug.LogWarning("[BossFase3] ChaoDano não configurado no Inspector.");
+            return;
+        }
+
+        chaoCol = chaoDano.GetComponent<Collider2D>();
+        if (chaoCol == null)
+        {
+            Debug.LogError("[BossFase3] ChaoDano precisa ter um Collider2D!", this);
+            return;
+        }
+
+        // IMPORTANTE: isTrigger = TRUE para detectar player em cima sem bloquear
+        chaoCol.isTrigger = true;
+
+        // Adiciona Rigidbody2D Kinematic para detectar triggers
+        var chaoRb = chaoDano.GetComponent<Rigidbody2D>();
+        if (chaoRb == null)
+        {
+            chaoRb = chaoDano.AddComponent<Rigidbody2D>();
+        }
+        chaoRb.bodyType = RigidbodyType2D.Kinematic;
+        chaoRb.gravityScale = 0f;
+        chaoRb.freezeRotation = true;
+        chaoRb.linearVelocity = Vector2.zero;
+
+        // Inicia desativado
+        chaoDano.SetActive(false);
+        chaoAtivo = false;
+
+        if (logsDebug) Debug.Log($"[BossFase3] Chão com dano configurado: {chaoDano.name} | isTrigger={chaoCol.isTrigger}");
+    }
+
+    private void DefinirChaoDanoAtivo(bool ativo)
+    {
+        if (chaoDano == null) return;
+
+        if (chaoAtivo == ativo) return;
+
+        if (ativo)
+        {
+            if (rotinaChaoDano != null) StopCoroutine(rotinaChaoDano);
+            rotinaChaoDano = StartCoroutine(RotinaAtivarChaoDano());
+        }
+        else
+        {
+            if (rotinaChaoDano != null) StopCoroutine(rotinaChaoDano);
+            rotinaChaoDano = null;
+            chaoDano.SetActive(false);
+            chaoAtivo = false;
+            RemoverPogoAviso();
+        }
+
+        if (logsDebug) Debug.Log($"[BossFase3] Chão com dano: {(ativo ? "ATIVANDO" : "DESATIVADO")}");
+    }
+
+    private IEnumerator RotinaAtivarChaoDano()
+    {
+        // 1. Pogo aparece IMEDIATAMENTE (sem delay)
+        if (prefabPogoAviso != null && centroArena != null)
+        {
+            pogoAvisoInstancia = Instantiate(prefabPogoAviso, centroArena.position, Quaternion.identity);
+            var sr = pogoAvisoInstancia.GetComponent<SpriteRenderer>();
+            if (sr == null) sr = pogoAvisoInstancia.AddComponent<SpriteRenderer>();
+            if (sr.sprite == null) sr.sprite = CriarSpritePogo();
+            sr.color = corPogoAviso;
+            sr.sortingOrder = 20;
+            pogoAvisoInstancia.transform.localScale = Vector3.one * 2f;
+        }
+
+        if (morto) { RemoverPogoAviso(); yield break; }
+
+        // 2. Ativa o chão com dano JÁ (pogo já tá visível)
+        chaoDano.SetActive(true);
+        chaoAtivo = true;
+
+        if (logsDebug) Debug.Log($"[BossFase3] Chão com dano ATIVO por {tempoChaoAtivo}s (pogo visível)");
+
+        // 3. Mantém ativo pelo tempo configurado - pogo fica visível o tempo TODO
+        yield return new WaitForSeconds(tempoChaoAtivo);
+
+        if (morto) yield break;
+
+        // 4. Desativa o chão E remove pogo junto
+        chaoDano.SetActive(false);
+        chaoAtivo = false;
+        RemoverPogoAviso();
+
+        if (logsDebug) Debug.Log($"[BossFase3] Chão com dano DESATIVADO (pogo removido)");
+
+        // 5. NÃO reativa automaticamente - alternância controla
+    }
+
+    private void RemoverPogoAviso()
+    {
+        if (pogoAvisoInstancia != null)
+        {
+            Destroy(pogoAvisoInstancia);
+            pogoAvisoInstancia = null;
+        }
+    }
+
+    private Sprite CriarSpritePogo()
+    {
+        int s = 64;
+        var tex = new Texture2D(s, s, TextureFormat.RGBA32, false);
+        var px = new Color[s * s];
+        for (int y = 0; y < s; y++)
+        {
+            for (int x = 0; x < s; x++)
+            {
+                float dx = x - s / 2f;
+                float dy = y - s / 2f;
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+                // Triângulo apontando para cima (seta)
+                if (dy > 0 && Mathf.Abs(dx) < (s / 2f - dy) * 0.8f)
+                    px[y * s + x] = Color.white;
+                else
+                    px[y * s + x] = Color.clear;
+            }
+        }
+        tex.SetPixels(px);
+        tex.Apply();
+        return Sprite.Create(tex, new Rect(0, 0, s, s), new Vector2(0.5f, 0.5f), 100f);
+    }
+
+    private void VerificarChaoDanoPlayer()
+    {
+        // OverlapCollider detecta se o player está tocando o chão
+        var results = new Collider2D[5];
+        int count = chaoCol.Overlap(new ContactFilter2D().NoFilter(), results);
+
+        for (int i = 0; i < count; i++)
+        {
+            if (results[i] != null && results[i].CompareTag("Player"))
+            {
+                AplicarDanoChao(results[i].gameObject);
+                break;
+            }
+        }
+    }
+
+    private void AplicarDanoChao(GameObject playerObj)
+    {
+        PlayerController pc = playerObj.GetComponent<PlayerController>();
+        if (pc == null) return;
+
+        // Aplica dano por tempo (já que é chamado no FixedUpdate, divide por fixedDeltaTime aproximado)
+        // Melhor: usa corrotina separada ou Time.fixedDeltaTime
+        pc.TakeDamage(danoChaoPorSegundo, gameObject);
+
+        if (logsDebug) Debug.Log($"[BossFase3] Chão causou {danoChaoPorSegundo} de dano no player");
+    }
+
+    // =====================================================
+    // DANO
     // =====================================================
 
     public void TakeDamage(int dano, GameObject fonte) => ReceberDano(dano, fonte);
@@ -642,23 +1015,25 @@ public class BossFase3 : MonoBehaviour, IDamageable
     {
         if (morto || quantidade <= 0) return;
 
-        // Só pode levar dano quando ATORDOADO (stun)
-        if (!estaAtordoado)
+        // LEVA DANO NORMAL SEMPRE
+        // Se estiver atordoado, leva dano extra (crítico)
+        bool foiCritico = estaAtordoado;
+        int danoFinal = quantidade;
+
+        if (foiCritico)
         {
-            if (logsDebug) Debug.Log($"[BossFase3] Dano BLOQUEADO - Boss não está atordoado. Estado: {estadoAtual}");
-            return;
+            // Durante stun, tem invulnerabilidade temporária entre hits
+            if (Time.time < tempoUltimoDano + tempoInvulneravelStun) return;
+            danoFinal = quantidade * 2; // Dano dobrado no stun
+            tempoUltimoDano = Time.time;
         }
 
-        // Durante stun, tem invulnerabilidade temporária
-        if (Time.time < tempoUltimoDano + tempoInvulneravelStun) return;
+        vidaAtual -= danoFinal;
 
-        vidaAtual -= quantidade;
-        tempoUltimoDano = Time.time;
-
-        if (logsDebug) Debug.Log($"[BossFase3] DANO RECEBIDO: {quantidade} | HP: {vidaAtual}/{vidaMaxima}");
+        if (logsDebug) Debug.Log($"[BossFase3] DANO RECEBIDO: {danoFinal} (critico: {foiCritico}) | HP: {vidaAtual}/{vidaMaxima}");
 
         // Feedback visual
-        if (spriteRenderer) StartCoroutine(FlashDano());
+        if (spriteRenderer) StartCoroutine(FlashDano(foiCritico));
 
         if (somDano) Play(somDano);
 
@@ -671,13 +1046,14 @@ public class BossFase3 : MonoBehaviour, IDamageable
 
     private float tempoUltimoDano = -999f;
 
-    private IEnumerator FlashDano()
+    private IEnumerator FlashDano(bool critico = false)
     {
         if (spriteRenderer == null) yield break;
         Color original = spriteRenderer.color;
+        Color flashColor = critico ? Color.cyan : Color.white;
         for (int i = 0; i < 3; i++)
         {
-            spriteRenderer.color = Color.white;
+            spriteRenderer.color = flashColor;
             yield return new WaitForSeconds(0.05f);
             spriteRenderer.color = original;
             yield return new WaitForSeconds(0.05f);
@@ -685,17 +1061,25 @@ public class BossFase3 : MonoBehaviour, IDamageable
     }
 
     // Chamado externamente (ex: player acerta weak point, ou evento de fase)
+    // Aplica dano normal + acumula stun
     public void AplicarDanoStun(int quantidade)
     {
-        if (morto || estaAtordoado) return;
+        if (morto) return;
 
-        danoAcumuladoStun += quantidade;
+        // Aplica dano normal
+        ReceberDano(quantidade, gameObject);
 
-        if (logsDebug) Debug.Log($"[BossFase3] Dano stun acumulado: {danoAcumuladoStun}/{danoParaStun}");
-
-        if (danoAcumuladoStun >= danoParaStun)
+        // Acumula stun
+        if (!estaAtordoado)
         {
-            Atordoar();
+            danoAcumuladoStun += quantidade;
+
+            if (logsDebug) Debug.Log($"[BossFase3] Dano stun acumulado: {danoAcumuladoStun}/{danoParaStun}");
+
+            if (danoAcumuladoStun >= danoParaStun)
+            {
+                Atordoar();
+            }
         }
     }
 
@@ -853,6 +1237,36 @@ public class BossFase3 : MonoBehaviour, IDamageable
 #endif
         }
 
+        // Bloco de empurrão
+        if (blocoEmpurrao != null && blocoCol != null)
+        {
+            Gizmos.color = blocoAtivo ? Color.magenta : new Color(1f, 0f, 1f, 0.3f);
+            Gizmos.DrawWireCube(blocoEmpurrao.transform.position, blocoCol.bounds.size);
+#if UNITY_EDITOR
+            UnityEditor.Handles.Label(blocoEmpurrao.transform.position + Vector3.up * 1f, $"BLOCO EMPURRÃO ({(blocoAtivo ? "ATIVO" : "INATIVO")}) | Força: {forcaBlocoEmpurrao}");
+#endif
+        }
+
+        // Chão com dano
+        if (chaoDano != null && chaoCol != null)
+        {
+            Gizmos.color = chaoAtivo ? Color.red : new Color(1f, 0f, 0f, 0.3f);
+            Gizmos.DrawWireCube(chaoDano.transform.position, chaoCol.bounds.size);
+#if UNITY_EDITOR
+            UnityEditor.Handles.Label(chaoDano.transform.position + Vector3.up * 1f, $"CHÃO DANO ({(chaoAtivo ? "ATIVO" : "INATIVO")}) | Dano/s: {danoChaoPorSegundo}");
+#endif
+        }
+
+        // Pogo aviso
+        if (centroArena != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(centroArena.position, 0.5f);
+#if UNITY_EDITOR
+            UnityEditor.Handles.Label(centroArena.position + Vector3.up * 1.5f, "POGO AVISO CENTRO");
+#endif
+        }
+
         // Debug estado
 #if UNITY_EDITOR
         if (Application.isPlaying)
@@ -867,6 +1281,10 @@ public class BossFase3 : MonoBehaviour, IDamageable
                 $"Próxima Roxa: {proximaEondaRoxa}\n" +
                 $"Sequências Comuns: {contadorSequenciasComuns}/{ondasComunsAntesRoxa}\n" +
                 $"Pressão: {(pressaoAtiva ? "ATIVA" : "PARADA")}\n" +
+                $"Tipo Atual: {(tipoPressaoAtual == 0 ? "🔵 BLOCO EMPURRÃO" : "🔴 CHÃO DANO")}\n" +
+                $"Próximo: {(tipoPressaoAtual == 0 ? "🔴 CHÃO DANO" : "🔵 BLOCO EMPURRÃO")}\n" +
+                $"Bloco: {(blocoAtivo ? "ATIVO" : "INATIVO")} (Força: {forcaBlocoEmpurrao})\n" +
+                $"Chão: {(chaoAtivo ? "ATIVO" : "INATIVO")} (Dano/s: {danoChaoPorSegundo}, {tempoChaoAtivo}s)\n" +
                 $"Ondas Ativas: {ondasAtivas.Count}"
             );
         }

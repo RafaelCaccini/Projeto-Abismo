@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -8202167059167017031}
   m_Layer: 0
   m_Name: OndaBossPrefab
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 841.164, y: -158.4309, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -102,6 +102,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 541acfeff9194824b89029990b38b360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tipoOnda: 0
+  danoOndaAzul: 2
+  danoOndaRoxa: 4
+  seguirJogador: 0
+  giroGrausPorSegundo: 90
+  tempoMaximoVida: 9
+  distanciaMaxima: 40
+  aplicarCorPadrao: 1
+  debugLogs: 1
 --- !u!50 &5837227681425422682
 Rigidbody2D:
   serializedVersion: 5

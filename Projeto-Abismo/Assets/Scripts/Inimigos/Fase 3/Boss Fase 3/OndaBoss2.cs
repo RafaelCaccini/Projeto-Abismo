@@ -1,36 +1,65 @@
+using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Script para ondas do Boss Fase 3.
-/// Suporta dois tipos:
-/// - Comum: Menor, pode ser desviada com pulo
-/// - Roxa: Maior, NÃO pode ser desviada com pulo - precisa de dash
-/// </summary>
 public class OndaBoss2 : MonoBehaviour, IDamageable
 {
-    // =============================================
-    // TIPOS DE ONDA
-    // =============================================
-
     public enum TipoOnda
     {
-        Comum,  // Desviavel com pulo
-        Roxa    // Precisa de dash
+        [InspectorName("Azul (desvia pulando)")] Comum,
+        [InspectorName("Roxa (quebra com dash)")] Roxa
     }
+
+    // =============================================
+    // CONFIGURAÇÃO DO PREFAB
+    // =============================================
+
+    [Header("Tipo desta onda (configure em cada prefab)")]
+    [SerializeField] private TipoOnda tipoOnda = TipoOnda.Comum;
+
+    [Header("Dano")]
+    [Tooltip("Dano se o player NÃO pular a onda azul.")]
+    [SerializeField] private int danoOndaAzul = 2;
+
+    [Tooltip("Dano se o player NÃO der dash na onda roxa.")]
+    [SerializeField] private int danoOndaRoxa = 4;
+
+    [Header("Direção")]
+    [Tooltip("Desmarcado: vai reto até onde o player estava ao nascer. Marcado: vai curvando atrás do player.")]
+    [SerializeField] private bool seguirJogador = false;
+
+    [Tooltip("Quão rápido a onda curva quando 'Seguir Jogador' está marcado (graus por segundo).")]
+    [SerializeField] private float giroGrausPorSegundo = 90f;
+
+    [Header("Tempo de vida")]
+    [SerializeField] private float tempoMaximoVida = 9f;
+    [SerializeField] private float distanciaMaxima = 40f;
+
+    [Header("Visual")]
+    [Tooltip("Aplica cor azul/roxa automaticamente. Desmarque se o sprite do prefab já tiver a cor certa.")]
+    [SerializeField] private bool aplicarCorPadrao = true;
+
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = true;
 
     // =============================================
     // ESTADO
     // =============================================
 
-    private Vector3 destino;
+    private Vector2 direcao = Vector2.left;
     private float velocidade;
-    private int dano;
-    private TipoOnda tipoOnda = TipoOnda.Comum;
-    private bool inicializado = false;
+    private Transform player;
+
+    private bool inicializado;
+    private bool jaCausouDano;
+    private bool destruindo;
+    private float tempoVivo;
+    private float distanciaPercorrida;
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Collider2D col;
+
+    private int DanoAtual => tipoOnda == TipoOnda.Roxa ? danoOndaRoxa : danoOndaAzul;
 
     // =============================================
     // AWAKE
@@ -44,69 +73,52 @@ public class OndaBoss2 : MonoBehaviour, IDamageable
 
         if (rb != null)
         {
+            rb.bodyType = RigidbodyType2D.Kinematic;
             rb.gravityScale = 0f;
-            rb.freezeRotation = true;
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            rb.linearVelocity = Vector2.zero;
         }
 
         if (col != null)
             col.isTrigger = true;
+
+        if (aplicarCorPadrao && sr != null)
+        {
+            sr.color = tipoOnda == TipoOnda.Roxa
+                ? new Color(0.7f, 0.2f, 0.9f, 0.95f)
+                : new Color(0.2f, 0.7f, 1f, 0.7f);
+        }
     }
 
     // =============================================
     // INICIALIZAR
+    // O BossFase3 continua chamando assim. O 'destino', o 'dano' e o 'tipo'
+    // são ignorados: valem o tipo e o dano configurados neste prefab.
+    // Só a velocidade vem do boss.
     // =============================================
 
-    /// <summary>
-    /// Inicializa a onda com destino, velocidade, dano e tipo
-    /// </summary>
     public void Inicializar(Vector3 destino, float velocidade, int dano, TipoOnda tipo = TipoOnda.Comum)
     {
-        this.destino = destino;
         this.velocidade = velocidade;
-        this.dano = dano;
-        this.tipoOnda = tipo;
-        this.inicializado = true;
+        this.tipoOnda = tipo; // APLICA o tipo passado pelo boss!
 
-        // Calcula a direcao ate o destino (sempre da direita para esquerda)
-        Vector2 direcao = ((Vector2)destino - (Vector2)transform.position).normalized;
-
-        // Inicia o movimento da onda
-        if (rb != null)
-        {
-            rb.linearVelocity = direcao * velocidade;
-        }
-
-        // Orienta o sprite na direcao do movimento
-        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angulo, Vector3.forward);
-
-        // Configura visual baseado no tipo
-        ConfigurarVisual(tipo);
-    }
-
-    // Sobrecarga para compatibilidade com codigo antigo
-    public void Inicializar(Vector3 destino, float velocidade, int dano)
-    {
-        Inicializar(destino, velocidade, dano, TipoOnda.Comum);
-    }
-
-    private void ConfigurarVisual(TipoOnda tipo)
-    {
-        if (sr == null) return;
-
+        // Sobrescreve o dano configurado no prefab com o valor passado pelo boss
         if (tipo == TipoOnda.Roxa)
-        {
-            // Onda roxa: cor roxa/magenta, maior
-            sr.color = new Color(0.7f, 0.2f, 0.9f, 0.95f);
-            transform.localScale *= 1.4f;
-        }
+            danoOndaRoxa = dano;
         else
-        {
-            // Onda comum: cor azul/ciano, menor, semi-transparente
-            sr.color = new Color(0.2f, 0.7f, 1f, 0.7f);
-        }
+            danoOndaAzul = dano;
+
+        // ONDA SEMPRE VAI PURAMENTE HORIZONTAL (esquerda) - trava no Y do spawn
+        direcao = Vector2.left;
+
+        inicializado = true;
+
+        if (debugLogs)
+            Debug.Log($"[OndaBoss2] Onda {tipoOnda} | Dano: {DanoAtual} | Direção: HORIZONTAL ESQUERDA (Y travado: {transform.position.y:F2})", this);
     }
+
+    // Compatibilidade com código antigo
+    public void Inicializar(Vector3 destino, float velocidade, int dano)
+        => Inicializar(destino, velocidade, dano, TipoOnda.Comum);
 
     // =============================================
     // UPDATE
@@ -114,149 +126,133 @@ public class OndaBoss2 : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (!inicializado) return;
+        if (!inicializado || destruindo) return;
 
-        // Verifica se a onda chegou no limite esquerdo (apenas distância X, pois movimento é horizontal)
-        float distanciaX = Mathf.Abs(transform.position.x - destino.x);
-
-        if (distanciaX <= 0.5f)
+        if (seguirJogador && player != null)
         {
-            // Para a onda antes de destrui-la
-            if (rb != null)
-                rb.linearVelocity = Vector2.zero;
+            Vector3 alvo = (Vector3)((Vector2)player.position - (Vector2)transform.position);
 
-            Destroy(gameObject);
+            Vector3 nova = Vector3.RotateTowards(
+                (Vector3)direcao,
+                alvo.normalized,
+                giroGrausPorSegundo * Mathf.Deg2Rad * Time.deltaTime,
+                0f
+            );
+
+            direcao = ((Vector2)nova).normalized;
         }
+
+        Vector3 passo = (Vector3)(direcao * velocidade * Time.deltaTime);
+        transform.position += passo;
+
+        distanciaPercorrida += passo.magnitude;
+        tempoVivo += Time.deltaTime;
+
+        if (distanciaPercorrida >= distanciaMaxima)
+        {
+            Destruir("distância máxima");
+            return;
+        }
+
+        if (tempoVivo >= tempoMaximoVida)
+            Destruir("tempo máximo de vida");
     }
 
     // =============================================
-    // COLISAO COM O JOGADOR
+    // COLISÃO COM O PLAYER
     // =============================================
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // A onda so causa dano ao objeto com a tag Player
-        if (!other.CompareTag("Player"))
+        if (debugLogs && other.CompareTag("Player")) Debug.Log($"[OndaBoss2] OnTriggerEnter - Tag: {other.tag}, Tipo: {tipoOnda}");
+        Processar(other);
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        Processar(other);
+    }
+
+    private void Processar(Collider2D other)
+    {
+        if (destruindo) return;
+        if (!other.CompareTag("Player")) return;
+
+        PlayerController player = other.GetComponentInParent<PlayerController>();
+        if (player == null) return;
+
+        bool playerEstaDandoDash = player.IsDashing;
+
+        // 1º: DASH SEMPRE tem prioridade - quebra onda roxa, sem dano
+        if (tipoOnda == TipoOnda.Roxa && playerEstaDandoDash)
         {
-            if (Debug.isDebugBuild)
-                Debug.Log($"[OndaBoss2] Colisão com: {other.name} (tag: {other.tag}) - não é Player");
+            if (debugLogs) Debug.Log($"[OndaBoss2] Dash na onda roxa — onda quebrada! IsDashing={playerEstaDandoDash}", this);
+            DestruirComEfeito();
             return;
         }
 
-        if (Debug.isDebugBuild)
-            Debug.Log($"[OndaBoss2] Colisão com PLAYER detectada! Tipo: {tipoOnda}");
+        // 2º: Se já causou dano nessa onda, não aplica de novo
+        if (jaCausouDano) return;
 
-        // Procura o componente de dano no proprio objeto
-        IDamageable alvo = other.GetComponent<IDamageable>();
+        // 3º: Aplica dano (azul sempre, roxa sem dash)
+        jaCausouDano = true;
+        if (debugLogs) Debug.Log($"[OndaBoss2] APLICANDO DANO: {DanoAtual} | Tipo: {tipoOnda} | Player: {player.name}", this);
+        player.TakeDamage(DanoAtual, gameObject);
 
-        // Se nao encontrar, procura nos objetos pais
-        if (alvo == null)
-            alvo = other.GetComponentInParent<IDamageable>();
-
-        // Aplica o dano ao jogador
-        if (alvo != null)
-        {
-            // Para onda roxa, verifica se o player esta dando dash
-            if (tipoOnda == TipoOnda.Roxa)
-            {
-                var playerCtrl = other.GetComponentInParent<PlayerController>();
-                if (playerCtrl != null)
-                {
-                    bool isDashing = playerCtrl.IsDashing;
-                    if (Debug.isDebugBuild)
-                        Debug.Log($"[OndaBoss2] PlayerController encontrado. IsDashing: {isDashing}");
-
-                    if (isDashing)
-                    {
-                        // Player esta dando dash - DESTROI a onda e passa sem dano!
-                        if (Debug.isDebugBuild)
-                            Debug.Log("[OndaBoss2] >>> DASH DETECTADO! Destruindo onda, sem dano! <<<");
-                        DestruirOndaComEfeito();
-                        return;
-                    }
-                }
-                else
-                {
-                    if (Debug.isDebugBuild)
-                        Debug.LogWarning("[OndaBoss2] PlayerController NÃO encontrado no player!");
-                }
-            }
-
-            if (Debug.isDebugBuild)
-                Debug.Log($"[OndaBoss2] Aplicando dano: {dano}");
-            alvo.TakeDamage(dano, gameObject);
-        }
-        else
-        {
-            if (Debug.isDebugBuild)
-                Debug.LogWarning("[OndaBoss2] IDamageable não encontrado no player!");
-        }
+        if (debugLogs)
+            Debug.Log($"[OndaBoss2] Onda {tipoOnda} causou {DanoAtual} de dano. Dash={playerEstaDandoDash}", this);
     }
 
     // =============================================
-    // DESTRUIR ONDA (quando player da dash)
+    // DESTRUIÇÃO
     // =============================================
 
-    private void DestruirOndaComEfeito()
+    private void Destruir(string motivo)
     {
-        // Para o movimento IMEDIATAMENTE
-        if (rb != null)
-            rb.linearVelocity = Vector2.zero;
+        if (debugLogs)
+            Debug.Log($"[OndaBoss2] Onda {tipoOnda} destruída por: {motivo}", this);
 
-        // Desativa collider IMEDIATAMENTE para não dar dano múltiplo
-        if (col != null)
-            col.enabled = false;
-
-        // Efeito visual simples (piscar e sumir)
-        if (sr != null)
-        {
-            StartCoroutine(FadeOutEDestruir());
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
     }
 
-    private System.Collections.IEnumerator FadeOutEDestruir()
+    private void DestruirComEfeito()
     {
-        float tempo = 0f;
-        float duracao = 0.15f;
-        Color corOriginal = sr.color;
+        destruindo = true;
 
-        while (tempo < duracao)
+        if (col != null) col.enabled = false;
+
+        if (sr != null) StartCoroutine(FadeOut());
+        else Destroy(gameObject);
+    }
+
+    private IEnumerator FadeOut()
+    {
+        float t = 0f, duracao = 0.15f;
+        Color c = sr.color;
+        Vector3 escalaInicial = transform.localScale;
+
+        while (t < duracao)
         {
-            tempo += Time.deltaTime;
-            float t = tempo / duracao;
-            sr.color = new Color(corOriginal.r, corOriginal.g, corOriginal.b, Mathf.Lerp(corOriginal.a, 0f, t));
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, t);
+            t += Time.deltaTime;
+            float k = t / duracao;
+            sr.color = new Color(c.r, c.g, c.b, Mathf.Lerp(c.a, 0f, k));
+            transform.localScale = Vector3.Lerp(escalaInicial, Vector3.zero, k);
             yield return null;
         }
 
         Destroy(gameObject);
     }
 
-    // =============================================
-    // IMUNIDADE A ATAQUES DO PLAYER
-    // =============================================
-
-    /// <summary>
-    /// As ondas nao podem ser destruidas por ataques do player.
-    /// Elas so desaparecem ao chegar ao destino (limite esquerdo).
-    /// </summary>
-    public void TakeDamage(int dano, GameObject fonte)
-    {
-        // Ondas sao imunes a dano do player
-        return;
-    }
+    // Ondas são imunes a ataques do player
+    public void TakeDamage(int dano, GameObject fonte) { }
 
     // =============================================
-    // PROPRIEDADES PUBLICAS
+    // PROPRIEDADES PÚBLICAS
     // =============================================
 
     public TipoOnda Tipo => tipoOnda;
     public bool EhOndaRoxa => tipoOnda == TipoOnda.Roxa;
     public bool EhOndaComum => tipoOnda == TipoOnda.Comum;
-    public int Dano => dano;
+    public int Dano => DanoAtual;
     public float Velocidade => velocidade;
 }
