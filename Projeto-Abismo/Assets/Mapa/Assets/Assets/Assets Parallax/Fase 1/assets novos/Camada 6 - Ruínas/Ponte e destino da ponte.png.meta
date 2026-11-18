@@ -87,7 +87,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -259,7 +259,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Ponte e destino da ponte_0: 4319768324471860174
+      Ponte e destino da ponte_1: -8715800270307740598
+      Ponte e destino da ponte_2: 5162111428580939090
+      Ponte e destino da ponte_3: -9092971134708354229
+      Ponte e destino da ponte_4: 8806964067282710221
+      Ponte e destino da ponte_5: 7642864138904406959
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
