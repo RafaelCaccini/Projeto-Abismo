@@ -22,12 +22,16 @@ public class CameraAutoFind : MonoBehaviour
         TryBindCamera();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        TryBindCamera();
+        // Only update if we have no target (scene transition case)
+        if (currentTarget == null && cam != null)
+        {
+            TryBindCamera();
+        }
     }
 
-    private void TryBindCamera()
+    public void TryBindCamera()
     {
         if (cam == null)
             cam = GetComponent<CinemachineCamera>();
@@ -57,7 +61,12 @@ public class CameraAutoFind : MonoBehaviour
         if (player == null)
             return;
 
-        if (player.transform == currentTarget && cam.Follow == currentTarget)
+        // Check if player or currentTarget was destroyed (GameObject.Destroy marks it for destruction)
+        // If either the stored target or the current player is null/destroyed, force re-binding
+        bool targetDestroyed = currentTarget == null || currentTarget.gameObject == null || currentTarget.gameObject.scene.name == null;
+        bool playerChanged = player.transform != currentTarget;
+
+        if (!targetDestroyed && player.transform == currentTarget && cam.Follow == currentTarget)
             return;
 
         currentTarget = player.transform;
@@ -67,6 +76,26 @@ public class CameraAutoFind : MonoBehaviour
         cam.CancelDamping(true);
 
         Debug.Log("Camera conectada no player: " + player.GetInstanceID());
+    }
+
+    /// <summary>
+    /// Reset camera target - call when player is destroyed/reset between scenes
+    /// </summary>
+    public void ResetTarget()
+    {
+        currentTarget = null;
+    }
+
+    /// <summary>
+    /// Called when a player is exiting to a new scene
+    /// </summary>
+    public void SetExitingPlayer(GameObject exitingPlayerObject)
+    {
+        // If the exiting player was our current target, clear it
+        if (currentTarget != null && currentTarget.gameObject == exitingPlayerObject)
+        {
+            currentTarget = null;
+        }
     }
 
     private PlayerController FindPlayer()

@@ -53,4 +53,13 @@ public class BackgroundController : MonoBehaviour
 
         return false;
     }
+
+    /// <summary>
+    /// Reset camera reference - called when scene changes to force re-acquisition
+    /// </summary>
+    public void ResetCameraReference()
+    {
+        cameraTransform = null;
+        lastCameraX = 0f;
+    }
 }

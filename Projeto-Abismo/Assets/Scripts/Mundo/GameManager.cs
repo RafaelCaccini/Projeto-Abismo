@@ -35,8 +35,8 @@ public class GameManager : MonoBehaviour
         hasCheckpoint = false;
 
         // =====================================
-        // SUBSCRIBE: reposiciona player no checkpoint
-        // toda vez que uma cena carrega (inclui respawn)
+        // SUBSCRIBE: limpa referências de câmera ANTES da cena carregar
+        // e reposiciona player no checkpoint depois que carregar
         // =====================================
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -62,6 +62,23 @@ public class GameManager : MonoBehaviour
         LoadSceneMode mode
     )
     {
+        // Reset camera references so they re-acquire the correct camera for the new scene
+        // This prevents the camera from staying at the position from the previous scene
+        var backgroundControllers = FindObjectsOfType<BackgroundController>();
+        foreach (var bc in backgroundControllers)
+        {
+            bc.ResetCameraReference();
+        }
+
+        var cameraAutoFinds = FindObjectsOfType<CameraAutoFind>();
+        foreach (var caf in cameraAutoFinds)
+        {
+            // Clear the old target reference so it re-bonds to the new player
+            caf.ResetTarget();
+            // Re-bind to new scene's camera
+            caf.TryBindCamera();
+        }
+
         // Try to apply scene-specific abilities regardless of checkpoint state.
         StartCoroutine(ApplySceneAbilitiesWhenPlayerAvailable());
 
